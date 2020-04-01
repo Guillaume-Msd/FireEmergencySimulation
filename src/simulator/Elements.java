@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Elements implements ElementsInterface {
 
-  public List<EnvironmentElement> ElementList;
+	private List<EnvironmentElement> ElementList;
 
 	@Override
 	public void sendElements() {

@@ -2,9 +2,9 @@ package emergency;
 
 public class Staff extends Intervernors {
 
-  public Enum TiredState;
+	private TiredStateEnum TiredState;
 
-  public boolean Available;
+	private boolean Available;
 
 
 

@@ -1,4 +1,4 @@
 package simulator;
 
-enum TypeElement {
+enum TypeElement {StationEssence, BoucheIncendie, Colonne, Extincteur, RobinetIncendie
 }

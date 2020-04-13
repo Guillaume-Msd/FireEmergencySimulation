@@ -1,13 +1,15 @@
 package simulator;
 
+import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import utilities.Coord;
 
 public class Fire extends Event implements FireInterface {
 
 	private FireType type;
 	private FireIntensity intensity;
-	private Fire Feu;
-	private List<Vehicule> ActiveVehicules;
 
 	public Fire(Coord localisation, FireType type, FireIntensity intensity) {
 		super(localisation);
@@ -45,12 +47,27 @@ public class Fire extends Event implements FireInterface {
 	}
 	
 	public void propagation() {
-		//if (setVehiculesInEvent() == false) {   //provisoire, je savais pas quoi mettre pour l'instant
-		//}
+		/*if() {					//si pas de véhicule
+	
+			Set<FireIntensity> intensities = EnumSet.allOf(FireIntensity.class);  //augmentation de l'intensité
+				Iterator <FireIntensity> it = intensities.iterator();
+			    if ( it != null && it.hasNext() ) 
+			      {
+			    	setIntensity(it.next());
+			      }
+			    if (getIntensity() == FireIntensity.VeryHigh) {    					//nouveau feu si intensité max
+			    	new Fire(new Coord(0,1), FireType.ClassA, FireIntensity.Low);
+			    }
+		}*/
 	}
 	
-	public void attenuation(List<Vehicule> ActiveVehicules) {
-		
+	public void attenuation() {
+		/*if () {						//si véhicule
+			
+		    if (getIntensity() == FireIntensity.Low) {    					//extinction si intensité min
+		    	
+		    }
+		}*/
 	}
 
 }

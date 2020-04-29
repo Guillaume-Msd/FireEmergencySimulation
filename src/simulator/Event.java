@@ -1,19 +1,20 @@
 package simulator;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import utilities.Coord;
 
 public class Event {
-
-	private HashSet <Coord> localisation;
 	
-	public Event(HashSet <Coord> localisation) {
+	private Set <Coord> localisation;
+	
+	public Event(Set <Coord> localisation) {
 		this.localisation=localisation;
 		
 	}
 	
-	protected HashSet<Coord> getLocalisation() {
+	protected Set<Coord> getLocalisation() {
 		return localisation;
 	}
 

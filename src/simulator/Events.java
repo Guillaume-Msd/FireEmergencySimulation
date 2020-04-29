@@ -2,6 +2,7 @@ package simulator;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import utilities.Coord;
 
@@ -9,7 +10,8 @@ public class Events implements EventInterface {
 
 	private List<Event> EventList;
 
-	public void createEvent(HashSet <Coord> localisation) {
+	public void createEvent(Coord coord) {
+		Set<Coord> localisation = new HashSet<Coord>();
 		Event event = new Event(localisation);
 		this.EventList.add(event);
 	}

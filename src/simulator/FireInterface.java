@@ -3,15 +3,15 @@ package simulator;
 public interface FireInterface {
 
   /** 
-   *  Propagation des feux (création d'un nouveau feu de moindre importance à proximité
-   *  du feu initial) en l’absence d'intervention
+   *  Propagation des feux (crï¿½ation d'un nouveau feu de moindre importance ï¿½ proximitï¿½
+   *  du feu initial) en lï¿½absence d'intervention
    *  @return void
    */
-  public void propagation();
+  public void aggravation();
 
   /** 
-   *  La vitesse d’atténuation du feu dépend du nombre de véhicules d’intervention à
-   *  proximité et de leur type 
+   *  La vitesse dï¿½attï¿½nuation du feu dï¿½pend du nombre de vï¿½hicules dï¿½intervention ï¿½
+   *  proximitï¿½ et de leur type 
    *  @param List<Vehicule>  List of vehicules fighting the fire
    *  @return void
    */

@@ -1,0 +1,58 @@
+package emergency;
+
+import java.util.List;
+
+import utilities.Coord;
+
+public class AbstractHeadquarter extends AbstractIntervention implements HeadquarterInterface {
+	
+	List<Staff> personnel;
+	Coord emplacement_headquarter;
+	List<VehiculeInterface> vehicules;
+	
+	@Override
+	public void sendInformation() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void getInformation() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public void setStaffOnVehicules(AbstractVehicule v, List<Staff> s) {
+		// TODO Auto-generated method stub
+		for (Staff personne: s) {
+			personne.setAvailable(false);
+			v.addToStaff(s);
+		}
+	}
+
+	
+	public void returnVehicule(AbstractVehicule v) {
+		
+	}
+	@Override
+	public void supplyVehicules() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setVehiculesInEvent() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void calculItinerary() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+}

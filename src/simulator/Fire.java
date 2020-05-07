@@ -12,8 +12,8 @@ public class Fire extends Event implements FireInterface {
 	private FireType type;
 	private FireIntensity intensity;
 
-	public Fire(Set <Coord> localisation, FireType type, FireIntensity intensity) {
-		super(localisation);
+	public Fire(Coord coord, FireType type, FireIntensity intensity) {
+		super(coord);
 		this.intensity = intensity;
 		this.type = type;
 	}
@@ -47,19 +47,15 @@ public class Fire extends Event implements FireInterface {
 			
 			//TODO create new fire
 			if (getIntensity() == FireIntensity.VeryHigh) {    					//nouveau feu si intensité max
-			    //Events.createEvent(Fire);
+			    //
 			}
 			
-			else{	//augmentation de l'intensité
-				Iterator <FireIntensity> it = FireIntensity.intensities.iterator();
-				while(it.hasNext()) {
-				   	FireIntensity intensity = it.next();
-				    if (intensity == this.getIntensity()) {
-				    	setIntensity(it.next());
-				    	break;
-			    	}
-				}
+			else{//augmentation de l'intensité
+				FireIntensity fireIntensity = FireIntensity.aggravation(this.getIntensity());
+			    setIntensity(fireIntensity);
 			}
+			    
+						
 	}
 	
 	public void attenuation() {
@@ -70,15 +66,10 @@ public class Fire extends Event implements FireInterface {
 		    	//Events.deleteEvent(Fire);
 		    }
 		    else {	//diminution de l'intensité (marche pas)
-				ListIterator <FireIntensity> it = FireIntensity.listeIntensities.listIterator();
-				while(it.hasPrevious()) {
-				   	FireIntensity intensity = it.previous();
-				    if (intensity == this.getIntensity()) {
-				    	setIntensity(it.previous());
-				    	break;
-				    }
-				}	
-		    }
+				FireIntensity fireIntensity = FireIntensity.attenuation(this.getIntensity());
+			    setIntensity(fireIntensity);
+				    }	
+
 	}
 
 }

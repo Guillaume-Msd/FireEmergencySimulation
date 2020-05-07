@@ -1,17 +1,21 @@
 package simulator;
 
+import java.io.IOException;
+import java.util.List;
+
 public interface EventInterface {
 
   /** 
-   *  Permet d'envoyer les informations relatives aux événement au serveur
+   *  Permet d'envoyer les informations relatives aux ï¿½vï¿½nement au serveur
    *  @return List<Event>
+ * @throws IOException 
    */
-  public void sendEvents();
+  public void sendEvents(List<Event> eventList) throws IOException;
 
   /** 
-   *  Récupère des informations relatives aux événements depuis le serveur
+   *  Rï¿½cupï¿½re des informations relatives aux ï¿½vï¿½nements depuis le serveur
    *  @param Event
    */
-  public void getEvents();
+  public void getAllEvents() throws IOException;
 
 }

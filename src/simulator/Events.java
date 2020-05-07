@@ -11,10 +11,6 @@ import java.net.URL;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.json.JsonObjectParser;
-import com.google.gson.reflect.TypeToken;
 
 import utilities.Coord;
 import utilities.Tools;
@@ -33,9 +29,6 @@ public class Events implements EventInterface {
 
 	}
 	
-	public void updateEvent() {
-	
-	}
 	
 	@Override
 	public void sendEvents(List<Event> eventList) throws IOException {
@@ -57,10 +50,9 @@ public class Events implements EventInterface {
 		
 	}
 	
-	@Override
-	public void getAllEvents() throws IOException {
+	
+	public Event[] getEvents (URL url) throws IOException {
 		
-		URL url = new URL("http://localhost:8080/FireSimulator/events");
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
         httpURLConnection.setRequestMethod("GET");
         BufferedReader in = new BufferedReader(
@@ -72,28 +64,46 @@ public class Events implements EventInterface {
 		} in .close();
 		
 	    //TODO Conversion en objets Event 
-         
+		ObjectMapper mapper = new ObjectMapper();
+        Event[] events= mapper.readValue(response1.toString(), Event[].class);
+		return events;
 	}
 	
 	
-	public void getOneEvent(Event event) throws IOException {
+	@Override
+	public Event[] getAllEvents() throws IOException {
+		
+		URL url = new URL("http://localhost:8080/FireSimulator/events");
+		return this.getEvents(url);
+	}
+	
+	
+	public Event getOneEvent(Event event) throws IOException {
 		
 		int idEvent = event.getId();
-		
-		//Comment passer l'id dans l'URI
-		URL url = new URL("http://localhost:8080/FireSimulator/events?id=idEvent");
-        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-        httpURLConnection.setRequestMethod("GET");
-        BufferedReader in = new BufferedReader(
-        new InputStreamReader(httpURLConnection.getInputStream()));
-        String inputLine;
-        StringBuffer response1 = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-        	response1.append(inputLine);
-		} in .close();
-		
-	    //TODO Conversion en objet Event 
+		URL url = new URL("http://localhost:8080/FireSimulator/events/"+idEvent);
+		Event[] events = this.getEvents(url);
+		for (Event e : events) {
+			if (e.getId() == idEvent) {
+				return e;
+			}
+		}
+		return null;
+	}
 
+	@Override
+	public void aggravateEvent(Event event) throws IOException {
+		int idEvent = event.getId();
+		URL url = new URL("http://localhost:8080/FireSimulator/aggravation/"+idEvent);
+		
+	}
+
+	
+	@Override
+	public void attenuateEvent(Event event) throws IOException {
+		int idEvent = event.getId();
+		URL url = new URL("http://localhost:8080/FireSimulator/attenuation/"+idEvent);
+		
 	}
 		
 }

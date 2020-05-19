@@ -1,6 +1,8 @@
 package fireWebService.model;
 
 
+import java.util.Iterator;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,6 +24,14 @@ public class CoordEntity {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
+	public Integer IdCoord() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	@Column 
 	private int x;
 	
@@ -59,7 +69,5 @@ public class CoordEntity {
 	public void setY(int y) {
 		this.y = y;
 	}
-
-
-
+	
 }

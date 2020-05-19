@@ -14,8 +14,8 @@ public interface EventInterface {
   
   public Event getOneEvent(Event event) throws IOException;
   
-  public void aggravateEvent(Event event) throws IOException;
   
-  public void attenuateEvent(Event event) throws IOException;
+
+void updateEvent(Event event, Coord coord, String state) throws IOException;
 
 }

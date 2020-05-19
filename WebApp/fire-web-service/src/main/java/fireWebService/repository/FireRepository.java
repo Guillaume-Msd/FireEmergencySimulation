@@ -8,4 +8,7 @@ public interface FireRepository extends CrudRepository<FireEntity, Integer>{
 
 	FireEntity getFireById(String id);
 
+	FireEntity getFireById(int id);
+
+
 }

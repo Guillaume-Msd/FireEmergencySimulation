@@ -1,6 +1,8 @@
-package utilities;
+package simulator;
 
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 /**
@@ -9,13 +11,16 @@ import java.io.Serializable;
  */
 public class Coord implements Serializable {
 	
+	/**
+	 * 
+	 */
 	public int x, y;
 	
 	/**
 	 * @param x
 	 * @param y
 	 */
-	public Coord(int x, int y) {
+	public Coord(@JsonProperty("x")int x, @JsonProperty("y")int y) {
 		this.x = x; 
 		this.y = y;
 	}

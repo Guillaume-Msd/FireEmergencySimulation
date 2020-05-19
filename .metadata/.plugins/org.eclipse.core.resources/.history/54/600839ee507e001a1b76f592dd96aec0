@@ -1,0 +1,11 @@
+package emergency;
+
+public enum CarburantEnum {
+	Gazole,
+	SP98,
+	SP95,
+	SP95_E10,
+	GLPc,
+	E85,
+	Diesel,
+}

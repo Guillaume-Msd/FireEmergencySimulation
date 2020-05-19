@@ -1,0 +1,101 @@
+package emergency;
+
+import java.util.List;
+
+public abstract class AbstractVehicule extends Intervernors implements VehiculeInterface {
+
+  private List<Staff> staff;
+
+  private LiquidEnum Liquid;
+  
+  private Integer NormalSpeed;
+	
+  private Integer OilCapacity;
+ 
+  private Integer NormalOilConsumption;  //En L/100km
+
+
+  private double OilQuantity;
+
+  private double Speed;
+
+  private EnumEtat etat;
+  
+  private boolean En_intervention;
+	
+	@Override
+	public void sendInformation() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void getInformation() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void move() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void putOutFire() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void manageStaff() {
+		// TODO Auto-generated method stub
+	
+	}
+
+	/**
+	 * @return the etat
+	 */
+	public EnumEtat getEtat() {
+		return etat;
+	}
+
+	/**
+	 * @param etat the etat to set
+	 */
+	public void setEtat(EnumEtat etat) {
+		this.etat = etat;
+	}
+
+	/**
+	 * @return the staff
+	 */
+	public List<Staff> getStaff() {
+		return staff;
+	}
+
+	/**
+	 * @param staff the staff to set
+	 */
+	public void setStaff(List<Staff> staff) {
+		this.staff = staff;
+	}
+	
+	/**
+	 * 
+	 * @param s personne à ajouter au staff
+	 */
+	public void addToStaff(Staff s) {
+		this.staff.add(s);
+	}
+	
+	/**
+	 * 
+	 * @param staff liste des personnes à ajouter au staff
+	 */
+	public void addToStaff(List<Staff> staff) {
+		for (Staff s : staff) {
+			this.staff.add(s);
+		}
+	}
+}

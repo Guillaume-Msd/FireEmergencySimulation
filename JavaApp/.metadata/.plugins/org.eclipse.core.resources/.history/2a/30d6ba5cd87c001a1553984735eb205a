@@ -1,15 +1,16 @@
 package emergency;
 
+import java.util.List;
 
 public interface HeadquarterInterface {
 
 
   /** 
    *  Link the staff to the vehicules
-   *  @param List<Staff>
-   *  @param List<Vehicules>
+   *  @param Vehicule
+   *  @param Integer
    */
-  public void setStaffOnVehicules();
+  public void setStaffOnVehicule(AbstractVehicule v, Integer nombre_intervenants);
 
   /** 
    *  Add some quantity of oil to vehicule(s)
@@ -17,7 +18,7 @@ public interface HeadquarterInterface {
    *  @param int quantity
    *  @return boolean True if all has been supply, False if there was not enough resources
    */
-  public void supplyVehicules();
+  public void supplyVehicules(List<AbstractVehicule> v);
 
   /** 
    *  Smatly deploy a vehicule(s) in function of the event

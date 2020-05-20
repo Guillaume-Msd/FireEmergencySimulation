@@ -24,7 +24,7 @@ public class Events implements EventInterface {
 
 		Iterator<Coord> it = event.getLocalisation().iterator();
 		Coord coord = it.next();
-		
+		System.out.println(((Fire) event).toJsonString());
 		URL url = new URL("http://localhost:8081/FireWebService/add/"+coord.x+"/"+coord.y);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("POST");
@@ -36,6 +36,8 @@ public class Events implements EventInterface {
         osw.write(((Fire) event).toJsonString());
         osw.flush();
         osw.close();
+        
+        
         
        
         connection.getInputStream();

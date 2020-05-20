@@ -42,7 +42,9 @@ public class Simulator {
 		
 		event = listEvent[0];
 		it = event.getLocalisation().iterator();
-		events.updateEvent(event, it.next(), "attenuer");
+		Coord coord = it.next();
+		System.out.println(coord);
+		events.updateEvent(event, coord, "attenuer");
 		
 		Thread.sleep(3000);
 		

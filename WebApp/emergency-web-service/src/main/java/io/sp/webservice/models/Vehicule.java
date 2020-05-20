@@ -3,28 +3,31 @@ package io.sp.webservice.models;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
 public class Vehicule {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
+	@Column
+	private int idSimulation;
+	
+
 	@Column
 	private Coord coord;
 	
 	@Column
-	private typeVehicule type;
+	private String type;
 
 	
 	public Vehicule() {
 	}
 	
-	public Vehicule(int id,Coord coord,typeVehicule type) {
-		this.setId(id);
-		this.setCoord(coord);
+	public Vehicule(String type) {
 		this.setType(type);
 	}
 	
@@ -44,11 +47,20 @@ public class Vehicule {
 		this.coord = coord;
 	}
 
-	public typeVehicule getType() {
+	public String getType() {
 		return type;
 	}
 
-	public void setType(typeVehicule type) {
+	public void setType(String type) {
 		this.type = type;
 	}
+	
+	public int getIdSimulation() {
+		return idSimulation;
+	}
+
+	public void setIdSimulation(int idSimulation) {
+		this.idSimulation = idSimulation;
+	}
+
 }

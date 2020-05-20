@@ -1,7 +1,10 @@
 package io.sp.webservice.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,17 +13,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.sp.webservice.models.Alerte;
 import io.sp.webservice.models.Coord;
 import io.sp.webservice.models.Vehicule;
 import io.sp.webservice.service.VehiculeService;
 import utilities.Tools;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class VehiculeController {
 
+	@Autowired
 	private VehiculeService vehiculeService;
 	
-	@GetMapping("/Vehicule/allvehicules")
+	@GetMapping("VehiculeWebService/allVehicules")
 	public String getAllVehicules() {
 		List<Vehicule> liste = vehiculeService.getAll();
 		String vehicules = "";
@@ -30,25 +36,38 @@ public class VehiculeController {
 		return vehicules.substring(0, vehicules.length()-1);
 	}
 	
-	@GetMapping("/Vehicule/vehicule/{id}")
+	@GetMapping("VehiculeWebService/vehicule/{id}")
 	public String getVehicule(@PathVariable String id) {
 		return Tools.toJsonString(vehiculeService.getVehiculeById(id));
 	}
 	
-	@PostMapping("/Vehicule/addVehicule")
-	public void addVehicule(@RequestBody Vehicule vehicule) {
+	@PostMapping("VehiculeWebService/addVehicule/{id}/{x}/{y}")
+	public void addVehicule(@RequestBody Vehicule vehicule, @PathVariable String id, @PathVariable String x, @PathVariable String y) {
+		Coord coord = new Coord(Integer.parseInt(x), Integer.parseInt(y));
+		vehicule.setIdSimulation(Integer.parseInt(id));
+		vehicule.setCoord(coord);
 		vehiculeService.addVehicule(vehicule);
 	}
 	
-	@RequestMapping("/Vehicule/updateVehiculeCoord/{id}")
+	@RequestMapping("VehiculeWebService/updateVehiculeCoord/{id}")
 	public void updateVehiculeCoord(@PathVariable String id,@RequestBody Coord coord) {
 		Vehicule vehicule = vehiculeService.getVehiculeById(id);
 		vehicule.setCoord(coord);
 		vehiculeService.updateVehicule(vehicule);
 	}
 	
-	@DeleteMapping("/Vehicule/deleteVehicule/{id}")
+	@DeleteMapping("VehiculeWebService/deleteVehicule/{id}")
 	public void deleteVehicule(@PathVariable String id ) {
 		vehiculeService.deleteVehicule(id);
+	}
+	
+	@GetMapping("VehiculeWebService/getAllCoords")
+	public String getAllFireCoords() {
+		List<Vehicule> vehiculeList = vehiculeService.getAll();
+		List<Coord> coordList = new ArrayList<Coord>();
+		for(Vehicule vehicule: vehiculeList) {
+			coordList.add(vehicule.getCoord());
+		}
+		return Tools.toJsonString(coordList);
 	}
 }

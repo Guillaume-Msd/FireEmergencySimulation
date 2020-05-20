@@ -10,6 +10,10 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     accessToken: 'pk.eyJ1IjoiZmFiaWVucHVpc3NhbnQiLCJhIjoiY2s5YTJtdWY4MDAyazNtcXVodjczcGwxcCJ9.K49PEwo4aFG5oQUXaTnubg'
 }).addTo(map);
 
+const imgFire = 'images/fire.gif';
+const imgVehicule = 'images/fireTruck.png';
+const imgAlert = 'images/alert.png';
+
 
 var north = map.getBounds().getNorth(); 
 
@@ -26,7 +30,7 @@ var height =  north - south;
 var images = [];
 
 
-function displayFire(x, y){
+function displayElement(x, y, imgSrc){
 	
 	var n = 16;
 	
@@ -34,7 +38,7 @@ function displayFire(x, y){
 	var maxX = (width/n) * (y+1);
 	var minY = (height/n) * x;
 	var maxY = (height/n) * (x+1);
-	var imageUrl = 'images/fire.gif',
+	var imageUrl = imgSrc,
 	imageBounds = [[north - minY, west + minX], [north - maxY, west + maxX]];
 	var image = L.imageOverlay(imageUrl, imageBounds)
 	image.addTo(map);
@@ -43,31 +47,39 @@ function displayFire(x, y){
 }
 
 
-function displayAllFires(){
+function displayAllElements(type){
 	
 	for (var i = 0; i < images.length; i++){
 		map.removeLayer(images[i]);
 	}
 	
+	var url, imgSrc;
+	
+	if(type == "Fire"){
+		url = "http://localhost:8081/FireWebService/getAllCoords";
+		imgSrc = imgFire;
+	}
+	else if (type == "Alert"){
+		url = "http://localhost:8082/EmergencyWebService/getAllCoords";
+		imgSrc = imgAlert;
+	}
+	
+	else{
+		url = "http://localhost:8082/VehiculeWebService/getAllCoords"
+		imgSrc = imgVehicule;
+	}
+	
 	$.ajax({
 		
-		  url:"http://localhost:8081/FireWebService/getAll",
+		  url:url,
 		  type: "GET",
 		  success: function( data ){
 			  json = JSON.parse(data);
 			  var x, y;
-			  /*for(var i = 0; i < json.length; i++){
-				  for(var j = 0; j < json.length){
-					  if (abs(json[i]["x"] - json[j]["x"]) == 1 ||
-							  abs(json[i]["y"] - json[j]["y"])) {
-						  
-					  }
-				  }
-			  }*/
 			  for(var i = 0 ; i < json.length; i++){
 				  x = json[i]["x"];
 				  y = json[i]["y"];
-				  displayFire(x, y);
+				  displayElement(x, y, imgSrc);
 			  }
 		  }
 	  });
@@ -97,7 +109,12 @@ $("#clearFireButton").on("click", function(){
 })
 
 
-setInterval(displayAllFires, 2000);
+//setInterval(displayAllFires, 2000);
+//setInterval(displayAllProbes, 2000);
+
+displayAllElements("Fire");
+displayAllElements("Alert");
+displayAllElements("Vehicule");
 
 
 

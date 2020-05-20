@@ -5,9 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
 @SpringBootApplication
-public class emergencyApp {
+public class EmergencyWebService {
 	
 	public static void main(String[] args) {
-		SpringApplication.run(emergencyApp.class, args);
+		SpringApplication.run(EmergencyWebService.class, args);
 	}
 }

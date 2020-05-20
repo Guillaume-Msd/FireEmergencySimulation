@@ -50,7 +50,7 @@ public class FireRestController {
 	}
 	
 	
-	@GetMapping("FireWebService/getAll")
+	@GetMapping("FireWebService/getAllCoords")
 	public String getAllFireCoords() {
 		List<FireEntity> fireList = fireService.getAllFires();
 		List<CoordEntity> coordList = new ArrayList<CoordEntity>();

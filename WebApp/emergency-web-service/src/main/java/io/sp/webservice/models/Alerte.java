@@ -21,6 +21,19 @@ public class Alerte {
 	@Column
 	private TypeSonde type;
 	
+	@Column
+	private EtatIntervention etat;
+	
+	public Alerte() {
+		
+	}
+	
+	public Alerte(Coord coord,Integer valeur,TypeSonde type) {
+		this.setCoord_alerte(coord);
+		this.setValeur_detectee(valeur);
+		this.setType(type);
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -44,6 +57,14 @@ public class Alerte {
 	}
 	public void setType(TypeSonde type) {
 		this.type = type;
+	}
+
+	public EtatIntervention getEtat() {
+		return etat;
+	}
+
+	public void setEtat(EtatIntervention etat) {
+		this.etat = etat;
 	}
 
 }

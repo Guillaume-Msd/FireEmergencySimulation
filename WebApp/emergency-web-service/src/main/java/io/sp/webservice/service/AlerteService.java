@@ -9,7 +9,7 @@ import io.sp.webservice.models.Alerte;
 import io.sp.webservice.repository.AlerteRepository;
 
 @Service
-public class EmergencyService {
+public class AlerteService {
 	
 	@Autowired
 	private AlerteRepository alerteRepository;

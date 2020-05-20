@@ -67,13 +67,6 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
 		</dependency>
-			    
-		<dependency>
-			<groupId>PublicModels</groupId>
-  			<artifactId>Coord</artifactId>
-  			<version>0.0.1</version>
-		</dependency>
-        
     </dependencies>
 
     <build>

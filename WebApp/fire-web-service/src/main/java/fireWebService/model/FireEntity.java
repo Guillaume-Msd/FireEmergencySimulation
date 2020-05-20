@@ -2,7 +2,10 @@ package fireWebService.model;
 
 
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -29,8 +32,8 @@ public class FireEntity {
 	@Column
 	private String intensity;
 	
-	@OneToMany(cascade = CascadeType.ALL)
-	private Set<CoordEntity> location = new HashSet<CoordEntity>();
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CoordEntity> location = new ArrayList<CoordEntity>();
 	
 	
 	public FireEntity() {
@@ -67,16 +70,23 @@ public class FireEntity {
 		this.intensity = intensity;
 	}
 
-	public Set<CoordEntity> getLocation() {
+	public List<CoordEntity> getLocation() {
 		return location;
 	}
 
-	public void setLocation(Set<CoordEntity> location) {
+	public void setLocation(List<CoordEntity> location) {
 		this.location = location;
 	}
 	
-	public void addCoord(int x, int y) {
-		this.location.add(new CoordEntity(x, y));
+	public void addCoord(int i, int j) {
+		this.location.add(new CoordEntity(i, j));
+	}
+	
+	public void removeCoord(CoordEntity coord) {
+		int index = this.location.indexOf(coord);
+		this.location.remove(index);
+		
+		
 	}
 
 	
@@ -84,6 +94,8 @@ public class FireEntity {
 	public String toString() {
 		return "Type : " + this.type + "\n Intensity : " + this.intensity;
 	}
+
+
 
 	
 	

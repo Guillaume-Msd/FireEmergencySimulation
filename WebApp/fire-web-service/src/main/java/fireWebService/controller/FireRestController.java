@@ -7,14 +7,18 @@ import java.util.Random;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fireWebService.model.CoordEntity;
 import fireWebService.model.FireEntity;
+import fireWebService.service.CoordService;
 import fireWebService.service.FireService;
 import fireWebService.utils.Tools;
 
@@ -26,19 +30,18 @@ public class FireRestController {
 	@Autowired 
 	FireService fireService;
 	
+	@Autowired
+	CoordService coordService;
+	
 	/**
 	 * 
 	 * @return 
 	 */
-	@GetMapping("FireWebService/add")
-	public String init() {
-		FireEntity fire = new FireEntity("doux", "faible");
-		Random r = new Random();
-		fire.addCoord(r.nextInt(63), r.nextInt(63));
+	@RequestMapping(value="FireWebService/add/{x}/{y}", consumes=MediaType.APPLICATION_JSON_VALUE)
+	public void init(@RequestBody FireEntity fire, @PathVariable String x, @PathVariable String y) {
+		fire.addCoord(Integer.parseInt(x), Integer.parseInt(y));
 		fireService.addFire(fire);
 		List<FireEntity> fires = fireService.getAllFires();
-		return fires.get(0).getLocation().toString();
-		
 	}
 	
 	@PostMapping(value="FireWebService/propagate/{id}", consumes=MediaType.APPLICATION_JSON_VALUE)
@@ -62,9 +65,43 @@ public class FireRestController {
 		
 	}
 	
+	@PostMapping("FireWebService/aggravation/{id}/{intensity}")
+	public void aggrave(@RequestBody CoordEntity coord, @PathVariable String id, @PathVariable String intensity) {
+		
+		FireEntity fire = fireService.getFireById(Integer.parseInt(id));
+		fire.addCoord(coord.getX(), coord.getY());
+		fire.setIntensity(intensity);
+		fireService.save(fire);
+			
+	}
+	
+	@PostMapping("FireWebService/attenuation/{id}/{intensity}")
+	public void attenue(@RequestBody CoordEntity coord, @PathVariable String id, @PathVariable String intensity) {
+		System.out.println(id);
+		FireEntity fire = fireService.getFireById(Integer.parseInt(id));
+		fire.removeCoord(coordService.getCoordToRemove(coord.getX(), coord.getY()));
+		fire.setIntensity(intensity);
+		fireService.save(fire);
+		return;
+			
+	}
+	
+	
+	@GetMapping("FireWebService/remove/{id}")
+	public void removeFire(@PathVariable String id) {
+		FireEntity fire = fireService.getFireById(Integer.parseInt(id));
+		fireService.delete(fire);
+	}
+	
+	
 	@GetMapping("FireWebService/removeAll")
 	public void removeAll() {
 		fireService.removeAllFire();
+	}
+	
+	@GetMapping("FireWebService/events")
+	public String getAllFires() {
+		return Tools.toJsonString(fireService.getAllFires());
 	}
 	
 	

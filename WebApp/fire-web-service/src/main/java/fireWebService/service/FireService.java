@@ -1,10 +1,12 @@
 package fireWebService.service;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fireWebService.model.CoordEntity;
 import fireWebService.model.FireEntity;
 import fireWebService.repository.FireRepository;
 
@@ -28,9 +30,27 @@ public class FireService {
 		return fireRepository.getFireById(id);
 	}
 	
+	public void save(FireEntity fire) {
+		fireRepository.save(fire);
+	}
+	
 	
 	public void removeAllFire() {
 		fireRepository.deleteAll();
 	}
+
+
+	public FireEntity getFireById(int id) {
+		return fireRepository.getFireById(id);
+	}
+
+
+	public void delete(FireEntity fire) {
+		fireRepository.delete(fire);
+		
+	}
+
+
+
 
 }

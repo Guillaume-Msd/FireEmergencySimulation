@@ -28,7 +28,7 @@ var images = [];
 
 function displayFire(x, y){
 	
-	var n = 64;
+	var n = 16;
 	
 	var minX = (width/n) * y;
 	var maxX = (width/n) * (y+1);
@@ -45,12 +45,25 @@ function displayFire(x, y){
 
 function displayAllFires(){
 	
+	for (var i = 0; i < images.length; i++){
+		map.removeLayer(images[i]);
+	}
+	
 	$.ajax({
+		
 		  url:"http://localhost:8081/FireWebService/getAll",
 		  type: "GET",
 		  success: function( data ){
 			  json = JSON.parse(data);
 			  var x, y;
+			  /*for(var i = 0; i < json.length; i++){
+				  for(var j = 0; j < json.length){
+					  if (abs(json[i]["x"] - json[j]["x"]) == 1 ||
+							  abs(json[i]["y"] - json[j]["y"])) {
+						  
+					  }
+				  }
+			  }*/
 			  for(var i = 0 ; i < json.length; i++){
 				  x = json[i]["x"];
 				  y = json[i]["y"];
@@ -68,7 +81,6 @@ $("#addFireButton").on("click", function(){
 		  type: "GET"
 	  });
 	
-	displayAllFires();
 	
 });
 
@@ -82,11 +94,10 @@ $("#clearFireButton").on("click", function(){
 		map.removeLayer(images[i]);
 	}
 	
-	displayAllFires();
 })
 
 
-displayAllFires();
+setInterval(displayAllFires, 2000);
 
 
 

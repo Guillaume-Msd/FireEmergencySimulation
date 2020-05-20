@@ -37,4 +37,5 @@ public class VehiculeService {
 	public void deleteVehicule(String id) {
 		vehiculeRepository.delete(this.getVehiculeById(id));
 	}
+
 }

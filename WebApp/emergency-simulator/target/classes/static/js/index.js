@@ -112,9 +112,13 @@ $("#clearFireButton").on("click", function(){
 //setInterval(displayAllFires, 2000);
 //setInterval(displayAllProbes, 2000);
 
-displayAllElements("Fire");
 displayAllElements("Alert");
 displayAllElements("Vehicule");
+
+
+displayAllElements("Fire");
+
+
 
 
 

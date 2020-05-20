@@ -12,4 +12,5 @@ public interface VehiculeRepository extends CrudRepository<Vehicule,Integer> {
 	public List<Vehicule> findAll();
 	
 	public long count();
+
 }

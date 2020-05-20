@@ -12,10 +12,6 @@ public class Vehicule {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
-	
-	@Column
-	private int idSimulation;
-	
 
 	@Column
 	private Coord coord;
@@ -55,12 +51,5 @@ public class Vehicule {
 		this.type = type;
 	}
 	
-	public int getIdSimulation() {
-		return idSimulation;
-	}
-
-	public void setIdSimulation(int idSimulation) {
-		this.idSimulation = idSimulation;
-	}
 
 }

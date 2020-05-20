@@ -38,15 +38,10 @@ public class FireRestController {
 	 * @return 
 	 */
 	@RequestMapping(value="FireWebService/add/{x}/{y}", consumes=MediaType.APPLICATION_JSON_VALUE)
-	public void init(@RequestBody FireEntity fire, @PathVariable String x, @PathVariable String y) {
+	public int addFire(@RequestBody FireEntity fire, @PathVariable String x, @PathVariable String y) {
 		fire.addCoord(Integer.parseInt(x), Integer.parseInt(y));
 		fireService.addFire(fire);
-		List<FireEntity> fires = fireService.getAllFires();
-	}
-	
-	@PostMapping(value="FireWebService/propagate/{id}", consumes=MediaType.APPLICATION_JSON_VALUE)
-	public void propagateFire(@PathVariable String id) {
-		FireEntity fire = fireService.getFireById(id);
+		return fire.getId();
 	}
 	
 	

@@ -41,12 +41,12 @@ public class VehiculeController {
 		return Tools.toJsonString(vehiculeService.getVehiculeById(id));
 	}
 	
-	@PostMapping("VehiculeWebService/addVehicule/{id}/{x}/{y}")
-	public void addVehicule(@RequestBody Vehicule vehicule, @PathVariable String id, @PathVariable String x, @PathVariable String y) {
+	@PostMapping("VehiculeWebService/addVehicule/{x}/{y}")
+	public int addVehicule(@RequestBody Vehicule vehicule, @PathVariable String x, @PathVariable String y) {
 		Coord coord = new Coord(Integer.parseInt(x), Integer.parseInt(y));
-		vehicule.setIdSimulation(Integer.parseInt(id));
 		vehicule.setCoord(coord);
 		vehiculeService.addVehicule(vehicule);
+		return vehicule.getId();
 	}
 	
 	@RequestMapping("VehiculeWebService/updateVehiculeCoord/{id}")

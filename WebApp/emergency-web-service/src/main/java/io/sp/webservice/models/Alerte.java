@@ -41,6 +41,7 @@ public class Alerte {
 		this.setEtat(etat);
 	}
 	
+	
 	public int getId() {
 		return id;
 	}
@@ -73,5 +74,4 @@ public class Alerte {
 	public void setEtat(String etat) {
 		this.etat = etat;
 	}
-
 }

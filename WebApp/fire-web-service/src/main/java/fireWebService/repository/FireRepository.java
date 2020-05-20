@@ -11,4 +11,5 @@ public interface FireRepository extends CrudRepository<FireEntity, Integer>{
 	FireEntity getFireById(int id);
 
 
+
 }

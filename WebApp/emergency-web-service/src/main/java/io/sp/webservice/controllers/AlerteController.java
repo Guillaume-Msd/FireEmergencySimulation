@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.sp.webservice.models.Alerte;
 import io.sp.webservice.models.Coord;
-import io.sp.webservice.models.EtatIntervention;
 import io.sp.webservice.service.AlerteService;
 import utilities.Tools;
 
@@ -45,10 +44,11 @@ public class AlerteController {
 	}
 	
 	@RequestMapping(value="EmergencyWebService/addAlert/{x}/{y}", consumes=MediaType.APPLICATION_JSON_VALUE)
-	public void addAlerte(@RequestBody Alerte alerte, @PathVariable String x, @PathVariable String y) {
+	public int addAlerte(@RequestBody Alerte alerte, @PathVariable String x, @PathVariable String y) {
 		Coord coord = new Coord(Integer.parseInt(x), Integer.parseInt(y));
 		alerte.setCoord_alerte(coord);
 		emergencyService.addAlerte(alerte);
+		return alerte.getId();
 	}
 	
 	@GetMapping("EmergencyWebService/updateAlertState/{id}/{etat}")

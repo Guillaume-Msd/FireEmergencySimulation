@@ -25,7 +25,7 @@ public class FireEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
-	
+
 	@Column
 	private String type;
 	

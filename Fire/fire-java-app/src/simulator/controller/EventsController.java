@@ -1,4 +1,4 @@
-package simulator;
+package simulator.controller;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,10 +12,14 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import simulator.model.Coord;
+import simulator.model.Event;
+import simulator.model.Fire;
 
-public class Events implements EventInterface {
 
+public class EventsController implements EventsInterface {
 
+	@Override
 	public void createEvent(Event event) throws IOException {
 		
 
@@ -41,6 +45,7 @@ public class Events implements EventInterface {
 		
 	}
 	
+	@Override
 	public void deleteEvent(Event event) throws IOException {
 		
 		URL url = new URL("http://localhost:8081/FireWebService/remove/" + event.getId());
@@ -51,11 +56,11 @@ public class Events implements EventInterface {
 
 	}
 	
-	/*
+
 	@Override
 	public void sendEvents(List<Event> eventList) throws IOException {
 		
-		URL url = new URL("http://localhost:8080/FireSimulator/events");
+		/*URL url = new URL("http://localhost:8080/FireSimulator/events");
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
@@ -69,8 +74,8 @@ public class Events implements EventInterface {
         }
         osw.flush();
         osw.close();
-		
-	}*/
+	*/	
+	}
 	
 	
 	public Event[] getEvents (URL url) throws IOException {
@@ -140,13 +145,5 @@ public class Events implements EventInterface {
         connection.getInputStream();
 		
 	}
-
-	@Override
-	public void sendEvents(List<Event> eventList) throws IOException {
-		// TODO Auto-generated method stub
-		
-	}
-
-
 		
 }

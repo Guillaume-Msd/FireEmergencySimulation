@@ -1,4 +1,4 @@
-package simulator;
+package simulator.model;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -73,7 +73,7 @@ public class Fire extends Event implements FireInterface {
 			case High:
 				return new Coord(coord.x-1, coord.y);
 			case VeryHigh:
-				return new Coord(coord.x, coord.y-1);
+				//TODO new Fire
 			default : 
 				return null;
 		}

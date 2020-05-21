@@ -1,4 +1,4 @@
-package simulator;
+package simulator.model;
 
 public interface FireInterface {
 

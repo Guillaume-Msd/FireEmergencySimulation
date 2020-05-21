@@ -1,4 +1,4 @@
-package simulator;
+package simulator.model;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,7 +27,7 @@ public class Event {
 		this.localisation.add(coord);
 	}
 	
-	protected Set<Coord> getLocalisation() {
+	public Set<Coord> getLocalisation() {
 		return localisation;
 	}
 	

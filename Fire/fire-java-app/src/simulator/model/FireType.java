@@ -1,4 +1,4 @@
-package simulator;
+package simulator.model;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -17,7 +17,7 @@ import java.util.Set;
  * 			  extincteurs
  */
 
-enum FireType {
+public enum FireType {
 	ClassA, ClassB, ClassC, ClassD, ClassF;
 	
 	public static Set<FireType> types = EnumSet.allOf(FireType.class);

@@ -1,0 +1,5 @@
+package emergency;
+
+public class vehiculeLutteIncendie extends vehiculePompiers {
+	private Integer LiquidCapacity;
+}

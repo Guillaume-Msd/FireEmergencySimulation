@@ -30,6 +30,32 @@ const imgFire = 'images/fire.gif';
 const imgVehicule = 'images/fireTruck.png';
 const imgAlert = 'images/alert.png';
 
+
+map.loadImage(
+		imgSrc,
+		function (error, imgFire) {
+			if (error) throw error;
+			map.addImage("Fire", imgFire);
+});
+
+map.loadImage(
+		imgSrc,
+		function (error, imgVehicule) {
+			if (error) throw error;
+			map.addImage("Vehicule", imgVehicule);
+});
+
+map.loadImage(
+		imgSrc,
+		function (error, imgAlert) {
+			if (error) throw error;
+			map.addImage("Alert", imgAlert);
+});
+
+
+
+
+
 var images = [];
 
 function convertCoord(x, y) {
@@ -48,42 +74,36 @@ function convertCoord(x, y) {
 
 var imgId = 0;
 
-function displayElement(x, y, imgSrc, imgId) {
+function displayElement(x, y, type) {
 	console.log(imgId);
-	map.loadImage(
-		imgSrc,
-		function (error, image) {
-			if (error) throw error;
-			map.addImage(imgId, image);
-			map.addSource('point', {
-				'type': 'geojson',
-				'data': {
-					'type': 'FeatureCollection',
-					'features': [
-						{
-							'type': 'Feature',
-							'geometry': {
-								'type': 'Point',
-								'coordinates': convertCoord(x, y)
-							}
+			
+	map.addSource('point', {
+			'type': 'geojson',
+			'data': {
+				'type': 'FeatureCollection',
+				'features': [
+					{
+						'type': 'Feature',
+						'geometry': {
+							'type': 'Point',
+							'coordinates': [x, y]
 						}
-					]
-				}
-			});
+					}
+				]
+			}
+		});
+	
 			map.addLayer({
 				'id': 'points',
 				'type': 'symbol',
 				'source': 'point',
 				'layout': {
-					'icon-image': imgId,
+					'icon-image': type,
 					'icon-size': 0.1
 				}
 			});
 		}
-	);
 
-
-}
 
 
 
@@ -124,7 +144,7 @@ function displayAllElements(type) {
 				y = json[i]["y"];
 				var imageId = getImageId(type)
 
-				displayElement(x, y, imgSrc, imageId);
+				displayElement(x, y, type);
 			}
 		}
 	});

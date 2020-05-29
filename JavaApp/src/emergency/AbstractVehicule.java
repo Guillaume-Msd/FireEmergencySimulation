@@ -1,10 +1,18 @@
 package emergency;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class AbstractVehicule extends Intervernors implements VehiculeInterface {
+import utilities.Tools;
 
+public abstract class AbstractVehicule extends Intervernors implements VehiculeInterface {
+  private int id;
+	
   private List<Staff> staff;
   
   private Integer tailleMaxStaff;
@@ -18,8 +26,15 @@ public abstract class AbstractVehicule extends Intervernors implements VehiculeI
   private Integer OilCapacity;
   
   private Integer NormalOilConsumption;  //En L/100km
-	
-  	protected AbstractVehicule(Integer speed, Integer oilCapacity, Integer consumption, Integer tailleMaxStaff) {
+  
+  private List<Coord> path;
+  
+  private Coord coord;
+  
+  private EnumStatut statut;
+  
+
+	protected AbstractVehicule(Integer speed, Integer oilCapacity, Integer consumption, Integer tailleMaxStaff) {
   		this.NormalSpeed = speed;
   		this.NormalOilConsumption = consumption;
   		this.OilCapacity = oilCapacity;
@@ -28,23 +43,66 @@ public abstract class AbstractVehicule extends Intervernors implements VehiculeI
   		this.staff = new LinkedList<Staff>();
   		this.etat = EnumEtat.Neuf;
   		this.OilQuantity = this.OilCapacity;
+  		this.statut = EnumStatut.Disponible;
+  		this.path = new LinkedList<Coord>();
   	}
   	
   	protected AbstractVehicule() {
   		this(45,600,10,8);
   	}
   	
-	@Override
-	public void sendInformation() {
-		// TODO Auto-generated method stub
-		
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Integer getOilQuantity() {
+		return OilQuantity;
+	}
+
+	public void setOilQuantity(Integer oilQuantity) {
+		OilQuantity = oilQuantity;
+	}
+
+	public Integer getOilCapacity() {
+		return OilCapacity;
+	}
+
+	public void setOilCapacity(Integer oilCapacity) {
+		OilCapacity = oilCapacity;
+	}
+
+	public List<Coord> getPath() {
+		return path;
+	}
+
+	public void setPath(List<Coord> path) {
+		this.path = path;
+	}
+
+	public void setTailleMaxStaff(Integer tailleMaxStaff) {
+		this.tailleMaxStaff = tailleMaxStaff;
+	}
+
+	public void setNormalSpeed(Integer normalSpeed) {
+		NormalSpeed = normalSpeed;
+	}
+
+	public void setNormalOilConsumption(Integer normalOilConsumption) {
+		NormalOilConsumption = normalOilConsumption;
 	}
 	
-	@Override
-	public void getInformation() {
-		// TODO Auto-generated method stub
-		
-	}
+  	public EnumStatut getStatut() {
+  		return statut;
+  	}
+
+  	public void setStatut(EnumStatut statut) {
+  		this.statut = statut;
+  	}
 	
 	@Override
 	public void move() {
@@ -92,6 +150,14 @@ public abstract class AbstractVehicule extends Intervernors implements VehiculeI
 		this.staff = staff;
 	}
 	
+	public Coord getCoord() {
+		return coord;
+	}
+
+	public void setCoord(Coord coord) {
+		this.coord = coord;
+	}
+
 	/**
 	 * 
 	 * @param s personne à ajouter au staff
@@ -138,4 +204,37 @@ public abstract class AbstractVehicule extends Intervernors implements VehiculeI
 	public Integer getNormalOilConsumption() {
 		return NormalOilConsumption;
 	}
+	
+	public void updateVehiculeCoord() throws IOException {
+		URL url = new URL("http://localhost:8082/VehiculeWebService/addVehicule/"+this.getId());
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+		connection.setDoOutput(true);
+		OutputStream os = connection.getOutputStream();
+
+        OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+        osw.write(Tools.toJsonString(this.getCoord()));
+        osw.flush();
+        osw.close();
+        connection.getInputStream();
+
+	}
+	
+	public void updateVehiculeStatut() throws IOException {
+		URL url = new URL("http://localhost:8082/VehiculeWebService/updateVehiculeStatut/"+this.getId());
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+		connection.setDoOutput(true);
+		OutputStream os = connection.getOutputStream();
+
+        OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+        osw.write(Tools.toJsonString(this.getStatut()));
+        osw.flush();
+        osw.close();
+        connection.getInputStream();
+
+	}
 }
+

@@ -18,7 +18,7 @@ import emergency.Coord;
 import emergency.EnumStatut;
 import emergency.FireFighterHQ;
 import emergency.VehiculePompier;
-import events.Fire;
+import utilities.Tools;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -28,7 +28,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class EmergencySimulator {
 
 	private AbstractHeadquarter HQ;
-	
 	
 	public EmergencySimulator() {
 	}
@@ -48,17 +47,20 @@ public class EmergencySimulator {
 		//On parcours ces alertes pour voir si il y en a des nouvelles
 		parcoursAlertes(alertes);
 		
-		AbstractVehicule[] vehicules = null;
+		List<AbstractVehicule> vehicules = HQ.getVehicules();//A modifier lorsque l'on aura plusieurs HQ
+		
 		//On déplace les véhicules
 		mooveAllVehiculesAndCheckArrivals(vehicules);
+		
+		//On renvoie les véhicules qui ont finis leur intervention au HQ
+		gestionFinDIntervention();
 	}
 	
 	public List<Alerte> getAlertes() throws IOException {
 		URL url = new URL("http://localhost:8082/EmergencyWebService/allAlerts");
 		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
         httpURLConnection.setRequestMethod("GET");
-        BufferedReader in = new BufferedReader(
-        new InputStreamReader(httpURLConnection.getInputStream()));
+        BufferedReader in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
         String inputLine;
         StringBuffer response1 = new StringBuffer();
         while ((inputLine = in.readLine()) != null) {
@@ -80,14 +82,16 @@ public class EmergencySimulator {
 	
 	public void parcoursAlertes(List<Alerte> alertes) throws IOException {
 		for (Alerte alerte : alertes) {
-			if (alerte.getEtat().equals("Nouvelle alerte")) {
+			System.out.println(alerte);
+			if (alerte.getEtat().contentEquals("Nouvelle Alerte")) {
 				gererNouvelleAlerte(alerte);
 			}
 		}
 	}
 	
-	public void mooveAllVehiculesAndCheckArrivals(AbstractVehicule[] vehicules) throws IOException {
+	public void mooveAllVehiculesAndCheckArrivals(List<AbstractVehicule> vehicules) throws IOException {
 		for (AbstractVehicule vehicule : vehicules) {
+			System.out.println(vehicule);
 			if ( !(vehicule.getPath().isEmpty())) {
 				Coord coord = vehicule.getPath().remove(0);
 				vehicule.setCoord(coord);
@@ -96,36 +100,36 @@ public class EmergencySimulator {
 			else {
 				if (vehicule.getStatut().equals(EnumStatut.RetourVersLeHQ)) {
 					vehicule.setStatut(EnumStatut.Disponible);
+					vehicule.deleteVehiculeView();
 				}
 				else if (vehicule.getStatut().equals(EnumStatut.EnRoutePourIntervention)) {
 					vehicule.setStatut(EnumStatut.EnCoursDIntervention);
+					vehicule.updateVehiculeStatut();
 				}
 				else {
 					vehicule.setStatut(EnumStatut.Disponible);
 				}
 			}
-			vehicule.updateVehiculeStatut();
 		}
 	}
 	
 	public void gererNouvelleAlerte(Alerte alerte) throws IOException {
 		//TODO
+		AbstractHeadquarter hq = ChoisirHQ();
+		createIntervention(hq.ChoisirVehicule(alerte),this.getHQ().getEmplacement_headquarter().x,this.getHQ().getEmplacement_headquarter().y,
+				alerte.getCoord().x,alerte.getCoord().y);
 		AlerteEnCours(alerte);
 	}
 	
 	public void AlerteEnCours(Alerte alerte) throws IOException {
-		URL url = new URL("http://localhost:8082/EmergencyWebServiceupdateAlertState/"+alerte.getId()+"/"+"EnvoieSecours");
+		URL url = new URL("http://localhost:8082/EmergencyWebService/updateAlertState/"+alerte.getId()+"/"+"EnvoieSecours");
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-		connection.setDoOutput(true);
-		OutputStream os = connection.getOutputStream();
-
-        OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
-        osw.flush();
-        osw.close();
-        connection.getInputStream();	
-        
+		connection.setRequestMethod("GET");
+        connection.getInputStream();
+	}
+	
+	public AbstractHeadquarter ChoisirHQ() {
+		return this.getHQ();
 	}
 	
 	/**
@@ -139,7 +143,38 @@ public class EmergencySimulator {
 	 * @throws JsonMappingException 
 	 * @throws JsonParseException 
 	 */
-	public void createIntervention(AbstractVehicule vehicule, int xInit, int yInit, int xFinal, int yFinal) throws JsonParseException, JsonMappingException, IOException {
+	public void createIntervention(List<AbstractVehicule> vehicules, int xInit, int yInit, int xFinal, int yFinal) throws JsonParseException, JsonMappingException, IOException {
+		URL url = new URL("http://localhost:8083/MapWebService/getItinerary/"+ xInit + "/" + yInit + "/" + xFinal + "/" + yFinal );
+		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection(); 
+        httpURLConnection.setRequestMethod("GET");
+        BufferedReader in = new BufferedReader(
+        new InputStreamReader(httpURLConnection.getInputStream()));
+        String inputLine;
+        StringBuffer response1 = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+        	response1.append(inputLine);
+		} in .close();
+	
+		ObjectMapper mapper = new ObjectMapper();
+		
+		Coord[] coords = mapper.readValue(response1.toString(), Coord[].class);
+		List<Coord> coordList = new ArrayList<Coord>();
+		int i;
+		for(i = 0; i < coords.length; i++) {
+			coordList.add(coords[i]);
+		}
+		
+		for (AbstractVehicule vehicule : vehicules) {
+			vehicule.setPath(coordList);
+			vehicule.setStatut(EnumStatut.EnRoutePourIntervention);
+			vehicule.addVehiculeView();
+		}
+		
+	}
+	
+
+	
+	public void retourIntervention(AbstractVehicule vehicule, int xInit, int yInit, int xFinal, int yFinal) throws JsonParseException, JsonMappingException, IOException {
 		URL url = new URL("http://localhost:8083/MapWebService/getItinerary/"+ xInit + "/" + yInit + "/" + xFinal + "/" + yFinal );
 		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection(); 
         httpURLConnection.setRequestMethod("GET");
@@ -164,4 +199,33 @@ public class EmergencySimulator {
 		
 	}
 	
+	public List<AbstractVehicule> getVehiculesByStatut(EnumStatut statut) throws IOException {
+		URL url = new URL("http://localhost:8082/VehiculeWebService/vehiculesByStatut/"+statut);
+		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection(); 
+        httpURLConnection.setRequestMethod("GET");
+        BufferedReader in = new BufferedReader(
+        new InputStreamReader(httpURLConnection.getInputStream()));
+        String inputLine;
+        StringBuffer response1 = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+        	response1.append(inputLine);
+		} in .close();
+	
+		ObjectMapper mapper = new ObjectMapper();
+		
+		AbstractVehicule[] vehicules = mapper.readValue(response1.toString(), AbstractVehicule[].class);
+		List<AbstractVehicule> vehiculeList = new ArrayList<AbstractVehicule>();
+		int i;
+		for(i = 0; i < vehicules.length; i++) {
+			vehiculeList.add(vehicules[i]);
+		}
+		return vehiculeList;
+	}
+	
+	public void gestionFinDIntervention() throws IOException {
+		List<AbstractVehicule> vehicules = getVehiculesByStatut(EnumStatut.FinDIntervention);
+			for (AbstractVehicule v : vehicules) {
+				retourIntervention(v,v.getCoord().x,v.getCoord().y,this.getHQ().getEmplacement_headquarter().x,this.getHQ().getEmplacement_headquarter().y);
+			}
+	}
 }

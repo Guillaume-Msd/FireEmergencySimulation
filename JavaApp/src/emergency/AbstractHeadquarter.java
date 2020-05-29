@@ -1,5 +1,7 @@
 package emergency;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -110,5 +112,29 @@ public class AbstractHeadquarter extends AbstractIntervention implements Headqua
 	public void calculItinerary() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public List<AbstractVehicule> ChoisirVehicule(Alerte alerte) throws IOException {
+		int nb_vehicules;
+		List<AbstractVehicule> vehicules= new ArrayList<AbstractVehicule> ();
+		if (alerte.getValeur() < 5) {
+			nb_vehicules = 1;
+		}
+		else {
+			nb_vehicules = 2;
+		}
+		
+		
+		for (AbstractVehicule v: this.getVehicules()) {
+			if (nb_vehicules <= 0) {
+				return vehicules;
+			}
+			if (v.getStatut().equals(EnumStatut.Disponible)) {
+				vehicules.add(v);
+				nb_vehicules = nb_vehicules - 1;
+			}
+		}
+		System.out.println("Pas assez de véhicules disponibles.");
+		return vehicules;
 	}
 }

@@ -20,8 +20,7 @@ public class Launcher {
 		simulateur.getHQ().addVehicule(v);
 		
 		
-		List<Alerte> alerteList = simulateur.getAlertes();
-		
 		simulateur.cycle();
+		//simulateur.cycle();
 	}
 }

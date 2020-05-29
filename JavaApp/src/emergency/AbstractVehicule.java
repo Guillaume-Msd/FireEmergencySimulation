@@ -1,6 +1,8 @@
 package emergency;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -30,6 +32,16 @@ public abstract class AbstractVehicule extends Intervernors implements VehiculeI
   private List<Coord> path;
   
   private Coord coord;
+  
+  public Coord getCoord_HQ() {
+	return coord_HQ;
+}
+
+public void setCoord_HQ(Coord coord_HQ) {
+	this.coord_HQ = coord_HQ;
+}
+
+private Coord coord_HQ;
   
   private EnumStatut statut;
   
@@ -234,7 +246,43 @@ public abstract class AbstractVehicule extends Intervernors implements VehiculeI
         osw.flush();
         osw.close();
         connection.getInputStream();
+	}
+	
+	public void addVehiculeView() throws IOException {
+		URL url = new URL("http://localhost:8082/VehiculeWebService/addVehicule/"+this.getCoord().x+"/"+this.getCoord().y);
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+		connection.setDoOutput(true);
+		OutputStream os = connection.getOutputStream();
 
+        OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+        osw.write(Tools.toJsonString(this));
+        osw.flush();
+        osw.close();
+        connection.getInputStream();
+        
+        BufferedReader in = new BufferedReader(
+        new InputStreamReader(connection.getInputStream()));
+        String inputLine;
+        StringBuffer response1 = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+        	response1.append(inputLine);
+        } in .close();
+        
+        int id = Integer.parseInt(response1.toString());
+        this.setId(id);
+	}
+	
+	public void deleteVehiculeView() throws IOException {
+		URL url = new URL("http://localhost:8082/VehiculeWebService/deleteVehicule/"+this.getId());
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod("DELETE");
+	}
+	
+	@Override
+	public String toString() {
+		return "Etat: "+this.getEtat()+"\nPath: "+this.getPath()+"HQ: "+this.getCoord_HQ();
 	}
 }
 

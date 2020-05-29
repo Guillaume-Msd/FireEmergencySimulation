@@ -8,24 +8,36 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
+import emergency.AbstractHeadquarter;
 import emergency.AbstractVehicule;
 import emergency.Alerte;
 import emergency.Coord;
+import emergency.EnumStatut;
+import emergency.FireFighterHQ;
 import emergency.VehiculePompier;
 import simulator.Fire;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class EmergencySimulator {
+
+	private AbstractHeadquarter HQ;
 	
-	public static void main(String[] args) throws IOException, InterruptedException {
-		//TODO créer un petit scénario de base
-		
-		
-		
-		
+	
+	public EmergencySimulator() {
+	}
+	
+	public AbstractHeadquarter getHQ() {
+		return HQ;
+	}
+
+	public void setHQ(AbstractHeadquarter hQ) {
+		HQ = hQ;
 	}
 	
 	public void cycle() throws MalformedURLException, IOException {
@@ -66,13 +78,25 @@ public class EmergencySimulator {
 		}
 	}
 	
-	public void mooveAllVehiculesAndCheckArrivals(AbstractVehicule[] vehicules) {
+	public void mooveAllVehiculesAndCheckArrivals(AbstractVehicule[] vehicules) throws IOException {
 		for (AbstractVehicule vehicule : vehicules) {
-			Coord coord = vehicule.getPath().remove(0);
-			if ( coord != null) {
+			if ( !(vehicule.getPath().isEmpty())) {
+				Coord coord = vehicule.getPath().remove(0);
 				vehicule.setCoord(coord);
 				vehicule.updateVehiculeCoord();
 			}
+			else {
+				if (vehicule.getStatut().equals(EnumStatut.RetourVersLeHQ)) {
+					vehicule.setStatut(EnumStatut.Disponible);
+				}
+				else if (vehicule.getStatut().equals(EnumStatut.EnRoutePourIntervention)) {
+					vehicule.setStatut(EnumStatut.EnCoursDIntervention);
+				}
+				else {
+					vehicule.setStatut(EnumStatut.Disponible);
+				}
+			}
+			vehicule.updateVehiculeStatut();
 		}
 	}
 	
@@ -103,8 +127,11 @@ public class EmergencySimulator {
 	 * @param int yInit
 	 * @param int xAlert
 	 * @param int yAlert
+	 * @throws IOException 
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
 	 */
-	public void createIntervention(AbstractVehicule vehicule, int xInit, int yInit, int xFinal, int yFinal) {
+	public void createIntervention(AbstractVehicule vehicule, int xInit, int yInit, int xFinal, int yFinal) throws JsonParseException, JsonMappingException, IOException {
 		URL url = new URL("http://localhost:8083/MapWebService/getItinerary/"+ xInit + "/" + yInit + "/" + xFinal + "/" + yFinal );
 		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection(); 
         httpURLConnection.setRequestMethod("GET");

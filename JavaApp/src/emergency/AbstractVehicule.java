@@ -26,14 +26,15 @@ public abstract class AbstractVehicule extends Intervernors implements VehiculeI
   private Integer OilCapacity;
   
   private Integer NormalOilConsumption;  //En L/100km
-
-  private boolean disponibilite;
   
   private List<Coord> path;
   
   private Coord coord;
   
-  	protected AbstractVehicule(Integer speed, Integer oilCapacity, Integer consumption, Integer tailleMaxStaff) {
+  private EnumStatut statut;
+  
+
+	protected AbstractVehicule(Integer speed, Integer oilCapacity, Integer consumption, Integer tailleMaxStaff) {
   		this.NormalSpeed = speed;
   		this.NormalOilConsumption = consumption;
   		this.OilCapacity = oilCapacity;
@@ -42,7 +43,7 @@ public abstract class AbstractVehicule extends Intervernors implements VehiculeI
   		this.staff = new LinkedList<Staff>();
   		this.etat = EnumEtat.Neuf;
   		this.OilQuantity = this.OilCapacity;
-  		this.disponibilite = true;
+  		this.statut = EnumStatut.Disponible;
   		this.path = new LinkedList<Coord>();
   	}
   	
@@ -75,14 +76,6 @@ public abstract class AbstractVehicule extends Intervernors implements VehiculeI
 		OilCapacity = oilCapacity;
 	}
 
-	public boolean isDisponibilite() {
-		return disponibilite;
-	}
-
-	public void setDisponibilite(boolean disponibilite) {
-		this.disponibilite = disponibilite;
-	}
-
 	public List<Coord> getPath() {
 		return path;
 	}
@@ -102,7 +95,15 @@ public abstract class AbstractVehicule extends Intervernors implements VehiculeI
 	public void setNormalOilConsumption(Integer normalOilConsumption) {
 		NormalOilConsumption = normalOilConsumption;
 	}
+	
+  	public EnumStatut getStatut() {
+  		return statut;
+  	}
 
+  	public void setStatut(EnumStatut statut) {
+  		this.statut = statut;
+  	}
+	
 	@Override
 	public void move() {
 		// TODO Auto-generated method stub
@@ -205,7 +206,7 @@ public abstract class AbstractVehicule extends Intervernors implements VehiculeI
 	}
 	
 	public void updateVehiculeCoord() throws IOException {
-		URL url = new URL("http://localhost:8082/VehiculeWebService/addVehicule/"+this.getId()+"/"+this.getCoord().x+"/"+this.getCoord().y);
+		URL url = new URL("http://localhost:8082/VehiculeWebService/addVehicule/"+this.getId());
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
@@ -213,7 +214,23 @@ public abstract class AbstractVehicule extends Intervernors implements VehiculeI
 		OutputStream os = connection.getOutputStream();
 
         OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
-        osw.write(Tools.toJsonString(this));
+        osw.write(Tools.toJsonString(this.getCoord()));
+        osw.flush();
+        osw.close();
+        connection.getInputStream();
+
+	}
+	
+	public void updateVehiculeStatut() throws IOException {
+		URL url = new URL("http://localhost:8082/VehiculeWebService/updateVehiculeStatut/"+this.getId());
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+		connection.setDoOutput(true);
+		OutputStream os = connection.getOutputStream();
+
+        OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+        osw.write(Tools.toJsonString(this.getStatut()));
         osw.flush();
         osw.close();
         connection.getInputStream();

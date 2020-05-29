@@ -5,22 +5,50 @@ import java.util.List;
 
 public class AbstractHeadquarter extends AbstractIntervention implements HeadquarterInterface {
 	
-	List<Staff> personnel;
+	private List<Staff> personnel;
 	
-	Coord emplacement_headquarter;
+	private Coord emplacement_headquarter;
 	
-	List<VehiculeInterface> vehicules;
+	private List<AbstractVehicule> vehicules;
 
 	public AbstractHeadquarter(Coord coord) {
 		this.personnel = new LinkedList<Staff>();
 		this.emplacement_headquarter = new Coord(coord.x,coord.y);
-		this.vehicules = new LinkedList<VehiculeInterface>();
+		this.vehicules = new LinkedList<AbstractVehicule>();
 	}
 	
 	public AbstractHeadquarter() {
 		this(new Coord(0,0));
 	}
 	
+	public List<Staff> getPersonnel() {
+		return personnel;
+	}
+
+	public void setPersonnel(List<Staff> personnel) {
+		this.personnel = personnel;
+	}
+
+	public Coord getEmplacement_headquarter() {
+		return emplacement_headquarter;
+	}
+
+	public void setEmplacement_headquarter(Coord emplacement_headquarter) {
+		this.emplacement_headquarter = emplacement_headquarter;
+	}
+
+	public List<AbstractVehicule> getVehicules() {
+		return vehicules;
+	}
+
+	public void setVehicules(List<AbstractVehicule> vehicules) {
+		this.vehicules = vehicules;
+	}
+	
+	public void addVehicule(AbstractVehicule v) {
+		this.vehicules.add(v);
+	}
+
 	@Override
 	public void sendInformation() {
 		// TODO Auto-generated method stub

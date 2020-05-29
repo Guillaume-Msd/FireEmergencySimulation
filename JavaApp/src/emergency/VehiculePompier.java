@@ -2,8 +2,6 @@ package emergency;
 
 public class VehiculePompier extends AbstractVehicule {
 	
-	private int idAlerte;
-	
 	private Integer InterventionSpeed;
 	
 	private Integer InterventionOilConsumption;  //En L/100km
@@ -11,7 +9,6 @@ public class VehiculePompier extends AbstractVehicule {
 	
 	public VehiculePompier(Integer speed, Integer consumption) {
 		super();
-		this.idAlerte = -1;
 		this.InterventionSpeed = speed;
 		this.InterventionOilConsumption = consumption;
 	}

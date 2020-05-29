@@ -8,13 +8,15 @@ public interface ProbServerInterface {
 	  /** 
 	   *  Send alarms to the server
 	 * @return 
+	 * @throws IOException 
 	   */
-	  public void triggerAlarm();
+	  public void triggerAlarm() throws IOException;
 
 	  /** 
 	   *  Send information to the server
+	 * @throws IOException 
 	   */
-	  public void sendInformation(Point p);
+	  public void sendInformation(Point p) throws IOException;
 
 	  /** 
 	   *  Get information to trigger behaviour

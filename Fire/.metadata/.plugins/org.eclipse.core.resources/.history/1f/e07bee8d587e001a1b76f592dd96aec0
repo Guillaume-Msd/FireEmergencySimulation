@@ -1,0 +1,74 @@
+package simulator;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import emergency.CarburantEnum;
+
+public class StationService extends EnvironmentElement {
+	private Map<CarburantEnum,Double> carburants;
+	private Map<CarburantEnum,Double> capacites_max;
+	
+	public StationService(Map<CarburantEnum,Double> capacites_max) {
+		this.setCapacites_max(new HashMap(capacites_max));
+		this.setCarburants(new HashMap(capacites_max));
+	}	
+
+
+	/**
+	 * @return the carburants
+	 */
+	public Map<CarburantEnum,Double> getCarburants() {
+		return carburants;
+	}
+
+
+	/**
+	 * @param carburants the carburants to set
+	 */
+	public void setCarburants(Map<CarburantEnum,Double> carburants) {
+		this.carburants = carburants;
+	}
+
+
+	/**
+	 * @return the capacites_max
+	 */
+	public Map<CarburantEnum,Double> getCapacites_max() {
+		return capacites_max;
+	}
+
+
+	/**
+	 * @param capacites_max the capacites_max to set
+	 */
+	public void setCapacites_max(Map<CarburantEnum,Double> capacites_max) {
+		this.capacites_max = capacites_max;
+	}
+	
+	public void supplyStation() {
+		for (Map.Entry<CarburantEnum,Double> entry : this.carburants.entrySet()) {
+			entry.setValue(this.capacites_max.get(entry.getKey()));
+		}
+	}
+	
+	public boolean isDisponible(CarburantEnum carburant, Double quantite) {
+		return this.carburants.get(carburant) > quantite;
+	}
+
+	/**
+	 * Test unitaire
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		Map<CarburantEnum,Double> capas = new HashMap();
+		capas.put(CarburantEnum.Gazole, 10000.0);
+		capas.put(CarburantEnum.E85, 200000.0);
+		StationService s = new StationService(capas);
+		capas.put(CarburantEnum.GLPc,5.0);
+		s.setCapacites_max(capas);
+		System.out.println(s.getCarburants());
+		System.out.println(s.getCapacites_max());
+	}
+}

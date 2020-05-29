@@ -2,9 +2,13 @@ package probes.models;
 
 import java.awt.Point;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
+
 
 import org.json.simple.JSONObject;
 
@@ -12,7 +16,7 @@ import probes.simulation.tools.GetFromFireServ;
 import probes.simulation.tools.ProbMeasureInterface;
 import probes.simulation.tools.ProbServerInterface;
 import probes.simulation.tools.TypeSonde;
-import tools.JsonTools;
+import utilities.Tools;
 
 
 public abstract class AbstractProb implements ProbMeasureInterface,  ProbServerInterface {
@@ -39,12 +43,25 @@ public abstract class AbstractProb implements ProbMeasureInterface,  ProbServerI
 	
 
 //METHODS
-	public void triggerAlarm() {
+	public void triggerAlarm() throws IOException {
 		//envoie l'info a emergency
-		System.out.print(JsonTools.toJson(this.type +"/"+ this.localisation + "\n"));
+		AlerteSignal alerte = new AlerteSignal(1,this.type.toString(),"newSig");
+		System.out.print(Tools.toJsonString(alerte));
+		
+		URL url = new URL("http://localhost:8082/EmergencyWebService/addAlert/" + this.localisation.x + "/" + this.localisation.y); 
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection(); 
+		connection.setRequestMethod("POST"); 
+		connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8"); 
+		connection.setDoOutput(true); 
+		
+		OutputStream os = connection.getOutputStream(); 
+		OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8"); 
+		osw.write(Tools.toJsonString(alerte)); 
+		osw.flush(); 
+		osw.close();
 	}
 		
-	public void sendInformation(Point feu) {
+	public void sendInformation(Point feu) throws IOException {
 		System.out.print("feu au coord :");
 		System.out.print(feu + "\n");
 		this.triggerAlarm();

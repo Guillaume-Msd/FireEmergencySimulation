@@ -1,4 +1,4 @@
-package simulator;
+package events;
 
 import java.util.HashSet;
 import java.util.Iterator;

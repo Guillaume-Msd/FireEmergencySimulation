@@ -1,4 +1,4 @@
-package simulator;
+package events;
 
 import java.io.IOException;
 import java.util.Iterator;

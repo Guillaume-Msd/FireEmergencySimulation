@@ -1,4 +1,4 @@
-package simulator;
+package events;
 
 import java.util.EnumSet;
 import java.util.Set;

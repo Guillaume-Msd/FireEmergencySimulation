@@ -18,7 +18,7 @@ import emergency.Coord;
 import emergency.EnumStatut;
 import emergency.FireFighterHQ;
 import emergency.VehiculePompier;
-import simulator.Fire;
+import events.Fire;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;

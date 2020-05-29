@@ -21,6 +21,7 @@ import emergency.VehiculePompier;
 import events.Fire;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -42,7 +43,7 @@ public class EmergencySimulator {
 	
 	public void cycle() throws MalformedURLException, IOException {
 		//On récupère les alertes du serveur
-		Alerte[] alertes = getAlertes();
+		List<Alerte> alertes = getAlertes();
 		
 		//On parcours ces alertes pour voir si il y en a des nouvelles
 		parcoursAlertes(alertes);
@@ -52,7 +53,7 @@ public class EmergencySimulator {
 		mooveAllVehiculesAndCheckArrivals(vehicules);
 	}
 	
-	public Alerte[] getAlertes() throws IOException {
+	public List<Alerte> getAlertes() throws IOException {
 		URL url = new URL("http://localhost:8082/EmergencyWebService/allAlerts");
 		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
         httpURLConnection.setRequestMethod("GET");
@@ -65,12 +66,19 @@ public class EmergencySimulator {
 		} in .close();
 	
 		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 		
 		Alerte[] alertes = mapper.readValue(response1.toString(), Alerte[].class);
-		return alertes;
+		List<Alerte> alertList = new ArrayList<Alerte>();
+		int i;
+		for(i = 0; i < alertes.length; i++) {
+			alertList.add(alertes[i]);
+		}
+		
+		return alertList;
 	}
 	
-	public void parcoursAlertes(Alerte[] alertes) throws IOException {
+	public void parcoursAlertes(List<Alerte> alertes) throws IOException {
 		for (Alerte alerte : alertes) {
 			if (alerte.getEtat().equals("Nouvelle alerte")) {
 				gererNouvelleAlerte(alerte);

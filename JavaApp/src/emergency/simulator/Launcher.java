@@ -2,8 +2,10 @@ package emergency.simulator;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import emergency.AbstractVehicule;
+import emergency.Alerte;
 import emergency.Coord;
 import emergency.FireFighterHQ;
 import emergency.VehiculePompier;
@@ -16,6 +18,10 @@ public class Launcher {
 		EmergencySimulator simulateur = new EmergencySimulator();
 		simulateur.setHQ(new FireFighterHQ(new Coord(3,40)));
 		simulateur.getHQ().addVehicule(v);
+		
+		
+		List<Alerte> alerteList = simulateur.getAlertes();
+		
 		simulateur.cycle();
 	}
 }

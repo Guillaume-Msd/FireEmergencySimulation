@@ -16,7 +16,6 @@ public class Launcher {
 		EmergencySimulator simulateur = new EmergencySimulator();
 		simulateur.setHQ(new FireFighterHQ(new Coord(3,40)));
 		simulateur.getHQ().addVehicule(v);
-		
 		simulateur.cycle();
 	}
 }

@@ -1,9 +1,11 @@
 package emergency;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class AbstractHeadquarter extends AbstractIntervention implements HeadquarterInterface {
+public abstract class AbstractHeadquarter extends AbstractIntervention implements HeadquarterInterface {
 	
 	private List<Staff> personnel;
 	
@@ -62,12 +64,12 @@ public class AbstractHeadquarter extends AbstractIntervention implements Headqua
 	}
 
 	/**
-	 * Place le personnel disponible dans le vehicule spécifié
+	 * Place le personnel disponible dans le vehicule spï¿½cifiï¿½
 	 * @param v (AbstractVehicule)
-	 * @param nombre_intervenants précise le nombre de personnes à envoyer sur l'intervention
+	 * @param nombre_intervenants prï¿½cise le nombre de personnes ï¿½ envoyer sur l'intervention
 	 */
 	public void setStaffOnVehicule(AbstractVehicule v, Integer nombre_intervenants) {
-		int i = Math.min(v.getTailleMaxStaff(),nombre_intervenants); // On limite le nombre de personnes dans un véhicule
+		int i = Math.min(v.getTailleMaxStaff(),nombre_intervenants); // On limite le nombre de personnes dans un vï¿½hicule
 		for (Staff personne: this.personnel) {
 			if (i <= 0) {
 				return;
@@ -78,11 +80,11 @@ public class AbstractHeadquarter extends AbstractIntervention implements Headqua
 				i = i - 1;
 			}
 		}
-		System.out.println("Pas assez de personnes disponibles et en capacité d'intervenir");
+		System.out.println("Pas assez de personnes disponibles et en capacitï¿½ d'intervenir");
 	}
 
 	/**
-	 * Gère le retour d'un véhicule à la caserne
+	 * Gï¿½re le retour d'un vï¿½hicule ï¿½ la caserne
 	 * @param v
 	 */
 	public void retourVehicule(AbstractVehicule v) {
@@ -92,7 +94,6 @@ public class AbstractHeadquarter extends AbstractIntervention implements Headqua
 		}
 	}
 	
-
 	public void supplyVehicules(List<AbstractVehicule> v) {
 		// TODO Auto-generated method stub
 		for (AbstractVehicule vehicule : v) {
@@ -100,15 +101,40 @@ public class AbstractHeadquarter extends AbstractIntervention implements Headqua
 		}
 	}
 
-
 	public void setVehiculesInEvent() {
 		// TODO Auto-generated method stub
 		
 	}
 
-
 	public void calculItinerary() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public List<AbstractVehicule> ChoisirVehicule(Alerte alerte) throws IOException {
+		int nb_vehicules;
+		List<AbstractVehicule> vehicules= new ArrayList<AbstractVehicule> ();
+		if (alerte.getValeur() < 15) { //15 est une valeur arbitraire
+			nb_vehicules = 1;
+		}
+		else {
+			nb_vehicules = 2;
+		}
+		
+		
+		for (AbstractVehicule v: this.getVehicules()) {
+			if (nb_vehicules <= 0) {
+				return vehicules;
+			}
+			if (v.getStatut().equals(EnumStatut.Disponible)) {
+				vehicules.add(v);
+				nb_vehicules = nb_vehicules - 1;
+			}
+		}
+		if (nb_vehicules <= 0) {
+			return vehicules;
+		}
+		System.out.println("Pas assez de vï¿½hicules disponibles.");
+		return vehicules;
 	}
 }

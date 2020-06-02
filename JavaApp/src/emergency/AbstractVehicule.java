@@ -1,6 +1,8 @@
 package emergency;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -30,6 +32,16 @@ public abstract class AbstractVehicule extends Intervernors implements VehiculeI
   private List<Coord> path;
   
   private Coord coord;
+  
+  public Coord getCoord_HQ() {
+	return coord_HQ;
+}
+
+public void setCoord_HQ(Coord coord_HQ) {
+	this.coord_HQ = coord_HQ;
+}
+
+private Coord coord_HQ;
   
   private EnumStatut statut;
   
@@ -160,7 +172,7 @@ public abstract class AbstractVehicule extends Intervernors implements VehiculeI
 
 	/**
 	 * 
-	 * @param s personne à ajouter au staff
+	 * @param s personne ï¿½ ajouter au staff
 	 */
 	public void addToStaff(Staff s) {
 		this.staff.add(s);
@@ -168,7 +180,7 @@ public abstract class AbstractVehicule extends Intervernors implements VehiculeI
 	
 	/**
 	 * 
-	 * @param staff liste des personnes à ajouter au staff
+	 * @param staff liste des personnes ï¿½ ajouter au staff
 	 */
 	public void addToStaff(List<Staff> staff) {
 		for (Staff s : staff) {
@@ -206,7 +218,7 @@ public abstract class AbstractVehicule extends Intervernors implements VehiculeI
 	}
 	
 	public void updateVehiculeCoord() throws IOException {
-		URL url = new URL("http://localhost:8082/VehiculeWebService/addVehicule/"+this.getId());
+		URL url = new URL("http://localhost:8082/VehiculeWebService/updateVehiculeCoord/"+this.getId());
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
@@ -234,7 +246,47 @@ public abstract class AbstractVehicule extends Intervernors implements VehiculeI
         osw.flush();
         osw.close();
         connection.getInputStream();
+	}
+	
+	public void addVehiculeView() throws IOException {
+        System.out.println(this.getCoord());
+		URL url = new URL("http://localhost:8082/VehiculeWebService/addVehicule/"+this.getCoord().x+"/"+this.getCoord().y);
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+		connection.setDoOutput(true);
+		OutputStream os = connection.getOutputStream();
 
+		
+        OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+        osw.write(Tools.toJsonString(this.getClass().getSimpleName()));
+        osw.flush();
+        osw.close();
+        connection.getInputStream();
+        
+        BufferedReader in = new BufferedReader(
+        new InputStreamReader(connection.getInputStream()));
+        String inputLine;
+        StringBuffer response1 = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+        	response1.append(inputLine);
+        } in .close();
+        
+
+        int id = Integer.parseInt(response1.toString());
+        this.setId(id);
+	}
+	
+	public void deleteVehiculeView() throws IOException {
+		URL url = new URL("http://localhost:8082/VehiculeWebService/deleteVehicule/"+this.getId());
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod("DELETE");
+	}
+	
+	@Override
+	public String toString() {
+		return "Etat: "+this.getEtat()+"\n\tPath: "+this.getPath()
+		+"\n\tCoord: "+this.getCoord()+"\n\tStatut: "+this.getStatut()+"\n\tHQ: "+this.getCoord_HQ();
 	}
 }
 

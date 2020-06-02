@@ -46,8 +46,7 @@ public abstract class AbstractProb implements ProbMeasureInterface,  ProbServerI
 	public void triggerAlarm() throws IOException {
 		//envoie l'info a emergency
 		AlerteSignal alerte = new AlerteSignal(1,this.type.toString(),"newSig");
-		System.out.print(Tools.toJsonString(alerte));
-		
+		System.out.print(this.localisation);
 		URL url = new URL("http://localhost:8082/EmergencyWebService/addAlert/" + this.localisation.x + "/" + this.localisation.y); 
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection(); 
 		connection.setRequestMethod("POST"); 
@@ -59,6 +58,8 @@ public abstract class AbstractProb implements ProbMeasureInterface,  ProbServerI
 		osw.write(Tools.toJsonString(alerte)); 
 		osw.flush(); 
 		osw.close();
+		
+		connection.getInputStream();
 	}
 		
 	public void sendInformation(Point feu) throws IOException {

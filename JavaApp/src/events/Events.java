@@ -98,7 +98,6 @@ public class Events implements EventInterface {
 	}
 	
 	
-	@Override
 	public Event[] getAllEvents() throws IOException {
 		
 		URL url = new URL("http://localhost:8081/FireWebService/events");
@@ -119,7 +118,7 @@ public class Events implements EventInterface {
 		return null;
 	}
 
-	@Override
+
 	public void updateEvent(Event event, Coord coord, String state) throws IOException {
 		int idEvent = event.getId();
 		URL url;
@@ -147,7 +146,7 @@ public class Events implements EventInterface {
 		
 	}
 
-	@Override
+
 	public void sendEvents(List<Event> eventList) throws IOException {
 		// TODO Auto-generated method stub
 		

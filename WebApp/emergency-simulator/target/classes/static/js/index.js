@@ -44,17 +44,32 @@ var images = [];
 
 
 
-function displayElement(x, y, imgSrc){
+function displayElementSimu(x, y, imgSrc){
 	
 	var n = 256;
-	var minX = (width/n) * y;
-	var maxX = (width/n) * (y+1);
-	var minY = (height/n) * x;
-	var maxY = (height/n) * (x+1);
+	var minX = (width/n) * (y - 2);
+	var maxX = (width/n) * (y + 2);
+	var minY = (height/n) * (x - 2);
+	var maxY = (height/n) * (x + 2 );
 	var imageUrl = imgSrc;
 	imageBounds = [[north - minY, west + minX], [north - maxY, west + maxX]];
 	var image = L.imageOverlay(imageUrl, imageBounds)
 	image.addTo(map);
+	images.push(image)
+	
+}
+
+function displayElementEmergency(x, y, imgSrc) {
+	
+	var n = 256;
+	var minX = (width/n) * (y - 2);
+	var maxX = (width/n) * (y + 2);
+	var minY = (height/n) * (x - 2);
+	var maxY = (height/n) * (x + 2);
+	var imageUrl = imgSrc;
+	imageBounds = [[north - minY , west + minX], [north - maxY, west + maxX]];
+	var image = L.imageOverlay(imageUrl, imageBounds)
+	image.addTo(map2);
 	images.push(image)
 	
 }
@@ -77,32 +92,61 @@ function displayAllElements(type){
 		imgSrc = imgAlert;
 	}
 	
+	else if (type == "Probe") {
+		url = "http://localhost:8081/ProbeWebService/getAllCoords";
+		imgSrc = imgAlert;
+	}
+	
 	else{
 		url = "http://localhost:8082/VehiculeWebService/getAllCoords"
 		imgSrc = imgVehicule;
 	}
 	
-	$.ajax({
+	if(type == "Probe" || type == "Fire"){
 		
-		  url:url,
-		  type: "GET",
-		  success: function( data ){
-			  json = JSON.parse(data);
-			  var x, y;
-			  for(var i = 0 ; i < json.length; i++){
-				  x = json[i]["x"];
-				  y = json[i]["y"];
-				  displayElement(x, y, imgSrc);
+		$.ajax({
+			
+			  url:url,
+			  type: "GET",
+			  success: function( data ){
+				  json = JSON.parse(data);
+				  var x, y;
+				  for(var i = 0 ; i < json.length; i++){
+					  x = json[i]["x"];
+					  y = json[i]["y"];
+					  displayElementSimu(x, y, imgSrc);
+				  }
 			  }
-		  }
-	  });
+		  });
+		
+	} else {
+		
+		$.ajax({
+			
+			  url:url,
+			  type: "GET",
+			  success: function( data ){
+				  json = JSON.parse(data);
+				  var x, y;
+				  for(var i = 0 ; i < json.length; i++){
+					  x = json[i]["x"];
+					  y = json[i]["y"];
+					  displayElementEmergency(x, y, imgSrc);
+				  }
+			  }
+		  });
+		
+		
+	}
+	
+	
 	
 }
 
 
 $("#addFireButton").on("click", function(){
 	$.ajax({
-		  url:"http://localhost:8081/FireWebService/add",
+		  url:"http://localhost:8081/FireWebService/addRandom",
 		  type: "GET"
 	  });
 	
@@ -122,14 +166,10 @@ $("#clearFireButton").on("click", function(){
 })
 
 
-//setInterval(displayAllFires, 2000);
-//setInterval(displayAllProbes, 2000);
-
-//displayAllElements("Alert");
-//displayAllElements("Vehicule");
-
-
-//displayAllElements("Fire");
+setInterval(displayAllElements, 2000, "Alert");
+setInterval(displayAllElements, 2000, "Vehicule");
+setInterval(displayAllElements, 2000, "Probe");
+setInterval(displayAllElements, 2000, "Fire");
 
 
 
@@ -170,7 +210,7 @@ function itinerary(xInit, yInit, xFinal, yFinal){
 			  for(var i = 0 ; i < json.length; i++){
 				  x = json[i]["x"];
 				  y = json[i]["y"];
-				  displayElement(x, y, imgVehicule);
+				  displayElementEmergency(x, y, imgVehicule);
 			  }
 		  }
 	});
@@ -196,9 +236,7 @@ function Realitinerary(xInit, yInit, xFinal, yFinal){
 	
 }
 
-
-
-itinerary(28, 30, 53, 96);
+//itinerary(28, 30, 53, 21);
 
 		
 	

@@ -2,11 +2,20 @@ package probes.simulation;
 
 import java.awt.Point;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import probes.models.*;
+import utilities.Tools;
 
 
 
@@ -22,35 +31,68 @@ public class ProbSimulation {
 	
 //MAIN
 	public static void main(String[] args) throws InterruptedException, IOException {
-		ProbSimulation simulation = new ProbSimulation();
+		final ProbSimulation simulation = new ProbSimulation();
 		simulation.initProbs(0);
 
-		for (int i=0; i<10; i++) {
-			System.out.print("\n" + "TIMER : " + i + "\n");
-			for (AbstractProb prob: simulation.probList) {
-				if (prob.getRateCount() == 0) {
-					System.out.print(prob.toString());
-					System.out.print("MEASURING : \n");
-					prob.getInformation();
-					prob.setRateCount(prob.getRate());
+		new Timer().scheduleAtFixedRate(new TimerTask(){
+		    @Override
+		    public void run(){
+				for (AbstractProb prob: simulation.probList) {
+					if (prob.getRateCount() == 0) {
+						System.out.print(prob.toString());
+						System.out.print("MEASURING : \n");
+						try {
+							prob.getInformation();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						prob.setRateCount(prob.getRate());
+					}
+					else {
+						prob.setRateCount(prob.getRateCount()-1);
+						System.out.print(prob.toString());
+						System.out.print(prob.getRateCount() + "\n");
+					}
 				}
-				else {
-					prob.setRateCount(prob.getRateCount()-1);
-					System.out.print(prob.toString());
-					System.out.print(prob.getRateCount() + "\n");
-				}
-			}
-			TimeUnit.SECONDS.sleep(1);
-		}	
+		    }
+		}	,0,2000);
+			
 	}
 	
 	
 //METHODS
 	//initialise des probs (a randomiser)
-	public void initProbs(int num) {
-		this.addProb("Smoke", 1, 0.1, new Point(11,11), 1);
-		this.addProb("Thermic", 20, 0.1, new Point(5,20), 3);
-		this.addProb("Smoke", 1, 0.1, new Point(30,30), 1);
+	public void initProbs(int num) throws IOException {
+		URL url = new URL("http://localhost:8081/ProbeWebService/removeAll"); 
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection(); 
+		connection.setRequestMethod("DELETE"); 
+		connection.setDoOutput(false); 
+		connection.getInputStream();
+		
+		/*int i;
+		Random r = new Random();
+		for(i= 0; i < 20; i++) {
+			
+			this.addProb("Smoke", 5, 0.1, new Point(r.nextInt(255), r.nextInt(255)), 1);
+		}
+		
+		for(i= 0; i < 20; i++) {
+			
+			this.addProb("Thermic", 5, 0.1, new Point(r.nextInt(255), r.nextInt(255)), 1);
+		}
+		
+		for(i= 0; i < 20; i++) {
+			
+			this.addProb("CO2", 5, 0.1, new Point(r.nextInt(255), r.nextInt(255)), 1);
+		}*/
+		
+		this.addProb("Smoke", 1, 0.1, new Point(110,110), 10);
+		this.addProb("Thermic", 1, 0.1, new Point(50,200), 20);
+		this.addProb("Smoke", 1, 0.1, new Point(120,30), 30);
+		this.addProb("CO2", 1, 0.1, new Point(210,50), 30);
+		this.addProb("CO2", 1, 0.1, new Point(60,80), 30);
+		
 		
 		for (AbstractProb prob: this.probList) {
 			prob.setRateCount(prob.getRate());
@@ -58,7 +100,7 @@ public class ProbSimulation {
 	}
 	
 	//ajoute une probe
-	public void addProb(String type, float rate, double error,Point localisation, float range) {
+	public void addProb(String type, float rate, double error,Point localisation, float range) throws IOException {
 		if (type == "Smoke") {
 			this.probList.add(new SmokeProb(rate, error, localisation, range));
 		}
@@ -68,7 +110,20 @@ public class ProbSimulation {
 		if (type == "Thermic") {
 			this.probList.add(new ThermicProb(rate, error, localisation, range));
 		}
+		this.addProbToMap(type, localisation);
 	}	
+	
+	public void addProbToMap(String type, Point localisation) throws IOException {
+		//envoie la position de la sonde a Simulation service
+		URL url = new URL("http://localhost:8081/ProbeWebService/add/" + type.toString() + "/" + localisation.x + "/" + localisation.y); 
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection(); 
+		connection.setRequestMethod("GET"); 
+		connection.setDoOutput(false); 
+		connection.getInputStream();
+	}
+	
+	
 }
+
 
 

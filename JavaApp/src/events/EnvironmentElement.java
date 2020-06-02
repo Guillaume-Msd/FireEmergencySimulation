@@ -16,7 +16,6 @@ public class EnvironmentElement implements ElementInterface {
 		
 	}
     
-	@Override
 	public void supplyVehicule() {
 		// TODO Auto-generated method stub
 		

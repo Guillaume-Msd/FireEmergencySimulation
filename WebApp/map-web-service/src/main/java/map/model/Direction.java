@@ -25,6 +25,7 @@ public class Direction {
 	private double maxX = 40.40035936701489;
 	
 	private double maxY = -3.6821365356445317;
+
 	
 	private double height = Math.abs(this.maxX - this.minX);
 	

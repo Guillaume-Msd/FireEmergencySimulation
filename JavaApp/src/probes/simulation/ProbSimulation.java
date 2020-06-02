@@ -93,8 +93,6 @@ public class ProbSimulation {
 		this.addProb("CO2", 1, 0.1, new Point(210,50), 30);
 		this.addProb("CO2", 1, 0.1, new Point(60,80), 30);
 		
-		connection.setRequestMethod("POST"); 
-		connection.setDoOutput(false); 
 		connection.getInputStream();
 	
 		

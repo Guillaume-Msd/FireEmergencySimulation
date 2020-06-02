@@ -31,11 +31,7 @@ public class AlerteController {
 	@GetMapping("EmergencyWebService/allAlerts")
 	public String getAllvehicules() {
 		List<Alerte> liste = emergencyService.getAll();
-		String alertes = "";
-		for (Alerte a:liste) {
-			alertes = alertes + Tools.toJsonString(a) + "/";
-		}
-		return alertes.substring(0, alertes.length()-1);
+		return Tools.toJsonString(liste);
 	}
 	
 	@GetMapping("EmergencyWebService/alert/{id}")

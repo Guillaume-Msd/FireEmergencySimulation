@@ -1,18 +1,16 @@
-package simulator.controller;
+package controller;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
-import simulator.model.Coord;
-import simulator.model.Event;
+import model.Coord;
+import model.Event;
 
 public interface EventsInterface {
 	
 	  public void createEvent(Event event) throws IOException;
-	  
-	  public void sendEvents(List<Event> eventList) throws IOException;
-  
+	    
 	  public Event[] getEvents(URL url) throws IOException;
 	
 	  public Event[] getAllEvents() throws IOException;

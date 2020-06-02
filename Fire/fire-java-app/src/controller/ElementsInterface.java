@@ -1,4 +1,4 @@
-package simulator.controller;
+package controller;
 
 public interface ElementsInterface {
 

@@ -1,4 +1,4 @@
-package simulator.model;
+package model;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -61,8 +61,8 @@ public class Fire extends Event implements FireInterface {
 	public String toString() {
 		return super.toString() + ", " + getType() + ", " + getIntensity();
 	}
-	
-	public Coord propagate() {
+
+	public Coord aggravate() {
 		Iterator <Coord> it = this.getLocalisation().iterator();
 		Coord coord = it.next();
 		switch (this.getIntensity()) {
@@ -79,18 +79,20 @@ public class Fire extends Event implements FireInterface {
 		}
 	}
 	
-	public void aggravate() {
-			
-		//TODO create new fire
-		//if (getIntensity() == FireIntensity.VeryHigh) {
-		//}
+	public Coord attenuate() {
+		
+		Iterator <Coord> it = this.getLocalisation().iterator();
+		return it.next();
+	}
+	
+	public void increaseIntensity() {
 			
 		FireIntensity fireIntensity = FireIntensity.aggravation(this.getIntensity());
 	    setIntensity(fireIntensity);
 						
 	}
 	
-	public void attenuate() {
+	public void decreaseIntensity() {
 		
 		//TODO delete fire
 	    //if (getIntensity() == FireIntensity.Low) {    

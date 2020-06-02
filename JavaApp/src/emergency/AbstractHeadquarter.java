@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class AbstractHeadquarter extends AbstractIntervention implements HeadquarterInterface {
+public abstract class AbstractHeadquarter extends AbstractIntervention implements HeadquarterInterface {
 	
 	private List<Staff> personnel;
 	
@@ -94,7 +94,6 @@ public class AbstractHeadquarter extends AbstractIntervention implements Headqua
 		}
 	}
 	
-	@Override
 	public void supplyVehicules(List<AbstractVehicule> v) {
 		// TODO Auto-generated method stub
 		for (AbstractVehicule vehicule : v) {
@@ -102,13 +101,11 @@ public class AbstractHeadquarter extends AbstractIntervention implements Headqua
 		}
 	}
 
-	@Override
 	public void setVehiculesInEvent() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void calculItinerary() {
 		// TODO Auto-generated method stub
 		
@@ -117,7 +114,7 @@ public class AbstractHeadquarter extends AbstractIntervention implements Headqua
 	public List<AbstractVehicule> ChoisirVehicule(Alerte alerte) throws IOException {
 		int nb_vehicules;
 		List<AbstractVehicule> vehicules= new ArrayList<AbstractVehicule> ();
-		if (alerte.getValeur() < 5) {
+		if (alerte.getValeur() < 15) { //15 est une valeur arbitraire
 			nb_vehicules = 1;
 		}
 		else {
@@ -133,6 +130,9 @@ public class AbstractHeadquarter extends AbstractIntervention implements Headqua
 				vehicules.add(v);
 				nb_vehicules = nb_vehicules - 1;
 			}
+		}
+		if (nb_vehicules <= 0) {
+			return vehicules;
 		}
 		System.out.println("Pas assez de véhicules disponibles.");
 		return vehicules;

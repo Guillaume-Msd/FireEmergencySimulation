@@ -53,7 +53,7 @@ public class EmergencySimulator {
 		mooveAllVehiculesAndCheckArrivals(vehicules);
 		
 		//On renvoie les véhicules qui ont finis leur intervention au HQ
-		gestionFinDIntervention();
+		//gestionFinDIntervention();
 	}
 	
 	public List<Alerte> getAlertes() throws IOException {
@@ -91,7 +91,6 @@ public class EmergencySimulator {
 	
 	public void mooveAllVehiculesAndCheckArrivals(List<AbstractVehicule> vehicules) throws IOException {
 		for (AbstractVehicule vehicule : vehicules) {
-			System.out.println(vehicule);
 			if ( !(vehicule.getPath().isEmpty())) {
 				Coord coord = vehicule.getPath().remove(0);
 				vehicule.setCoord(coord);
@@ -106,10 +105,8 @@ public class EmergencySimulator {
 					vehicule.setStatut(EnumStatut.EnCoursDIntervention);
 					vehicule.updateVehiculeStatut();
 				}
-				else {
-					vehicule.setStatut(EnumStatut.Disponible);
-				}
 			}
+			System.out.println(vehicule);
 		}
 	}
 	
@@ -118,7 +115,8 @@ public class EmergencySimulator {
 		AbstractHeadquarter hq = ChoisirHQ();
 		createIntervention(hq.ChoisirVehicule(alerte),this.getHQ().getEmplacement_headquarter().x,this.getHQ().getEmplacement_headquarter().y,
 				alerte.getCoord().x,alerte.getCoord().y);
-		AlerteEnCours(alerte);
+		
+		//AlerteEnCours(alerte);
 	}
 	
 	public void AlerteEnCours(Alerte alerte) throws IOException {
@@ -164,9 +162,12 @@ public class EmergencySimulator {
 			coordList.add(coords[i]);
 		}
 		
+		coordList.add(new Coord(xFinal,yFinal));
+		
 		for (AbstractVehicule vehicule : vehicules) {
 			vehicule.setPath(coordList);
 			vehicule.setStatut(EnumStatut.EnRoutePourIntervention);
+			System.out.println(vehicule);
 			vehicule.addVehiculeView();
 		}
 		
@@ -194,6 +195,8 @@ public class EmergencySimulator {
 		for(i = 0; i < coords.length; i++) {
 			coordList.add(coords[i]);
 		}
+		
+		coordList.add(new Coord(xFinal,yFinal));
 		
 		vehicule.setPath(coordList);
 		

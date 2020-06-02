@@ -115,24 +115,6 @@ private Coord coord_HQ;
   	public void setStatut(EnumStatut statut) {
   		this.statut = statut;
   	}
-	
-	@Override
-	public void move() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	public void putOutFire() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	public void manageStaff() {
-		// TODO Auto-generated method stub
-	
-	}
 
 	/**
 	 * @return the etat
@@ -218,7 +200,7 @@ private Coord coord_HQ;
 	}
 	
 	public void updateVehiculeCoord() throws IOException {
-		URL url = new URL("http://localhost:8082/VehiculeWebService/addVehicule/"+this.getId());
+		URL url = new URL("http://localhost:8082/VehiculeWebService/updateVehiculeCoord/"+this.getId());
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
@@ -249,6 +231,7 @@ private Coord coord_HQ;
 	}
 	
 	public void addVehiculeView() throws IOException {
+        System.out.println(this.getCoord());
 		URL url = new URL("http://localhost:8082/VehiculeWebService/addVehicule/"+this.getCoord().x+"/"+this.getCoord().y);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("POST");
@@ -256,8 +239,9 @@ private Coord coord_HQ;
 		connection.setDoOutput(true);
 		OutputStream os = connection.getOutputStream();
 
+		
         OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
-        osw.write(Tools.toJsonString(this));
+        osw.write(Tools.toJsonString(this.getClass().getSimpleName()));
         osw.flush();
         osw.close();
         connection.getInputStream();
@@ -270,6 +254,7 @@ private Coord coord_HQ;
         	response1.append(inputLine);
         } in .close();
         
+
         int id = Integer.parseInt(response1.toString());
         this.setId(id);
 	}
@@ -282,7 +267,8 @@ private Coord coord_HQ;
 	
 	@Override
 	public String toString() {
-		return "Etat: "+this.getEtat()+"\nPath: "+this.getPath()+"HQ: "+this.getCoord_HQ();
+		return "Etat: "+this.getEtat()+"\n\tPath: "+this.getPath()
+		+"\n\tCoord: "+this.getCoord()+"\n\tStatut: "+this.getStatut()+"\n\tHQ: "+this.getCoord_HQ();
 	}
 }
 

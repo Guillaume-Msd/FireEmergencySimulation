@@ -24,7 +24,9 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 const imgFire = 'images/fire.gif';
 const imgVehicule = 'images/fireTruck.png';
 const imgAlert = 'images/alert.png';
-
+const imgSmoke = 'images/Smoke.png';
+const imgCO2 = 'images/CO2.png';
+const imgThermic = 'images/Thermic.png';
 
 var north = map.getBounds().getNorth(); 
 
@@ -94,7 +96,7 @@ function displayAllElements(type){
 	
 	else if (type == "Probe") {
 		url = "http://localhost:8081/ProbeWebService/getAllCoords";
-		imgSrc = imgAlert;
+	
 	}
 	
 	else{
@@ -102,7 +104,7 @@ function displayAllElements(type){
 		imgSrc = imgVehicule;
 	}
 	
-	if(type == "Probe" || type == "Fire"){
+	if(type == "Fire"){
 		
 		$.ajax({
 			
@@ -119,7 +121,38 @@ function displayAllElements(type){
 			  }
 		  });
 		
-	} else {
+	}
+	
+	else if (type == "Probe" ){
+		
+		$.ajax({
+			
+			  url:url,
+			  type: "GET",
+			  success: function( data ){
+				  console.log(data);
+				  json = JSON.parse(data);
+				  var x, y;
+				  for(var i = 0 ; i < json.length; i++){
+					  if(json[i]["type"] == "Smoke"){
+						  imgSrc = imgSmoke;
+					  }
+					  else if (json[i]["type"] == "Thermic"){
+						  imgSrc = imgThermic;
+					  } else {
+						  imgSrc = imgCO2;
+					  }
+					  console.log(json[i]["x"]);
+					  x = json[i]["x"];
+					  y = json[i]["y"];
+					  displayElementSimu(x, y, imgSrc);
+				  }
+			  }
+		  });
+		
+	}
+	
+	else {
 		
 		$.ajax({
 			
@@ -165,11 +198,12 @@ $("#clearFireButton").on("click", function(){
 	
 })
 
+//displayAllElements("Probe");
 
-setInterval(displayAllElements, 2000, "Alert");
-setInterval(displayAllElements, 2000, "Vehicule");
-setInterval(displayAllElements, 2000, "Probe");
-setInterval(displayAllElements, 2000, "Fire");
+setInterval(displayAllElements, 3000, "Alert");
+//setInterval(displayAllElements, 2000, "Vehicule");
+setInterval(displayAllElements, 3000, "Probe");
+setInterval(displayAllElements, 3000, "Fire");
 
 
 

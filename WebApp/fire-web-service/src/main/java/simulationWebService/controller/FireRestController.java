@@ -102,7 +102,7 @@ public class FireRestController {
 		fireService.removeAllFire();
 	}
 	
-	@GetMapping("FireWebService/events")
+	@GetMapping("FireWebService/getAll")
 	public String getAllFires() {
 		return Tools.toJsonString(fireService.getAllFires());
 	}

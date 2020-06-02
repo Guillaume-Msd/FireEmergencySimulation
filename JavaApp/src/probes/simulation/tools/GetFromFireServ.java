@@ -39,4 +39,9 @@ public class GetFromFireServ {
         }
 		return pointList;
 	}
+	
+	public static void main(String argv) {
+		List<Point> listFeu = new ArrayList<Point>();
+		System.out.println(listFeu.get(0).toString());
+	}
 }

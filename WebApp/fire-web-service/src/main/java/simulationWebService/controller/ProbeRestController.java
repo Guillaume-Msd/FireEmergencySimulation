@@ -42,7 +42,7 @@ public class ProbeRestController {
 		
 	}
 	
-	
+	/*
 	@GetMapping("ProbeWebService/getAllCoords")
 	public String getAllFireCoords() {
 		List<ProbeEntity> probeList = probeService.getAllProbes();
@@ -51,6 +51,11 @@ public class ProbeRestController {
 			coordList.add(new CoordEntity(probe.getX(), probe.getY()));
 		}
 		return Tools.toJsonString(coordList);
+	}
+	*/
+	@GetMapping("ProbeWebService/getAllCoords")
+	public String getAll() {
+		return Tools.toJsonString(probeService.getAllProbes());
 	}
 	
 

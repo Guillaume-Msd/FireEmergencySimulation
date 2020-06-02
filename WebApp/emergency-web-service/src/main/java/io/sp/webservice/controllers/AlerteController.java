@@ -29,13 +29,9 @@ public class AlerteController {
 	private AlerteService emergencyService;
 	
 	@GetMapping("EmergencyWebService/allAlerts")
-	public String getAllvehicules() {
+	public String getAllAlerts() {
 		List<Alerte> liste = emergencyService.getAll();
-		String alertes = "";
-		for (Alerte a:liste) {
-			alertes = alertes + Tools.toJsonString(a) + "/";
-		}
-		return alertes.substring(0, alertes.length()-1);
+		return Tools.toJsonString(liste);
 	}
 	
 	@GetMapping("EmergencyWebService/alert/{id}")
@@ -46,7 +42,7 @@ public class AlerteController {
 	@RequestMapping(value="EmergencyWebService/addAlert/{x}/{y}", consumes=MediaType.APPLICATION_JSON_VALUE)
 	public int addAlerte(@RequestBody Alerte alerte, @PathVariable String x, @PathVariable String y) {
 		Coord coord = new Coord(Integer.parseInt(x), Integer.parseInt(y));
-		alerte.setCoord_alerte(coord);
+		alerte.setCoord(coord);
 		emergencyService.addAlerte(alerte);
 		return alerte.getId();
 	}
@@ -69,7 +65,7 @@ public class AlerteController {
 		List<Alerte> alertList = emergencyService.getAll();
 		List<Coord> coordList = new ArrayList<Coord>();
 		for(Alerte alerte: alertList) {
-			coordList.add(alerte.getCoord_alerte());
+			coordList.add(alerte.getCoord());
 		}
 		return Tools.toJsonString(coordList);
 	}

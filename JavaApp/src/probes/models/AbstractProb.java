@@ -43,12 +43,12 @@ public abstract class AbstractProb implements ProbMeasureInterface,  ProbServerI
 	
 
 //METHODS
-	public void triggerAlarm() throws IOException {
+	public void triggerAlarm(Point feu) throws IOException {
 		//envoie l'info a emergency
 		AlerteSignal alerte = new AlerteSignal(1,this.type.toString(),"newSig");
 		System.out.print(Tools.toJsonString(alerte));
 		
-		URL url = new URL("http://localhost:8082/EmergencyWebService/addAlert/" + this.localisation.x + "/" + this.localisation.y); 
+		URL url = new URL("http://localhost:8082/EmergencyWebService/addAlert/" + feu.x + "/" + feu.y); 
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection(); 
 		connection.setRequestMethod("POST"); 
 		connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8"); 
@@ -64,7 +64,7 @@ public abstract class AbstractProb implements ProbMeasureInterface,  ProbServerI
 	public void sendInformation(Point feu) throws IOException {
 		System.out.print("feu au coord :");
 		System.out.print(feu + "\n");
-		this.triggerAlarm();
+		this.triggerAlarm(feu);
 		//-> this.sendMeasures()
 	}
 		

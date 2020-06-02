@@ -2,11 +2,17 @@ package probes.simulation;
 
 import java.awt.Point;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import probes.models.*;
+import utilities.Tools;
 
 
 
@@ -47,7 +53,13 @@ public class ProbSimulation {
 	
 //METHODS
 	//initialise des probs (a randomiser)
-	public void initProbs(int num) {
+	public void initProbs(int num) throws IOException {
+		URL url = new URL("http://localhost:8081/ProbeWebService/removeAll"); 
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection(); 
+		connection.setRequestMethod("POST"); 
+		connection.setDoOutput(false); 
+		connection.getInputStream();
+		
 		this.addProb("Smoke", 1, 0.1, new Point(11,11), 1);
 		this.addProb("Thermic", 20, 0.1, new Point(5,20), 3);
 		this.addProb("Smoke", 1, 0.1, new Point(30,30), 1);
@@ -58,7 +70,7 @@ public class ProbSimulation {
 	}
 	
 	//ajoute une probe
-	public void addProb(String type, float rate, double error,Point localisation, float range) {
+	public void addProb(String type, float rate, double error,Point localisation, float range) throws IOException {
 		if (type == "Smoke") {
 			this.probList.add(new SmokeProb(rate, error, localisation, range));
 		}
@@ -68,7 +80,19 @@ public class ProbSimulation {
 		if (type == "Thermic") {
 			this.probList.add(new ThermicProb(rate, error, localisation, range));
 		}
+		this.addProbToMap(type, localisation);
 	}	
+	
+	public void addProbToMap(String type, Point localisation) throws IOException {
+		//envoie la position de la sonde a Simulation service
+		URL url = new URL("http://localhost:8081/ProbeWebService/add/" + type.toString() + "/" + localisation.x + "/" + localisation.y); 
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection(); 
+		connection.setRequestMethod("POST"); 
+		connection.setDoOutput(false); 
+		connection.getInputStream();
+	}
+	
+	
 }
 
 

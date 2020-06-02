@@ -1,6 +1,7 @@
 package probes.controller;
 
 import java.awt.Point;
+import java.io.IOException;
 
 import probes.simulation.ProbSimulation;
 
@@ -13,7 +14,7 @@ public class ProbRestController {
 	public ProbRestController() {
 	}
 	
-	public void newProb(String type,  Point pos) {
+	public void newProb(String type,  Point pos) throws IOException {
 		simulation.addProb(type, 10, 0.1, pos, 5); //(type sonde, rate freq, error, localistaion, range)
 	}
 

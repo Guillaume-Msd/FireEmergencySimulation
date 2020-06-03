@@ -15,7 +15,7 @@ import emergency.AbstractVehicule;
 import emergency.Alerte;
 import emergency.Coord;
 import emergency.EnumStatut;
-import emergency.VehiculePompier;
+
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -41,16 +41,16 @@ public class EmergencySimulator {
 		//On récupère les alertes du serveur
 		List<Alerte> alertes = getAlertes();
 		
-		//On parcours ces alertes pour voir si il y en a des nouvelles
-		parcoursAlertes(alertes);
-		
 		List<AbstractVehicule> vehicules = HQ.getVehicules();//A modifier lorsque l'on aura plusieurs HQ
+		
+		//On parcours ces alertes pour voir si il y en a des nouvelles
+		parcoursAlertes(alertes,vehicules);
 		
 		//On déplace les véhicules
 		mooveAllVehiculesAndCheckArrivals(vehicules);
 		
 		//On renvoie les véhicules qui ont finis leur intervention au HQ
-		gestionFinDIntervention();
+		//gestionFinDIntervention();
 	}
 	
 	public List<Alerte> getAlertes() throws IOException {
@@ -77,18 +77,21 @@ public class EmergencySimulator {
 		return alertList;
 	}
 	
-	public void parcoursAlertes(List<Alerte> alertes) throws IOException {
+	public void parcoursAlertes(List<Alerte> alertes,List<AbstractVehicule> vehicules) throws IOException {
 		for (Alerte alerte : alertes) {
-
 			if (alerte.getEtat().contentEquals("Nouvelle Alerte")) {
 				gererNouvelleAlerte(alerte);
+			}
+			for (AbstractVehicule v : vehicules) {
+				if (v.getCoord().equals(alerte.getCoord())) {
+					alerte.delete();
+				}
 			}
 		}
 	}
 	
 	public void mooveAllVehiculesAndCheckArrivals(List<AbstractVehicule> vehicules) throws IOException {
 		for (AbstractVehicule vehicule : vehicules) {
-			System.out.println(vehicule);
 			if ( !(vehicule.getPath().isEmpty())) {
 				Coord coord = vehicule.getPath().remove(0);
 				vehicule.setCoord(coord);
@@ -104,16 +107,19 @@ public class EmergencySimulator {
 					vehicule.updateVehiculeStatut();
 				}
 			}
+			System.out.println(vehicule);
 		}
 	}
 	
 	public void gererNouvelleAlerte(Alerte alerte) throws IOException {
-		//TODO
+		//TODO ChoisirHQ()
 		AbstractHeadquarter hq = ChoisirHQ();
-		createIntervention(hq.ChoisirVehicule(alerte),this.getHQ().getEmplacement_headquarter().x,this.getHQ().getEmplacement_headquarter().y,
+		List<AbstractVehicule> vehicules = hq.ChoisirVehicule(alerte);
+		if (!(vehicules.isEmpty())) {
+			createIntervention(vehicules,this.getHQ().getEmplacement_headquarter().x,this.getHQ().getEmplacement_headquarter().y,
 				alerte.getCoord().x,alerte.getCoord().y);
-		
-		AlerteEnCours(alerte);
+			AlerteEnCours(alerte);
+		}
 	}
 	
 	public void AlerteEnCours(Alerte alerte) throws IOException {
@@ -164,7 +170,6 @@ public class EmergencySimulator {
 		for (AbstractVehicule vehicule : vehicules) {
 			vehicule.setPath(coordList);
 			vehicule.setStatut(EnumStatut.EnRoutePourIntervention);
-
 			vehicule.addVehiculeView();
 		}
 		
@@ -193,21 +198,15 @@ public class EmergencySimulator {
 			coordList.add(coords[i]);
 		}
 		
-		
 		coordList.add(new Coord(xFinal,yFinal));
 		
 		vehicule.setPath(coordList);
-		
 		vehicule.setStatut(EnumStatut.RetourVersLeHQ);
-		
 		vehicule.updateVehiculeStatut();
-		
-		
-		
 		
 	}
 	
-	public List<VehiculePompier> getVehiculesByStatut(EnumStatut statut) throws IOException {
+	public List<AbstractVehicule> getVehiculesByStatut(EnumStatut statut) throws IOException {
 		URL url = new URL("http://localhost:8082/VehiculeWebService/vehiculesByStatut/"+statut);
 		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection(); 
         httpURLConnection.setRequestMethod("GET");
@@ -221,8 +220,8 @@ public class EmergencySimulator {
 	
 		ObjectMapper mapper = new ObjectMapper();
 		
-		VehiculePompier[] vehicules = mapper.readValue(response1.toString(), VehiculePompier[].class);
-		List<VehiculePompier> vehiculeList = new ArrayList<VehiculePompier>();
+		AbstractVehicule[] vehicules = mapper.readValue(response1.toString(), AbstractVehicule[].class);
+		List<AbstractVehicule> vehiculeList = new ArrayList<AbstractVehicule>();
 		int i;
 		for(i = 0; i < vehicules.length; i++) {
 			vehiculeList.add(vehicules[i]);
@@ -231,15 +230,9 @@ public class EmergencySimulator {
 	}
 	
 	public void gestionFinDIntervention() throws IOException {
-		List<VehiculePompier> vehicules = getVehiculesByStatut(EnumStatut.FinDIntervention);
-			for (VehiculePompier v : vehicules) {
-				for(AbstractVehicule vehicule : HQ.getVehicules()) {
-					if(v.getId() == vehicule.getId()) {
-						retourIntervention(vehicule,v.getCoord().x,v.getCoord().y,this.getHQ().getEmplacement_headquarter().x,this.getHQ().getEmplacement_headquarter().y);
-					}
-				}
-				
-				
-			}
+		List<AbstractVehicule> vehicules = getVehiculesByStatut(EnumStatut.FinDIntervention);
+		for (AbstractVehicule v : vehicules) {
+			retourIntervention(v,v.getCoord().x,v.getCoord().y,this.getHQ().getEmplacement_headquarter().x,this.getHQ().getEmplacement_headquarter().y);
+		}
 	}
 }

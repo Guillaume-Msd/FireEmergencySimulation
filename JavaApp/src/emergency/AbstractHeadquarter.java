@@ -64,12 +64,12 @@ public abstract class AbstractHeadquarter extends AbstractIntervention implement
 	}
 
 	/**
-	 * Place le personnel disponible dans le vehicule spï¿½cifiï¿½
+	 * Place le personnel disponible dans le vehicule spécifié
 	 * @param v (AbstractVehicule)
-	 * @param nombre_intervenants prï¿½cise le nombre de personnes ï¿½ envoyer sur l'intervention
+	 * @param nombre_intervenants précise le nombre de personnes à envoyer sur l'intervention
 	 */
 	public void setStaffOnVehicule(AbstractVehicule v, Integer nombre_intervenants) {
-		int i = Math.min(v.getTailleMaxStaff(),nombre_intervenants); // On limite le nombre de personnes dans un vï¿½hicule
+		int i = Math.min(v.getTailleMaxStaff(),nombre_intervenants); // On limite le nombre de personnes dans un véhicule
 		for (Staff personne: this.personnel) {
 			if (i <= 0) {
 				return;
@@ -80,11 +80,11 @@ public abstract class AbstractHeadquarter extends AbstractIntervention implement
 				i = i - 1;
 			}
 		}
-		//System.out.println("Pas assez de personnes disponibles et en capacitï¿½ d'intervenir");
+		System.out.println("Pas assez de personnes disponibles et en capacité d'intervenir");
 	}
 
 	/**
-	 * Gï¿½re le retour d'un vï¿½hicule ï¿½ la caserne
+	 * Gère le retour d'un véhicule à la caserne
 	 * @param v
 	 */
 	public void retourVehicule(AbstractVehicule v) {
@@ -114,7 +114,7 @@ public abstract class AbstractHeadquarter extends AbstractIntervention implement
 	public List<AbstractVehicule> ChoisirVehicule(Alerte alerte) throws IOException {
 		int nb_vehicules;
 		List<AbstractVehicule> vehicules= new ArrayList<AbstractVehicule> ();
-		if (alerte.getIntensity() < 15) { //15 est une valeur arbitraire
+		if (alerte.getValeur() < 15) { //15 est une valeur arbitraire
 			nb_vehicules = 1;
 		}
 		else {
@@ -134,7 +134,7 @@ public abstract class AbstractHeadquarter extends AbstractIntervention implement
 		if (nb_vehicules <= 0) {
 			return vehicules;
 		}
-		System.out.println("Pas assez de vï¿½hicules disponibles.");
+		System.out.println("Pas assez de véhicules disponibles.");
 		return vehicules;
 	}
 }

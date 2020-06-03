@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.sp.webservice.models.Alerte;
 import io.sp.webservice.models.Coord;
+import io.sp.webservice.models.EnumStatut;
 import io.sp.webservice.models.Vehicule;
 import io.sp.webservice.service.VehiculeService;
 import utilities.Tools;
@@ -28,17 +28,17 @@ public class VehiculeController {
 	
 	@GetMapping("VehiculeWebService/allVehicules")
 	public String getAllVehicules() {
-		List<Vehicule> liste = vehiculeService.getAll();
-		String vehicules = "";
-		for (Vehicule v:liste) {
-			vehicules = vehicules + Tools.toJsonString(v) + "/";
-		}
-		return vehicules.substring(0, vehicules.length()-1);
+		return Tools.toJsonString(vehiculeService.getAll());
 	}
 	
 	@GetMapping("VehiculeWebService/vehicule/{id}")
 	public String getVehicule(@PathVariable String id) {
 		return Tools.toJsonString(vehiculeService.getVehiculeById(id));
+	}
+	
+	@GetMapping("VehiculeWebService/vehiculesByStatut/{statut}")
+	public String getVehiculeByStatut(@PathVariable EnumStatut statut) {
+		return Tools.toJsonString(vehiculeService.getVehiculesByStatut(statut));
 	}
 	
 	@PostMapping("VehiculeWebService/addVehicule/{x}/{y}")
@@ -53,6 +53,13 @@ public class VehiculeController {
 	public void updateVehiculeCoord(@PathVariable String id,@RequestBody Coord coord) {
 		Vehicule vehicule = vehiculeService.getVehiculeById(id);
 		vehicule.setCoord(coord);
+		vehiculeService.updateVehicule(vehicule);
+	}
+	
+	@RequestMapping("VehiculeWebService/updateVehiculeStatut/{id}")
+	public void updateVehiculeStatut(@PathVariable String id,@RequestBody EnumStatut statut) {
+		Vehicule vehicule = vehiculeService.getVehiculeById(id);
+		vehicule.setStatut(statut);
 		vehiculeService.updateVehicule(vehicule);
 	}
 	

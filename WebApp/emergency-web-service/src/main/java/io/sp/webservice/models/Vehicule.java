@@ -18,6 +18,9 @@ public class Vehicule {
 	
 	@Column
 	private String type;
+	
+	@Column
+	private EnumStatut statut;
 
 	
 	public Vehicule() {
@@ -50,6 +53,15 @@ public class Vehicule {
 	public void setType(String type) {
 		this.type = type;
 	}
+	
+	public EnumStatut getStatut() {
+		return statut;
+	}
+
+	public void setStatut(EnumStatut statut) {
+		this.statut = statut;
+	}
+
 	
 
 }

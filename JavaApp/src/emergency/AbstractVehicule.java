@@ -257,7 +257,6 @@ private Coord coord_HQ;
         connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
 		connection.setDoOutput(true);
 		OutputStream os = connection.getOutputStream();
-
 		
         OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
         osw.write(Tools.toJsonString(this.getClass().getSimpleName()));
@@ -276,12 +275,16 @@ private Coord coord_HQ;
 
         int id = Integer.parseInt(response1.toString());
         this.setId(id);
+        
+        this.updateVehiculeStatut();
+        
 	}
 	
 	public void deleteVehiculeView() throws IOException {
 		URL url = new URL("http://localhost:8082/VehiculeWebService/deleteVehicule/"+this.getId());
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("DELETE");
+		connection.getInputStream();
 	}
 	
 	@Override

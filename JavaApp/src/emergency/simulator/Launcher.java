@@ -33,6 +33,6 @@ public class Launcher {
 					e.printStackTrace();
 				}
                  }
-        }    ,0,500);
+        }    ,0,1000);
 	}
 }

@@ -216,7 +216,7 @@ $("#clearFireButton").on("click", function(){
 setInterval(displayAllElements, 2000, "Alert");
 setInterval(displayAllElements, 2000, "Probe");
 setInterval(displayAllElements, 2000, "Fire");
-setInterval(displayAllElements, 2000, "Vehicule");
+setInterval(displayAllElements, 1000, "Vehicule");
 
 
 

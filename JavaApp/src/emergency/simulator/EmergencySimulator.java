@@ -15,7 +15,7 @@ import emergency.AbstractVehicule;
 import emergency.Alerte;
 import emergency.Coord;
 import emergency.EnumStatut;
-
+import emergency.VehiculePompier;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -50,7 +50,7 @@ public class EmergencySimulator {
 		mooveAllVehiculesAndCheckArrivals(vehicules);
 		
 		//On renvoie les véhicules qui ont finis leur intervention au HQ
-		//gestionFinDIntervention();
+		gestionFinDIntervention();
 	}
 	
 	public List<Alerte> getAlertes() throws IOException {
@@ -88,6 +88,7 @@ public class EmergencySimulator {
 	
 	public void mooveAllVehiculesAndCheckArrivals(List<AbstractVehicule> vehicules) throws IOException {
 		for (AbstractVehicule vehicule : vehicules) {
+			System.out.println(vehicule);
 			if ( !(vehicule.getPath().isEmpty())) {
 				Coord coord = vehicule.getPath().remove(0);
 				vehicule.setCoord(coord);
@@ -192,9 +193,17 @@ public class EmergencySimulator {
 			coordList.add(coords[i]);
 		}
 		
+		
 		coordList.add(new Coord(xFinal,yFinal));
 		
 		vehicule.setPath(coordList);
+		
+		vehicule.setStatut(EnumStatut.RetourVersLeHQ);
+		
+		vehicule.updateVehiculeStatut();
+		
+		
+		
 		
 	}
 	
@@ -224,7 +233,13 @@ public class EmergencySimulator {
 	public void gestionFinDIntervention() throws IOException {
 		List<VehiculePompier> vehicules = getVehiculesByStatut(EnumStatut.FinDIntervention);
 			for (VehiculePompier v : vehicules) {
-				retourIntervention(v,v.getCoord().x,v.getCoord().y,this.getHQ().getEmplacement_headquarter().x,this.getHQ().getEmplacement_headquarter().y);
+				for(AbstractVehicule vehicule : HQ.getVehicules()) {
+					if(v.getId() == vehicule.getId()) {
+						retourIntervention(vehicule,v.getCoord().x,v.getCoord().y,this.getHQ().getEmplacement_headquarter().x,this.getHQ().getEmplacement_headquarter().y);
+					}
+				}
+				
+				
 			}
 	}
 }

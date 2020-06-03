@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Simulation</title>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+		integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+		crossorigin="" />
+
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+		integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+	<link rel="stylesheet" href="css/index.css" />
+</head>
+
+<body>
+
+	<div class="container-fluid" id="container">
+		<div class="row">
+			<div class="col-md-6">
+				<div id="simuMap"></div>
+			</div>
+
+
+			<div class="col-md-3">
+				<div class="container-fluid">
+					<div class="row">
+						<h4 class="mb-4">Add a Fire</h4>
+					</div>
+					<form action="" id="FireForm">
+						<div class="row">
+							<div class="form-group">
+								<label for="X">Coord x</label>
+								<input type="text" class="form-control" id ="FireX">
+							</div>
+
+							<div class="form-group">
+								<label for="Y">Coord y</label>
+								<input type="text" class="form-control" id = "FireY">
+							</div>
+	
+							FAIRE UNE LISTE DEROULANTE
+	
+							<div class="form-group">
+								<label for="Type">Type</label>
+								<input type="text" class="form-control" id = "FireType">
+							</div>
+
+							<div class="form-group">
+								<label for="Intensity">Intensity</label>
+								<input type="text" class="form-control" id = "FireIntensity">
+							</div>
+						</div>
+
+						<div class="row">
+							<button class="btn btn-primary" id="addFireButton">Add</button>
+						</div>
+					</form>
+
+				</div>
+			</div>
+
+			<div class="col-md-3">
+				<div class="container-fluid">
+
+					<div class="row">
+						<h4 class="mb-4">Add a Probe</h4>
+					</div>
+					<form action="" id="Probe Form">
+						<div class="row">
+							<div class="form-group">
+								<label for="Fire">Coord x</label>
+								<input type="text" class="form-control">
+							</div>
+
+							<div class="form-group">
+								<label for="Y">Coord y</label>
+								<input type="text" class="form-control">
+							</div>
+
+							<div class="form-group">
+								<label for="Type">Type</label>
+								<input type="text" class="form-control">
+							</div>
+
+						</div>
+
+						<div class="row">
+							<button type="submit" class="btn btn-primary">Add</button>
+						</div>
+					</form>
+
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+
+
+	<button style="margin-top:10vh;">Add Fire</button>
+
+	<button id="clearFireButton" style="margin-top:10vh;">Clear Fires</button>
+
+
+	<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+		integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+		crossorigin=""></script>
+
+	<script src="js/jquery-3.3.1.min.js"></script>
+	<script src="js/Simu.js"></script>
+
+</body>
+
+</html>

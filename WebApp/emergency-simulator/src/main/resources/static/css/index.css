@@ -13,3 +13,7 @@
 .leaflet-grid-label .lng {
 	text-shadow: -2px 0 #FFFFFF, 0 2px #FFFFFF, 2px 0 #FFFFFF, 0 -2px #FFFFFF;
 }
+
+#container {
+	margin-top: 10vh;
+}

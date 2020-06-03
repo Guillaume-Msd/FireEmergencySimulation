@@ -19,6 +19,12 @@ public class Launcher {
 		v.setCoord_HQ(simulateur.getHQ().getEmplacement_headquarter());
 		v.setCoord(v.getCoord_HQ());
 		simulateur.getHQ().addVehicule(v);
+		/*
+		VehiculePompier v2 = new VehiculePompier(40, 40);
+		v2.setCoord_HQ(simulateur.getHQ().getEmplacement_headquarter());
+		v2.setCoord(v.getCoord_HQ());
+		simulateur.getHQ().addVehicule(v2);*/
+		
 		
 		new Timer().scheduleAtFixedRate(new TimerTask(){
             @Override

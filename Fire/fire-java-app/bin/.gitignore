@@ -1,5 +1,4 @@
-/simulator/
 /controller/
-/model/
 /simulation/
-/launcher/
+/utilities/
+/model/

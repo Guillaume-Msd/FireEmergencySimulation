@@ -1,17 +1,17 @@
 package simulation;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.TimerTask;
 
 import controller.EventsController;
+import model.Fire;
 
-public class CreationTask extends TimerTask {
+public class CreateFireTask extends TimerTask {
 	
-	private int mapSize;
 	private EventsController eventsController;
+	private int mapSize;
 	
-	public CreationTask(int mapSize, EventsController eventsController) {
+	public CreateFireTask(int mapSize, EventsController eventsController) {
 		this.mapSize = mapSize;
 		this.eventsController = eventsController;
 	}
@@ -19,8 +19,8 @@ public class CreationTask extends TimerTask {
 	@Override
 	public void run() {
 		try {
-		    System.out.println(new Date() + " Creation");
-			Simulator.creationCycle(this.mapSize, this.eventsController);
+			Fire feu = Simulator.newFire(mapSize);
+			this.eventsController.createEvent(feu);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -6,7 +6,7 @@ public class LauncherSimulator {
 
 	public static void main(String[] args) {
 		
-		Simulator simulator = new Simulator(64, 10);
+		Simulator simulator = new Simulator(16, 10);
 		
 	}
 

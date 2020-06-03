@@ -230,9 +230,14 @@ public class EmergencySimulator {
 	}
 	
 	public void gestionFinDIntervention() throws IOException {
+		List<AbstractVehicule> vehiculesList = HQ.getVehicules();
 		List<AbstractVehicule> vehicules = getVehiculesByStatut(EnumStatut.FinDIntervention);
-		for (AbstractVehicule v : vehicules) {
-			retourIntervention(v,v.getCoord().x,v.getCoord().y,this.getHQ().getEmplacement_headquarter().x,this.getHQ().getEmplacement_headquarter().y);
+		for (AbstractVehicule vehicule : vehicules) {
+			for(AbstractVehicule v: vehiculesList)
+				if(v.getId() == vehicule.getId()) {
+					retourIntervention(v,v.getCoord().x,v.getCoord().y,this.getHQ().getEmplacement_headquarter().x,this.getHQ().getEmplacement_headquarter().y);
+				}
+			
 		}
 	}
 }

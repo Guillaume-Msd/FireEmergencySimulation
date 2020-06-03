@@ -11,7 +11,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import events.Fire;
 
 public class GetFromFireServ {
 	//collecte tous les feux

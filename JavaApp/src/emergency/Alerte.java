@@ -1,5 +1,10 @@
 package emergency;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class Alerte {
 	private int id;
 	private Coord coord;
@@ -70,5 +75,13 @@ public class Alerte {
 	@Override
 	public String toString() {
 		return "Alerte "+this.id+": "+this.coord+", Valeur: "+this.intensity+", Type: "+this.type+", Etat: "+this.etat;
+	}
+
+	public void delete() throws IOException {
+		URL url = new URL("http://localhost:8082/EmergencyWebService/deleteAlerte/"+this.getId());
+	    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+	    connection.setRequestMethod("DELETE");
+	    connection.getInputStream();
+		
 	}
 }

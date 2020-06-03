@@ -22,6 +22,8 @@ public class Vehicule {
 	@Column
 	private EnumStatut statut;
 
+	@Column
+	private int range;
 	
 	public Vehicule() {
 	}
@@ -30,6 +32,14 @@ public class Vehicule {
 		this.setType(type);
 	}
 	
+	public int getRange() {
+		return range;
+	}
+
+	public void setRange(int range) {
+		this.range = range;
+	}
+
 	public int getId() {
 		return id;
 	}

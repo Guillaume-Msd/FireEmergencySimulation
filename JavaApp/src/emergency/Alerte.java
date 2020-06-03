@@ -1,7 +1,5 @@
 package emergency;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class Alerte {
 	private int id;
 	private Coord coord;

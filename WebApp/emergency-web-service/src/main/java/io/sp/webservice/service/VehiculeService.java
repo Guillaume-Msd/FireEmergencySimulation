@@ -43,6 +43,9 @@ public class VehiculeService {
 	public List<Vehicule> getVehiculesByStatut(EnumStatut statut) {
 		List<Vehicule> vehicules = this.getAll();
 		List<Vehicule> vehicules_retour = new LinkedList<Vehicule>();
+		if (vehicules == null) {
+			return new LinkedList<Vehicule>();
+		}
 		for (Vehicule v : vehicules) {
 			if (v.getStatut().equals(statut)) {
 				vehicules_retour.add(v);

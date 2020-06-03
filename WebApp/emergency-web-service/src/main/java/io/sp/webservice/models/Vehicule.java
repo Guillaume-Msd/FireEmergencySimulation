@@ -71,7 +71,4 @@ public class Vehicule {
 	public void setStatut(EnumStatut statut) {
 		this.statut = statut;
 	}
-
-	
-
 }

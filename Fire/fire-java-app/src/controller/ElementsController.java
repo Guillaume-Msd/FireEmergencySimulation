@@ -1,8 +1,8 @@
-package simulator.controller;
+package controller;
 
 import java.util.List;
 
-import simulator.model.EnvironmentElement;
+import model.EnvironmentElement;
 
 public class ElementsController implements ElementsInterface {
 

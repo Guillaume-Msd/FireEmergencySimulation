@@ -28,7 +28,7 @@ var images = [];
 
 function displayFire(x, y){
 	
-	var n = 16;
+	var n = 64;
 	
 	var minX = (width/n) * y;
 	var maxX = (width/n) * (y+1);

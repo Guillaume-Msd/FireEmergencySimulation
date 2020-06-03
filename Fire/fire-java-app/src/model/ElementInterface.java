@@ -1,4 +1,4 @@
-package simulator.model;
+package model;
 
 public interface ElementInterface {
 

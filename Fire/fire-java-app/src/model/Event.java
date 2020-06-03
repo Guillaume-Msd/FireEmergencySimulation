@@ -1,10 +1,10 @@
-package simulator.model;
+package model;
 
 import java.util.HashSet;
 import java.util.Set;
 
 
-public class Event {
+public abstract class Event {
 	
 	private Set <Coord> localisation;
 	private int id;

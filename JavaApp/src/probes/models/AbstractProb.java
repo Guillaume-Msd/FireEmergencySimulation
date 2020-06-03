@@ -45,7 +45,7 @@ public abstract class AbstractProb implements ProbMeasureInterface,  ProbServerI
 //METHODS
 	public void triggerAlarm(Point feu) throws IOException {
 		//envoie l'info a emergency
-		AlerteSignal alerte = new AlerteSignal(1,this.type.toString(),"newSig");
+		AlerteSignal alerte = new AlerteSignal(1,this.type.toString(),"Nouvelle Alerte");
 		System.out.print(Tools.toJsonString(alerte));
 		
 		URL url = new URL("http://localhost:8082/EmergencyWebService/addAlert/" + feu.x + "/" + feu.y); 

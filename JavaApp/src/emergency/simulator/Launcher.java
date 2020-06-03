@@ -15,7 +15,7 @@ public class Launcher {
 		//TODO créer un petit scénario de base
 		VehiculePompier v = new VehiculePompier(40,40);
 		final EmergencySimulator simulateur = new EmergencySimulator();
-		simulateur.setHQ(new FireFighterHQ(new Coord(3,40)));
+		simulateur.setHQ(new FireFighterHQ(new Coord(30,150)));
 		v.setCoord_HQ(simulateur.getHQ().getEmplacement_headquarter());
 		v.setCoord(v.getCoord_HQ());
 		simulateur.getHQ().addVehicule(v);
@@ -33,6 +33,6 @@ public class Launcher {
 					e.printStackTrace();
 				}
                  }
-        }    ,0,2000);
+        }    ,0,500);
 	}
 }

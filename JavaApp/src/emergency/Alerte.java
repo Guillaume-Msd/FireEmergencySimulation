@@ -5,19 +5,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Alerte {
 	private int id;
 	private Coord coord;
-	private int valeur;
+	private int intensity;
 	private String type;
 	private String etat;
+	private int range;
 	
+
+
 	public Alerte() {
 		
 	}
 	
 	//public Alerte(@JsonProperty("id")int id, @JsonProperty("coord_alerte")Coord coord, @JsonProperty("valeur_detectee")Integer valeur, @JsonProperty("type")String type, @JsonProperty("etat")String etat) {
-	public Alerte(int id, Coord coord, int valeur, String type, String etat) {	
+	public Alerte(int id, Coord coord, int intensity, String type, String etat) {	
 		this.setId(id);
 		this.setCoord(coord);
-		this.setValeur(valeur);
+		this.setIntensity(intensity);
 		this.setType(type);
 		this.setEtat(etat);
 	}
@@ -36,12 +39,12 @@ public class Alerte {
 		this.coord = coord;
 	}
 
-	public int getValeur() {
-		return valeur;
+	public int getIntensity() {
+		return intensity;
 	}
 
-	public void setValeur(int valeur) {
-		this.valeur = valeur;
+	public void setIntensity(int intensity) {
+		this.intensity = intensity;
 	}
 	public String getType() {
 		return type;
@@ -58,8 +61,16 @@ public class Alerte {
 		this.etat = etat;
 	}
 	
+	public int getRange() {
+		return range;
+	}
+
+	public void setRange(int range) {
+		this.range = range;
+	}
+	
 	@Override
 	public String toString() {
-		return "Alerte "+this.id+": "+this.coord+", Valeur: "+this.valeur+", Type: "+this.type+", Etat: "+this.etat;
+		return "Alerte "+this.id+": "+this.coord+", Valeur: "+this.intensity+", Type: "+this.type+", Etat: "+this.etat;
 	}
 }

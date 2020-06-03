@@ -114,7 +114,7 @@ public abstract class AbstractHeadquarter extends AbstractIntervention implement
 	public List<AbstractVehicule> ChoisirVehicule(Alerte alerte) throws IOException {
 		int nb_vehicules;
 		List<AbstractVehicule> vehicules= new ArrayList<AbstractVehicule> ();
-		if (alerte.getValeur() < 15) { //15 est une valeur arbitraire
+		if (alerte.getIntensity() < 15) { //15 est une valeur arbitraire
 			nb_vehicules = 1;
 		}
 		else {

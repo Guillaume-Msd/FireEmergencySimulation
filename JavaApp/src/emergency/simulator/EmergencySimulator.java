@@ -82,7 +82,7 @@ public class EmergencySimulator {
 	
 	public void parcoursAlertes(List<Alerte> alertes) throws IOException {
 		for (Alerte alerte : alertes) {
-			System.out.println(alerte);
+
 			if (alerte.getEtat().contentEquals("Nouvelle Alerte")) {
 				gererNouvelleAlerte(alerte);
 			}
@@ -106,7 +106,6 @@ public class EmergencySimulator {
 					vehicule.updateVehiculeStatut();
 				}
 			}
-			System.out.println(vehicule);
 		}
 	}
 	
@@ -167,7 +166,7 @@ public class EmergencySimulator {
 		for (AbstractVehicule vehicule : vehicules) {
 			vehicule.setPath(coordList);
 			vehicule.setStatut(EnumStatut.EnRoutePourIntervention);
-			System.out.println(vehicule);
+
 			vehicule.addVehiculeView();
 		}
 		

@@ -57,9 +57,11 @@ public class VehiculeController {
 	}
 	
 	@RequestMapping("VehiculeWebService/updateVehiculeStatut/{id}")
-	public void updateVehiculeStatut(@PathVariable String id,@RequestBody EnumStatut statut) {
+	public void updateVehiculeStatut(@PathVariable String id, @RequestBody EnumStatut statut) {
 		Vehicule vehicule = vehiculeService.getVehiculeById(id);
+		System.err.println(vehicule.getStatut());
 		vehicule.setStatut(statut);
+		System.err.println(vehicule.getStatut());
 		vehiculeService.updateVehicule(vehicule);
 	}
 	

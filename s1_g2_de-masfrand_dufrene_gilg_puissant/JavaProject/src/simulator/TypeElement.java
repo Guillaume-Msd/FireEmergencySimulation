@@ -1,4 +1,0 @@
-package simulator;
-
-enum TypeElement {
-}

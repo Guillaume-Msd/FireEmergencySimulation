@@ -17,7 +17,7 @@ public class Alerte {
 	private Coord coord;
 	
 	@Column
-	private int valeur;
+	private int intensity;
 	
 	@Column
 	private String type;
@@ -25,18 +25,22 @@ public class Alerte {
 	@Column
 	private String etat;
 	
+	@Column
+	private int range;
+
+
 	public Alerte() {
 		
 	}
 	
 	public Alerte(Coord coord, Integer valeur, String type) {
 		this.setCoord(coord);
-		this.setValeur(valeur);
+		this.setIntensity(valeur);
 		this.setType(type);
 	}
 	
-	public Alerte(Integer valeur, String type, String etat) {
-		this.setValeur(valeur);
+	public Alerte(Integer intensity, String type, String etat) {
+		this.setIntensity(intensity);
 		this.setType(type);
 		this.setEtat(etat);
 	}
@@ -54,11 +58,11 @@ public class Alerte {
 	public void setCoord(Coord coord) {
 		this.coord = coord;
 	}
-	public int getValeur() {
-		return valeur;
+	public int getIntensity() {
+		return intensity;
 	}
-	public void setValeur(int valeur) {
-		this.valeur = valeur;
+	public void setIntensity(int valeur) {
+		this.intensity = valeur;
 	}
 	public String getType() {
 		return type;
@@ -75,8 +79,16 @@ public class Alerte {
 		this.etat = etat;
 	}
 	
+	public int getRange() {
+		return range;
+	}
+
+	public void setRange(int range) {
+		this.range = range;
+	}
+	
 	@Override
 	public String toString() {
-		return "Alerte "+this.id+": "+this.coord+", Valeur: "+this.valeur+", Type: "+this.type;
+		return "Alerte "+this.id+": "+this.coord+", Valeur: "+this.intensity+", Type: "+this.type;
 	}
 }

@@ -16,7 +16,7 @@ public interface ProbServerInterface {
 	   *  Send information to the server
 	 * @throws IOException 
 	   */
-	  public void sendInformation(Point p) throws IOException;
+	  public void sendInformation() throws IOException;
 
 	  /** 
 	   *  Get information to trigger behaviour

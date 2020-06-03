@@ -39,10 +39,11 @@ public class AlerteController {
 		return Tools.toJsonString(emergencyService.getAlerteById(id));
 	}
 	
-	@RequestMapping(value="EmergencyWebService/addAlert/{x}/{y}", consumes=MediaType.APPLICATION_JSON_VALUE)
-	public int addAlerte(@RequestBody Alerte alerte, @PathVariable String x, @PathVariable String y) {
+	@RequestMapping(value="EmergencyWebService/addAlert/{x}/{y}/{range}", consumes=MediaType.APPLICATION_JSON_VALUE)
+	public int addAlerte(@RequestBody Alerte alerte, @PathVariable String x, @PathVariable String y, @PathVariable String range) {
 		Coord coord = new Coord(Integer.parseInt(x), Integer.parseInt(y));
 		alerte.setCoord(coord);
+		alerte.setRange(Integer.parseInt(range));
 		emergencyService.addAlerte(alerte);
 		return alerte.getId();
 	}

@@ -27,6 +27,7 @@ const imgAlert = 'images/alert.png';
 const imgSmoke = 'images/Smoke.png';
 const imgCO2 = 'images/CO2.png';
 const imgThermic = 'images/Thermic.png';
+const imgCarserne = "images/caserne.jpg"
 
 var north = map.getBounds().getNorth(); 
 
@@ -42,46 +43,58 @@ var height =  north - south;
 
 console.log(map.getBounds());
 
-var images = [];
+var imagesSimu = [];
+var imagesEmergency = [];
 
 
 
 function displayElementSimu(x, y, imgSrc){
 	
 	var n = 256;
-	var minX = (width/n) * (y - 2);
-	var maxX = (width/n) * (y + 2);
-	var minY = (height/n) * (x - 2);
-	var maxY = (height/n) * (x + 2 );
+	var minX = (width/n) * (y - 4);
+	var maxX = (width/n) * (y + 4);
+	var minY = (height/n) * (x - 4);
+	var maxY = (height/n) * (x + 4 );
 	var imageUrl = imgSrc;
 	imageBounds = [[north - minY, west + minX], [north - maxY, west + maxX]];
 	var image = L.imageOverlay(imageUrl, imageBounds)
 	image.addTo(map);
-	images.push(image)
+	imagesSimu.push(image)
 	
 }
 
 function displayElementEmergency(x, y, imgSrc) {
 	
 	var n = 256;
-	var minX = (width/n) * (y - 2);
-	var maxX = (width/n) * (y + 2);
-	var minY = (height/n) * (x - 2);
-	var maxY = (height/n) * (x + 2);
+	var minX = (width/n) * (y - 4);
+	var maxX = (width/n) * (y + 4);
+	var minY = (height/n) * (x - 4);
+	var maxY = (height/n) * (x + 4);
 	var imageUrl = imgSrc;
 	imageBounds = [[north - minY , west + minX], [north - maxY, west + maxX]];
 	var image = L.imageOverlay(imageUrl, imageBounds)
 	image.addTo(map2);
-	images.push(image)
+	imagesEmergency.push(image)
 	
 }
 
 
 function displayAllElements(type){
 	
-	for (var i = 0; i < images.length; i++){
-		map.removeLayer(images[i]);
+	for (var i = 0; i < imagesSimu.length; i++){
+		map.removeLayer(imagesSimu[i]);
 	}
+	
+	imagesSimu = [];
+	
+
+	for (var i = 0; i < imagesEmergency.length; i++){
+		map2.removeLayer(imagesEmergency[i]);
+	}
+	imagesEmergency = [];
+	
+	displayElementEmergency(30, 150, imgCarserne);
+	
 	
 	var url, imgSrc;
 	
@@ -200,10 +213,13 @@ $("#clearFireButton").on("click", function(){
 
 //displayAllElements("Probe");
 
-setInterval(displayAllElements, 3000, "Alert");
-//setInterval(displayAllElements, 2000, "Vehicule");
-setInterval(displayAllElements, 3000, "Probe");
-setInterval(displayAllElements, 3000, "Fire");
+setInterval(displayAllElements, 2000, "Alert");
+setInterval(displayAllElements, 2000, "Probe");
+setInterval(displayAllElements, 2000, "Fire");
+setInterval(displayAllElements, 2000, "Vehicule");
+
+
+
 
 
 
@@ -250,6 +266,7 @@ function itinerary(xInit, yInit, xFinal, yFinal){
 	});
 	
 }
+
 
 function Realitinerary(xInit, yInit, xFinal, yFinal){
 	$.ajax({

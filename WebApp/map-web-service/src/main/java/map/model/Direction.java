@@ -92,6 +92,18 @@ public class Direction {
 		
 		return coord;
 	}
+	
+	private List<Coord> smooth(List<Coord> coordList){
+		List<Coord> smoothCoordList = new ArrayList<Coord>();
+		int i;
+		for(i = 0; i < smoothCoordList.size() - 1; i++) {
+			if (smoothCoordList.get(i) == smoothCoordList.get(i + 1 ) ) {
+				
+			}
+				
+		}
+		return null;
+	}
 
 	public String realItinerary(int xInit, int yInit, int xFinal, int yFinal) throws IOException {
 		MapboxDirections.Builder builder = MapboxDirections.builder();

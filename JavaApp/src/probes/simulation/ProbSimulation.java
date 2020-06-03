@@ -102,7 +102,7 @@ public class ProbSimulation {
 	}
 	
 	//ajoute une probe
-	public void addProb(String type, float rate, double error,Point localisation, float range) throws IOException {
+	public void addProb(String type, int rate, double error,Point localisation, int range) throws IOException {
 		if (type == "Smoke") {
 			this.probList.add(new SmokeProb(rate, error, localisation, range));
 		}

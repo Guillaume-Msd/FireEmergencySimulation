@@ -22,7 +22,8 @@ public interface ProbMeasureInterface {
 
   /** 
    *  Send measure to the server
+ * @throws IOException 
    */
-  public void sendMeasures();
+  public void sendMeasures() throws IOException;
 
 }

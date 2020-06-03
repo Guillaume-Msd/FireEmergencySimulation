@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +22,12 @@ import utilities.Tools;
 
 public abstract class AbstractProb implements ProbMeasureInterface,  ProbServerInterface {
 	protected TypeSonde type;
-	protected float rate;
-	protected float ratecount;
-	protected double error;
-	protected Point localisation;
-	protected float range;
+	private int rate;
+	private int ratecount;
+	private double error;
+	private Point localisation;
+	protected int range;
+	private AlerteSignal alerte;
 	
 
 //CONSTRUCTORS
@@ -33,22 +35,72 @@ public abstract class AbstractProb implements ProbMeasureInterface,  ProbServerI
 		
 	}
 	
-	public AbstractProb(TypeSonde type, float rate, double error,Point localisation, float range) {
+	public AbstractProb(TypeSonde type, int rate, double error,Point localisation, int range) {
 		this.type = type;
 		this.rate = rate;
 		this.error = error;
 		this.localisation = localisation;
 		this.range = range;
+		this.alerte = new AlerteSignal(0,this.type.toString(),"Nouvelle Alerte");
 	}
 	
 
 //METHODS
-	public void triggerAlarm(Point feu) throws IOException {
-		//envoie l'info a emergency
-		AlerteSignal alerte = new AlerteSignal(1,this.type.toString(),"Nouvelle Alerte");
-		System.out.print(Tools.toJsonString(alerte));
+	//Recupere la liste des feux (coordonnées)
+	public List<Point> collectData() throws IOException {
+		return GetFromFireServ.fireList();
+	}
+	
+	//Verifie si un feu est dans le rayon d'action d'une sonde, applique l'erreur, envoie l'information
+	public void getInformation() throws IOException {
+		 List<Point> listFeux = new ArrayList<Point>();
+	     listFeux = this.collectData();
+	     
+		int previousIntensity = this.alerte.getIntensity();	//on recupere l'intensité mesurée précédement
+		this.alerte.resetIntensity();	//on reset l'intensité
 		
-		URL url = new URL("http://localhost:8082/EmergencyWebService/addAlert/" + feu.x + "/" + feu.y); 
+	    for (Point feu: listFeux) {
+	    	if ( (Math.abs(feu.x - this.localisation.x) < this.range) &&
+	    			(Math.abs(feu.y - this.localisation.y) < this.range) ) {
+
+	    		if (this.applyErrors() == true) {
+	    			this.alerte.setIntensity(1);		//on recalcul l'intensité
+	            }
+	        }
+	    }
+	    if (this.alerte.getIntensity() > previousIntensity) {
+	    	this.triggerAlarm();	//si il y a eu aggravation de l'etat du feu
+	    }
+	}
+	
+
+	//Applique une erreur sur la detection du feu
+	public boolean applyErrors() {
+		/*
+		double erreur = Math.random(); // on genere un nombre entre 0 et 1
+		System.out.print(this.error*erreur + "\n");
+		if (erreur * this.error < 0.07) { // on multiplie l'erreur aleatoire par l'error de la sonde (qui sera aussi compris entre 0 et 1)
+			return true;				// si l'erreur finle (produit des deux erreur) est inferieur a 20%
+		}
+		return false;
+		*/
+		return true;
+	}
+	
+	
+	//envoie un signal d'alarme a emergencyService et serverCloud
+	public void triggerAlarm() throws IOException {
+		System.out.print("feu au coord :");
+		System.out.print(this.alerte + "\n");
+		
+		this.sendInformation();
+		//this.sendMeasures();
+	}
+	
+	//Envoi l'information vers EmergencyService 
+	public void sendInformation() throws IOException {
+		System.out.println(Tools.toJsonString(this.alerte));
+		URL url = new URL("http://localhost:8082/EmergencyWebService/addAlert/" + this.localisation.x + "/" + this.localisation.y + "/" + this.range); 
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection(); 
 		connection.setRequestMethod("POST"); 
 		connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8"); 
@@ -56,52 +108,46 @@ public abstract class AbstractProb implements ProbMeasureInterface,  ProbServerI
 		
 		OutputStream os = connection.getOutputStream(); 
 		OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8"); 
-		osw.write(Tools.toJsonString(alerte)); 
+		osw.write(Tools.toJsonString(this.alerte)); 
 		osw.flush(); 
 		osw.close();
 		
 		connection.getInputStream();
-	}
-		
-	public void sendInformation(Point feu) throws IOException {
-		System.out.print("feu au coord :");
-		System.out.print(feu + "\n");
-		this.triggerAlarm(feu);
-		//-> this.sendMeasures()
-	}
-		
-	public void getInformation() throws IOException {
-		 List<Point> listFeux = new ArrayList<Point>();
-	        listFeux = this.collectData();
 
-	        for (Point feu: listFeux) {
-	            if ( (Math.abs(feu.x - this.localisation.x) < this.range) &&
-	                (Math.abs(feu.y - this.localisation.y) < this.range) ) {
 
-	                    if (this.applyErrors() == true) {
-	                        this.sendInformation(feu);
-	                    }
-	            }
-	        }
-	}
-		
-	public List<Point> collectData() throws IOException {
-		return GetFromFireServ.fireList();
-	}
-		
-	public boolean applyErrors() {
-		double erreur = Math.random(); // on genere un nombre entre 0 et 1
-		System.out.print(this.error*erreur + "\n");
-		if (erreur * this.error < 0.07) { // on multiplie l'erreur aleatoire par l'error de la sonde (qui sera aussi compris entre 0 et 1)
-			return true;				// si l'erreur finle (produit des deux erreur) est inferieur a 20%
-		}
-		return false;
-	}
-		
-	public void sendMeasures() {
-		//envoie l'info au cloud analyser
 	}
 	
+	//Envoi l'information au CloudServer
+	public void sendMeasures() throws IOException {
+		JSONObject obj = new JSONObject();
+		
+		obj.put("type", this.type.toString());
+		obj.put("rate", this.rate);
+		obj.put("error", this.error);
+		obj.put("localisation", this.localisation);
+		obj.put("range", this.range);
+		obj.put("intensity", this.alerte.getIntensity());
+		String jsonString =obj.toJSONString();
+
+		System.out.print(obj);
+			   
+		
+		URL url = new URL("http://localhost:8084/EmergencyWebService/add/"); 
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection(); 
+		connection.setRequestMethod("POST"); 
+		connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8"); 
+		connection.setDoOutput(true); 
+		
+		OutputStream os = connection.getOutputStream(); 
+		OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8"); 
+		osw.write(jsonString); 
+		osw.flush(); 
+		osw.close();
+		connection.getInputStream();
+	}
+	
+
+//SETTERS, GETTERS AND ToString   
 	public String toString() {
 		return "[" + this.type + 
 				" | rate:" + this.rate + 
@@ -110,17 +156,15 @@ public abstract class AbstractProb implements ProbMeasureInterface,  ProbServerI
 				" | range:" + this.range +  "\n";
 	}
 	
-
-//SETTERS AND GETTERS
-	public float getRate() {
+	public int getRate() {
 		return this.rate;
 	}
 	
-	public float getRateCount() {
+	public int getRateCount() {
 		return this.ratecount;
 	}
 	
-	public void setRateCount(float nrate) {
+	public void setRateCount(int nrate) {
 		this.ratecount = nrate;
 	}
 

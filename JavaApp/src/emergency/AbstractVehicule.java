@@ -115,24 +115,6 @@ private Coord coord_HQ;
   	public void setStatut(EnumStatut statut) {
   		this.statut = statut;
   	}
-	
-
-	public void move() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-
-	public void putOutFire() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-
-	public void manageStaff() {
-		// TODO Auto-generated method stub
-	
-	}
 
 	/**
 	 * @return the etat
@@ -172,7 +154,7 @@ private Coord coord_HQ;
 
 	/**
 	 * 
-	 * @param s personne ï¿½ ajouter au staff
+	 * @param s personne à ajouter au staff
 	 */
 	public void addToStaff(Staff s) {
 		this.staff.add(s);
@@ -180,7 +162,7 @@ private Coord coord_HQ;
 	
 	/**
 	 * 
-	 * @param staff liste des personnes ï¿½ ajouter au staff
+	 * @param staff liste des personnes à ajouter au staff
 	 */
 	public void addToStaff(List<Staff> staff) {
 		for (Staff s : staff) {
@@ -242,12 +224,11 @@ private Coord coord_HQ;
 		OutputStream os = connection.getOutputStream();
 
         OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+        System.err.println(Tools.toJsonString(this.getStatut()));
         osw.write(Tools.toJsonString(this.getStatut()));
         osw.flush();
         osw.close();
         connection.getInputStream();
-        
-        System.out.println(Tools.toJsonString(this.getStatut()));
 	}
 	
 	public void addVehiculeView() throws IOException {
@@ -257,6 +238,7 @@ private Coord coord_HQ;
         connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
 		connection.setDoOutput(true);
 		OutputStream os = connection.getOutputStream();
+
 		
         OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
         osw.write(Tools.toJsonString(this.getClass().getSimpleName()));
@@ -277,16 +259,14 @@ private Coord coord_HQ;
         this.setId(id);
         
         this.updateVehiculeStatut();
-        
 	}
-	
+
 	public void deleteVehiculeView() throws IOException {
 		URL url = new URL("http://localhost:8082/VehiculeWebService/deleteVehicule/"+this.getId());
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("DELETE");
-		connection.getInputStream();
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Etat: "+this.getEtat()+"\n\tPath: "+this.getPath()

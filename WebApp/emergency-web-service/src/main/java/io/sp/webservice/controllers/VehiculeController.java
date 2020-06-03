@@ -28,7 +28,13 @@ public class VehiculeController {
 	
 	@GetMapping("VehiculeWebService/allVehicules")
 	public String getAllVehicules() {
-		return Tools.toJsonString(vehiculeService.getAll());
+		List<Vehicule> liste = vehiculeService.getAll();
+		if (liste != null) {
+			return Tools.toJsonString(liste);
+		}
+		else {
+			return Tools.toJsonString(new ArrayList<Vehicule>());
+		}
 	}
 	
 	@GetMapping("VehiculeWebService/vehicule/{id}")
@@ -37,8 +43,14 @@ public class VehiculeController {
 	}
 	
 	@GetMapping("VehiculeWebService/vehiculesByStatut/{statut}")
-	public String getVehiculeByStatut(@PathVariable String statut) {
-		return Tools.toJsonString(vehiculeService.getVehiculesByStatut(EnumStatut.valueOf(statut)));
+	public String getVehiculeByStatut(@PathVariable EnumStatut statut) {
+		List<Vehicule> liste = vehiculeService.getVehiculesByStatut(statut);
+		if (liste != null) {
+			return Tools.toJsonString(liste);
+		}
+		else {
+			return Tools.toJsonString(new ArrayList<Vehicule>());
+		}
 	}
 	
 	@PostMapping("VehiculeWebService/addVehicule/{x}/{y}")

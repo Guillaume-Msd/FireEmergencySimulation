@@ -3,8 +3,7 @@ package emergency.simulator;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -16,9 +15,7 @@ import emergency.AbstractVehicule;
 import emergency.Alerte;
 import emergency.Coord;
 import emergency.EnumStatut;
-import emergency.FireFighterHQ;
-import emergency.VehiculePompier;
-import utilities.Tools;
+
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;

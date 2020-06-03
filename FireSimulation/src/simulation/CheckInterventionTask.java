@@ -38,7 +38,13 @@ public class CheckInterventionTask extends TimerTask {
 				    for (InterventionVehicule vehicule: listVehicules) {
 						if (coordEvent.x < (vehicule.getCoord().x  + 10 ) && coordEvent.y < (vehicule.getCoord().y  + 10 )) {
 							this.eventsController.updateEvent(event, ((Fire) event).attenuate(), "attenuer");
-							this.eventsController.updateVehiculeStatut(vehicule);
+							
+							if(event.getLocalisation().size() <= 1) {
+								this.eventsController.deleteEvent(event);
+								this.eventsController.updateVehiculeStatut(vehicule);
+							}
+							
+							
 						}
 				    }
 			    }

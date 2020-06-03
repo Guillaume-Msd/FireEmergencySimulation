@@ -44,9 +44,10 @@ public class EventsController implements EventsInterface {
 	
 	
 	public void deleteEvent(Event event) throws IOException {
-		
+	
 		URL url = new URL("http://localhost:8081/FireWebService/remove/" + event.getId());
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod("GET");
         connection.getInputStream();
 
 	}	
@@ -138,7 +139,7 @@ public class EventsController implements EventsInterface {
 	
 	public InterventionVehicule[] getAllVehicules() throws IOException {
 		
-		URL url = new URL("http://localhost:8082/VehiculeWebService/allVehicules");
+		URL url = new URL("http://localhost:8082/VehiculeWebService/vehiculesByStatut/" + "EnCoursDIntervention");
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
         httpURLConnection.setRequestMethod("GET");
         BufferedReader in = new BufferedReader(
@@ -165,6 +166,8 @@ public class EventsController implements EventsInterface {
         OutputStream os = connection.getOutputStream();
         
         vehicule.setStatut(EnumStatut.FinDIntervention);
+        
+        System.out.println(Tools.toJsonString(vehicule.getStatut()));
 
         OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
         osw.write(Tools.toJsonString(vehicule.getStatut()));

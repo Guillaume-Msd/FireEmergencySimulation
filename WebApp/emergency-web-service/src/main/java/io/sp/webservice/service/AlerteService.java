@@ -1,5 +1,6 @@
 package io.sp.webservice.service;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,13 @@ public class AlerteService {
 	}
 	
 	public List<Alerte> getAll() {
-		return alerteRepository.findAll();
+		List<Alerte> liste = alerteRepository.findAll();
+		if (liste == null) {
+			return new LinkedList<Alerte>();
+		}
+		else {
+			return liste;
+		}
 	}
 	
 	public long getNumber() {

@@ -37,8 +37,8 @@ public class VehiculeController {
 	}
 	
 	@GetMapping("VehiculeWebService/vehiculesByStatut/{statut}")
-	public String getVehiculeByStatut(@PathVariable EnumStatut statut) {
-		return Tools.toJsonString(vehiculeService.getVehiculesByStatut(statut));
+	public String getVehiculeByStatut(@PathVariable String statut) {
+		return Tools.toJsonString(vehiculeService.getVehiculesByStatut(EnumStatut.valueOf(statut)));
 	}
 	
 	@PostMapping("VehiculeWebService/addVehicule/{x}/{y}")

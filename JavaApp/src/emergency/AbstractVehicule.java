@@ -246,10 +246,11 @@ private Coord coord_HQ;
         osw.flush();
         osw.close();
         connection.getInputStream();
+        
+        System.out.println(Tools.toJsonString(this.getStatut()));
 	}
 	
 	public void addVehiculeView() throws IOException {
-        System.out.println(this.getCoord());
 		URL url = new URL("http://localhost:8082/VehiculeWebService/addVehicule/"+this.getCoord().x+"/"+this.getCoord().y);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("POST");

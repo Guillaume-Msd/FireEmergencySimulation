@@ -80,7 +80,7 @@ public abstract class AbstractHeadquarter extends AbstractIntervention implement
 				i = i - 1;
 			}
 		}
-		System.out.println("Pas assez de personnes disponibles et en capacit� d'intervenir");
+		//System.out.println("Pas assez de personnes disponibles et en capacit� d'intervenir");
 	}
 
 	/**

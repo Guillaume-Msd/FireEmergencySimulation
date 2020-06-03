@@ -5,6 +5,8 @@ public class VehiculePompier extends AbstractVehicule {
 	private Integer InterventionSpeed;
 	
 	private Integer InterventionOilConsumption;  //En L/100km
+	
+	private String type = "VehiculePompier";
 
 	
 	public VehiculePompier(Integer speed, Integer consumption) {
@@ -30,5 +32,13 @@ public class VehiculePompier extends AbstractVehicule {
 	 */
 	public Integer getInterventionSpeed() {
 		return InterventionSpeed;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 }

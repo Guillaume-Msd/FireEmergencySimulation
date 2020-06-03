@@ -29,7 +29,7 @@ public class Vehicule {
 	public Vehicule(String type) {
 		this.setType(type);
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -61,7 +61,4 @@ public class Vehicule {
 	public void setStatut(EnumStatut statut) {
 		this.statut = statut;
 	}
-
-	
-
 }

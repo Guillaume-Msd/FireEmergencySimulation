@@ -22,37 +22,52 @@
 			<div class="col-md-6">
 				<div id="simuMap"></div>
 			</div>
+			
+		</div>
 
-
-			<div class="col-md-3">
+		<div class = "row">
+			<div class="col-md-6">
 				<div class="container-fluid">
 					<div class="row">
 						<h4 class="mb-4">Add a Fire</h4>
 					</div>
 					<form action="" id="FireForm">
 						<div class="row">
-							<div class="form-group">
+							<div class="form-group mr-4">
 								<label for="X">Coord x</label>
 								<input type="text" class="form-control" id ="FireX">
 							</div>
-
+						
+						
 							<div class="form-group">
 								<label for="Y">Coord y</label>
 								<input type="text" class="form-control" id = "FireY">
 							</div>
-	
-							FAIRE UNE LISTE DEROULANTE
-	
-							<div class="form-group">
-								<label for="Type">Type</label>
-								<input type="text" class="form-control" id = "FireType">
-							</div>
-
-							<div class="form-group">
-								<label for="Intensity">Intensity</label>
-								<input type="text" class="form-control" id = "FireIntensity">
-							</div>
 						</div>
+					
+						<div class = "row">
+								<div class="form-group mr-4">
+									<label for="Type">Type</label>
+										<select type="text" class="form-control" id = "FireType">
+											<option>ClassA</option>
+											<option>ClassB</option>
+											<option>ClassC</option>
+											<option>ClassD</option>
+											<otion>ClassF</otion>
+										</select>
+								</div>
+	
+								<div class="form-group">
+									<label for="Intensity">Intensity</label>
+										<select type="text" class="form-control" id = "FireIntensity">
+											<option>Low</option>
+											<option>Medium</option>
+											<option>High</option>
+											<option>VeryHigh</option>
+										</select>
+								</div>
+						</div>
+						
 
 						<div class="row">
 							<button class="btn btn-primary" id="addFireButton">Add</button>
@@ -62,30 +77,37 @@
 				</div>
 			</div>
 
-			<div class="col-md-3">
+			<div class="col-md-6">
 				<div class="container-fluid">
 
 					<div class="row">
 						<h4 class="mb-4">Add a Probe</h4>
 					</div>
-					<form action="" id="Probe Form">
+					<form action="" id="ProbeForm">
 						<div class="row">
-							<div class="form-group">
-								<label for="Fire">Coord x</label>
-								<input type="text" class="form-control">
+							<div class="form-group mr-4">
+								<label for="ProbeX">Coord x</label>
+								<input type="text" class="form-control" id = "ProbeX">
 							</div>
 
 							<div class="form-group">
-								<label for="Y">Coord y</label>
-								<input type="text" class="form-control">
+								<label for="ProbeY">Coord y</label>
+								<input type="text" class="form-control" id = "ProbeY">
 							</div>
-
+						</div>
+						
+						
+						<div class = "row">
 							<div class="form-group">
 								<label for="Type">Type</label>
-								<input type="text" class="form-control">
+									<select type="text" class="form-control" id = "ProbeType">
+											<option>CO2</option>
+											<option>Smoke</option>
+											<option>Thermic</option>
+										</select>
 							</div>
-
 						</div>
+						
 
 						<div class="row">
 							<button type="submit" class="btn btn-primary">Add</button>
@@ -94,8 +116,6 @@
 
 				</div>
 			</div>
-
-
 		</div>
 	</div>
 

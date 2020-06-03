@@ -1,5 +1,5 @@
 
-var map = L.map('simuMap').setView([40.4167047, -3.7035825], 14);
+var map = L.map('simuMap').setView([40.4167047, -3.7035825], 15);
 
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -7,6 +7,7 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     id: 'mapbox/streets-v11',
     tileSize: 512,
     zoomOffset: -1,
+    minZoom: 15,
     accessToken: 'pk.eyJ1IjoiZmFiaWVucHVpc3NhbnQiLCJhIjoiY2s5YTJtdWY4MDAyazNtcXVodjczcGwxcCJ9.K49PEwo4aFG5oQUXaTnubg'
 }).addTo(map);
 
@@ -30,6 +31,8 @@ var width = east - west;
 
 var height =  north - south;
 
+console.log(map.getBounds());
+
 
 var imagesSimu = [];
 
@@ -38,8 +41,8 @@ var imagesSimu = [];
 function displayElementSimu(x, y, imgSrc){
 	
 	var n = 256;
-	var minX = (width/n) * (y - 4);
-	var maxX = (width/n) * (y + 4);
+	var minX = (width/n) * (y - 2);
+	var maxX = (width/n) * (y + 2);
 	var minY = (height/n) * (x - 4);
 	var maxY = (height/n) * (x + 4 );
 	var imageUrl = imgSrc;
@@ -132,8 +135,8 @@ $("#FireForm").submit(function(event){
 	var intensity = $("#FireIntensity").val();
 	
 	var json = {
-			"intensity": intensity,
-			"type": type
+			"intensity": intensity ,
+			"type":  type
 	};
 	
 	if(x != null && y != null && type != null && intensity != null){
@@ -141,16 +144,30 @@ $("#FireForm").submit(function(event){
 		$.ajax({
 			  url:"http://localhost:8081/FireWebService/add/" + x + "/" + y,
 			  type: "POST",
-			  data : json,
+			  data : JSON.stringify(json),
 			  contentType:"application/json; charset=utf-8"
-		  });
-		
-		
+		  });	
 		
 	}
+});
+
+
+$("#ProbeForm").submit(function(event){
 	
+	event.preventDefault();
 	
+	var x = $("#ProbeX").val();
+	var y = $("#ProbeY").val();
+	var type = $('#ProbeType').val();
 	
+	if(x != null && y != null && type != null){
+
+		$.ajax({
+			  url:"http://localhost:8081/ProbeWebService/add/" + type + "/" + x + "/" + y,
+			  type: "GET"
+		  });	
+		
+	}
 });
 
 
@@ -166,8 +183,8 @@ $("#clearFireButton").on("click", function(){
 })
 
 
-//setInterval(displayAllElements, 2000, "Probe");
-//setInterval(displayAllElements, 2000, "Fire");
+setInterval(displayAllElements, 2000, "Probe");
+setInterval(displayAllElements, 2000, "Fire");
 
 //Test Intineraire
 
@@ -194,6 +211,7 @@ function Realitinerary(xInit, yInit, xFinal, yFinal){
 	
 }
 
+const imgVehicule = 'images/fireTruck.png';
 function itinerary(xInit, yInit, xFinal, yFinal){
 	
 	$.ajax({
@@ -206,7 +224,7 @@ function itinerary(xInit, yInit, xFinal, yFinal){
 			  for(var i = 0 ; i < json.length; i++){
 				  x = json[i]["x"];
 				  y = json[i]["y"];
-				  displayElementEmergency(x, y, imgVehicule);
+				  displayElementSimu(x, y, imgVehicule);
 			  }
 		  }
 	});
@@ -215,7 +233,7 @@ function itinerary(xInit, yInit, xFinal, yFinal){
 
 
 
-//itinerary(28, 30, 53, 21);
+//itinerary(128, 128, 255, 255);
 
 		
 	

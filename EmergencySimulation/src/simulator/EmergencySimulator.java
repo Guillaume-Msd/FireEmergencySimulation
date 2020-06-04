@@ -15,7 +15,7 @@ import models.AbstractVehicule;
 import models.Alerte;
 import models.Coord;
 import models.EnumStatut;
-
+import models.FireFighterHQ;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -24,24 +24,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class EmergencySimulator {
 
-	private AbstractHeadquarter HQ;
+	private List<AbstractHeadquarter> HQ;
 	
 	public EmergencySimulator() {
 	}
 	
-	public AbstractHeadquarter getHQ() {
-		return HQ;
-	}
 
-	public void setHQ(AbstractHeadquarter hQ) {
-		HQ = hQ;
-	}
 	
 	public void cycle() throws MalformedURLException, IOException {
+		majHeadquarters();
+		
 		//On récupère les alertes du serveur
 		List<Alerte> alertes = getAlertes();
 		
-		List<AbstractVehicule> vehicules = HQ.getVehicules();//A modifier lorsque l'on aura plusieurs HQ
+		List<AbstractVehicule> vehicules = getVehicules();
 		
 		//On parcours ces alertes pour voir si il y en a des nouvelles
 		parcoursAlertes(alertes,vehicules);
@@ -50,9 +46,67 @@ public class EmergencySimulator {
 		mooveAllVehiculesAndCheckArrivals(vehicules);
 		
 		//On renvoie les véhicules qui ont finis leur intervention au HQ
-		//gestionFinDIntervention();
+		gestionFinDIntervention();
 	}
 	
+	public List<AbstractHeadquarter> getHQ() {
+		return HQ;
+	}
+
+
+
+	public void setHQ(List<AbstractHeadquarter> hQ) {
+		HQ = hQ;
+	}
+
+
+
+	private void majHeadquarters() throws IOException {
+		List<AbstractHeadquarter> new_HQs = getHeadquartersFromServer();
+		boolean trouve = false;
+		for (AbstractHeadquarter HQ1 : new_HQs) {
+			for (AbstractHeadquarter HQ2 : this.getHQ()) {
+				if (HQ1.getId() == HQ2.getId()) {
+					trouve = true;
+				}
+			}
+			if (!trouve) {
+				this.addHQ(HQ1);
+			}
+			trouve = false;
+		}
+	}
+
+	public void addHQ(AbstractHeadquarter HQ1) {
+		this.HQ.add(HQ1);
+	}
+
+
+
+	public List<AbstractHeadquarter> getHeadquartersFromServer() throws IOException {
+		URL url = new URL("http://localhost:8082/EmergencyWebService/allHQs");
+		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+        httpURLConnection.setRequestMethod("GET");
+        BufferedReader in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+        String inputLine;
+        StringBuffer response1 = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+        	response1.append(inputLine);
+		} in .close();
+	
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+		
+		AbstractHeadquarter[] HQs = mapper.readValue(response1.toString(), AbstractHeadquarter[].class);
+		List<AbstractHeadquarter> HQ_list = new ArrayList<AbstractHeadquarter>();
+		int i;
+		for(i = 0; i < HQs.length; i++) {
+			HQ_list.add(HQs[i]);
+		}
+		
+		return HQ_list;
+	}
+
 	public List<Alerte> getAlertes() throws IOException {
 		URL url = new URL("http://localhost:8082/EmergencyWebService/allAlerts");
 		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
@@ -75,6 +129,16 @@ public class EmergencySimulator {
 		}
 		
 		return alertList;
+	}
+	
+	public List<AbstractVehicule> getVehicules() {
+		List<AbstractVehicule> vehicules = new ArrayList<AbstractVehicule>();//A modifier lorsque l'on aura plusieurs HQ
+		for (AbstractHeadquarter HQ : this.getHQ()) {
+			for (AbstractVehicule v : HQ.getVehicules()) {
+				vehicules.add(v);
+			}
+		}
+		return vehicules;
 	}
 	
 	public void parcoursAlertes(List<Alerte> alertes,List<AbstractVehicule> vehicules) throws IOException {
@@ -113,10 +177,10 @@ public class EmergencySimulator {
 	
 	public void gererNouvelleAlerte(Alerte alerte) throws IOException {
 		//TODO ChoisirHQ()
-		AbstractHeadquarter hq = ChoisirHQ();
+		AbstractHeadquarter hq = ChoisirHQ(alerte);
 		List<AbstractVehicule> vehicules = hq.ChoisirVehicule(alerte);
 		if (!(vehicules.isEmpty())) {
-			createIntervention(vehicules,this.getHQ().getEmplacement_headquarter().x,this.getHQ().getEmplacement_headquarter().y,
+			createIntervention(vehicules,hq.getEmplacement_headquarter().x,hq.getEmplacement_headquarter().y,
 				alerte.getCoord().x,alerte.getCoord().y);
 			AlerteEnCours(alerte);
 		}
@@ -129,8 +193,28 @@ public class EmergencySimulator {
         connection.getInputStream();
 	}
 	
-	public AbstractHeadquarter ChoisirHQ() {
-		return this.getHQ();
+	public AbstractHeadquarter ChoisirHQ(Alerte alerte) {
+		double distancemin = -1;
+		double distance;
+		AbstractHeadquarter HQ_choisi = new FireFighterHQ(new Coord(-1,-1));
+		for (AbstractHeadquarter HQ : this.getHQ()) {
+			if (distancemin == -1) {
+				distancemin = Math.sqrt(
+						Math.pow((HQ.getEmplacement_headquarter().x-alerte.getCoord().x),2) + 
+						Math.pow((HQ.getEmplacement_headquarter().y-alerte.getCoord().y),2));
+				HQ_choisi = HQ;
+			}
+			else {
+				distance = Math.sqrt(
+						Math.pow((HQ.getEmplacement_headquarter().x-alerte.getCoord().x),2) + 
+						Math.pow((HQ.getEmplacement_headquarter().y-alerte.getCoord().y),2));
+				if (distance < distancemin) {
+					distancemin = distance;
+					HQ_choisi = HQ;
+				}
+			}
+		}
+		return HQ_choisi;
 	}
 	
 	/**
@@ -230,12 +314,12 @@ public class EmergencySimulator {
 	}
 	
 	public void gestionFinDIntervention() throws IOException {
-		List<AbstractVehicule> vehiculesList = HQ.getVehicules();
+		List<AbstractVehicule> vehiculesList = this.getVehicules();
 		List<AbstractVehicule> vehicules = getVehiculesByStatut(EnumStatut.FinDIntervention);
 		for (AbstractVehicule vehicule : vehicules) {
 			for(AbstractVehicule v: vehiculesList)
 				if(v.getId() == vehicule.getId()) {
-					retourIntervention(v,v.getCoord().x,v.getCoord().y,this.getHQ().getEmplacement_headquarter().x,this.getHQ().getEmplacement_headquarter().y);
+					retourIntervention(v,v.getCoord().x,v.getCoord().y,v.getCoord_HQ().x,v.getCoord_HQ().y);
 				}
 			
 		}

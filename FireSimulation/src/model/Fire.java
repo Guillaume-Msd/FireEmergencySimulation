@@ -65,7 +65,10 @@ public class Fire extends Event implements FireInterface {
 
 	public Coord aggravate() {
 		Iterator <Coord> it = this.getLocalisation().iterator();
-		Coord coord = it.next();
+		Coord coord = null;
+		while(it.hasNext()) {
+			coord = it.next();
+		}	
 		Random r = new Random();
 		int randint = r.nextInt(3);
 		switch(randint) {

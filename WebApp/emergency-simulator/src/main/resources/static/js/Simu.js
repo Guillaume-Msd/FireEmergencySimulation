@@ -163,16 +163,19 @@ $("#ProbeForm").submit(function(event){
 	var x = $("#ProbeX").val();
 	var y = $("#ProbeY").val();
 	var type = $('#ProbeType').val();
+	var range = $("#ProbeRange").val();
 	
-	if(x != null && y != null && type != null){
+	if(x != null && y != null && type != null && range != null){
 
 		$.ajax({
-			  url:"http://localhost:8081/ProbeWebService/add/" + type + "/" + x + "/" + y,
+			  url:"http://localhost:8081/ProbeWebService/add/" + type + "/" + range + "/" + x + "/" + y,
 			  type: "GET"
 		  });	
 	
 		displayAllElements("Probe");
 	}
+	
+	displayAllElements("Probe");
 });
 
 

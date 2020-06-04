@@ -70,28 +70,12 @@ public class ProbSimulation {
 		connection.setDoOutput(false); 
 		connection.getInputStream();
 		
-		/*int i;
-		Random r = new Random();
-		for(i= 0; i < 20; i++) {
-			
-			this.addProb("Smoke", 5, 0.1, new Point(r.nextInt(255), r.nextInt(255)), 1);
-		}
 		
-		for(i= 0; i < 20; i++) {
-			
-			this.addProb("Thermic", 5, 0.1, new Point(r.nextInt(255), r.nextInt(255)), 1);
-		}
-		
-		for(i= 0; i < 20; i++) {
-			
-			this.addProb("CO2", 5, 0.1, new Point(r.nextInt(255), r.nextInt(255)), 1);
-		}*/
-		
-		this.addProb("Smoke", 1, 0.1, new Point(110,110), 10);
-		this.addProb("Thermic", 1, 0.1, new Point(50,200), 20);
-		this.addProb("Smoke", 1, 0.1, new Point(120,30), 30);
-		this.addProb("CO2", 1, 0.1, new Point(210,50), 30);
-		this.addProb("CO2", 1, 0.1, new Point(60,80), 30);
+		this.addProb("Smoke", 1, 0.1, new Point(80,80), 10);
+		this.addProb("Thermic", 1, 0.1, new Point(190, 190), 10);
+		this.addProb("Smoke", 1, 0.1, new Point(80,190), 10);
+		this.addProb("CO2", 1, 0.1, new Point(190,80), 10);
+		this.addProb("CO2", 1, 0.1, new Point(160 ,160), 10);
 		
 		connection.getInputStream();
 	
@@ -112,12 +96,12 @@ public class ProbSimulation {
 		if (type == "Thermic") {
 			this.probList.add(new ThermicProb(rate, error, localisation, range));
 		}
-		this.addProbToMap(type, localisation);
+		this.addProbToMap(type, localisation, range);
 	}	
 	
-	public void addProbToMap(String type, Point localisation) throws IOException {
+	public void addProbToMap(String type, Point localisation, int range) throws IOException {
 		//envoie la position de la sonde a Simulation service
-		URL url = new URL("http://localhost:8081/ProbeWebService/add/" + type.toString() + "/" + localisation.x + "/" + localisation.y); 
+		URL url = new URL("http://localhost:8081/ProbeWebService/add/" + type.toString() + "/" + range + "/" + localisation.x + "/" + localisation.y); 
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection(); 
 		connection.setRequestMethod("GET"); 
 		connection.setDoOutput(false); 

@@ -78,7 +78,7 @@ public class Alerte {
 	}
 
 	public void delete() throws IOException {
-		URL url = new URL("http://localhost:8082/EmergencyWebService/deleteAlerte/"+this.getId());
+		URL url = new URL("http://localhost:8082/EmergencyWebService/deleteAlert/"+this.getId());
 	    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 	    connection.setRequestMethod("DELETE");
 	    connection.getInputStream();

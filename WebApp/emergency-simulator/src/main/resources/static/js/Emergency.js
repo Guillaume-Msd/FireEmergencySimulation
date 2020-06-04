@@ -1,13 +1,16 @@
-var map2 = L.map('emergencyMap').setView([40.4167047, -3.7035825], 14);
+var map2 = L.map('emergencyMap').setView([40.4167047, -3.7035825], 15);
 
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 20,
     id: 'mapbox/streets-v11',
     tileSize: 512,
+    minZoom : 15,
     zoomOffset: -1,
     accessToken: 'pk.eyJ1IjoiZmFiaWVucHVpc3NhbnQiLCJhIjoiY2s5YTJtdWY4MDAyazNtcXVodjczcGwxcCJ9.K49PEwo4aFG5oQUXaTnubg'
 }).addTo(map2);
+
+
 
 const imgVehicule = 'images/fireTruck.png';
 const imgAlert = 'images/alert.png';
@@ -25,20 +28,28 @@ var width = east - west;
 
 var height =  north - south;
 
+console.log(map2.getBounds());
+
+
 var imagesEmergency = [];
+
 
 function displayElementEmergency(x, y, imgSrc) {
 	
 	var n = 256;
-	var minX = (width/n) * (y - 4);
-	var maxX = (width/n) * (y + 4);
+	var minX = (width/n) * (y - 2);
+	var maxX = (width/n) * (y + 2);
 	var minY = (height/n) * (x - 4);
 	var maxY = (height/n) * (x + 4);
 	var imageUrl = imgSrc;
 	imageBounds = [[north - minY , west + minX], [north - maxY, west + maxX]];
 	var image = L.imageOverlay(imageUrl, imageBounds)
 	image.addTo(map2);
-	imagesEmergency.push(image)
+	
+	if(imgSrc != imgCaserne){
+		imagesEmergency.push(image);
+	}
+	
 	
 }
 
@@ -50,16 +61,16 @@ function displayAllElements(type){
 	}
 	imagesEmergency = [];
 	
-	displayElementEmergency(30, 150, imgCarserne);
+	
 	
 	
 	var url, imgSrc;
 	
 	if(type == "Caserne"){
-		url = "http://localhost:8081/FireWebService/getAllCoords";
+		url = "http://localhost:8082/HeadQuarterWebService/getAllCoords";
 		imgSrc = imgCaserne;
 	}
-	else if (type == "Alert"){
+	else if (type == "Alerte"){
 		url = "http://localhost:8082/EmergencyWebService/getAllCoords";
 		imgSrc = imgAlert;
 	}
@@ -85,10 +96,38 @@ function displayAllElements(type){
 			  }
 		  });
 		
-	
-	
-	
-	
 }
+		
+	
+displayAllElements("Caserne");
+setInterval(displayAllElements, 1000, "Alerte");	
+setInterval(displayAllElements, 1000, "Vehicule");	
+
+
+$("#HQForm").submit(function(event){
+	
+	event.preventDefault();
+	
+	var x = $("#HQX").val();
+	var y = $("#HQY").val();
+	var nb = $('#HQNb').val();
+	
+	if(x != null && y != null && nb != null){
+
+		$.ajax({
+			  url:"http://localhost:8082/HeadQuarterWebService/add/" + x + "/" + y,
+			  type: "GET"
+		  });	
+		
+		displayAllElements("Caserne");
+	}
+});
+
+
+displayElementEmergency(128, 128, imgCaserne);
+
+
+	
+
 
 

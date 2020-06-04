@@ -19,8 +19,8 @@ public enum FireIntensity {
         Collections.reverse(listIntensities);
 		Iterator <FireIntensity> it = listIntensities.iterator();
 		while(it.hasNext()) {
-			if (it.next().equals(currentIntensity)) {
-				FireIntensity intensity = it.next();
+			FireIntensity intensity = it.next();
+			if (intensity.equals(currentIntensity)) {
 				return intensity;
 		    }
 		}	
@@ -31,8 +31,8 @@ public enum FireIntensity {
 	public static FireIntensity aggravation (FireIntensity currentIntensity) {
 		Iterator <FireIntensity> it = FireIntensity.listIntensities.iterator();
 		while(it.hasNext()) {
-			if (it.next().equals(currentIntensity)) {
-				FireIntensity intensity = it.next();
+			FireIntensity intensity = it.next();
+			if (intensity.equals(currentIntensity)) {
 			   	return intensity;
 		    	}	
 			}

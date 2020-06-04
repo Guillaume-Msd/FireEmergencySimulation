@@ -34,7 +34,7 @@ var height =  north - south;
 console.log(map.getBounds());
 
 
-var imagesSimu = [];
+var imagesFire = [];
 
 
 
@@ -49,14 +49,18 @@ function displayElementSimu(x, y, imgSrc){
 	imageBounds = [[north - minY, west + minX], [north - maxY, west + maxX]];
 	var image = L.imageOverlay(imageUrl, imageBounds)
 	image.addTo(map);
-	imagesSimu.push(image)
+	
+	if(imgSrc == imgFire){
+		imagesFire.push(image);
+	}
+	
 	
 }
 
 function displayAllElements(type){
 	
-	for (var i = 0; i < imagesSimu.length; i++){
-		map.removeLayer(imagesSimu[i]);
+	for (var i = 0; i < imagesFire.length; i++){
+		map.removeLayer(imagesFire[i]);
 	}
 	
 	imagesSimu = [];
@@ -166,7 +170,8 @@ $("#ProbeForm").submit(function(event){
 			  url:"http://localhost:8081/ProbeWebService/add/" + type + "/" + x + "/" + y,
 			  type: "GET"
 		  });	
-		
+	
+		displayAllElements("Probe");
 	}
 });
 
@@ -182,8 +187,7 @@ $("#clearFireButton").on("click", function(){
 	
 })
 
-
-setInterval(displayAllElements, 2000, "Probe");
+displayAllElements("Probe");
 setInterval(displayAllElements, 2000, "Fire");
 
 //Test Intineraire
@@ -231,9 +235,7 @@ function itinerary(xInit, yInit, xFinal, yFinal){
 	
 }
 
-
-
-//itinerary(128, 128, 255, 255);
+//itinerary(30, 150, 60, 80);
 
 		
 	

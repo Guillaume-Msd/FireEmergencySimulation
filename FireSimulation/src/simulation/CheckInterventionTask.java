@@ -31,23 +31,27 @@ public class CheckInterventionTask extends TimerTask {
 			}
 			
 			InterventionVehicule[] listVehicules = this.eventsController.getAllVehicules();
-			for (Event event: listEvent) {
-			    Iterator <Coord> it = event.getLocalisation().iterator();
-			    while(it.hasNext()) {
-				    Coord coordEvent = it.next();
-				    for (InterventionVehicule vehicule: listVehicules) {
-						if (coordEvent.x < (vehicule.getCoord().x  + 10 ) && coordEvent.y < (vehicule.getCoord().y  + 10 )) {
-							this.eventsController.updateEvent(event, ((Fire) event).attenuate(), "attenuer");
-							
-							if(event.getLocalisation().size() <= 1) {
-								this.eventsController.deleteEvent(event);
-								this.eventsController.updateVehiculeStatut(vehicule);
+			
+			for (InterventionVehicule vehicule: listVehicules) {
+				for (Event event: listEvent) {
+				    Iterator <Coord> it = event.getLocalisation().iterator();
+				    while(it.hasNext()) {
+					    Coord coordEvent = it.next();
+					
+							if (Math.abs(coordEvent.x - vehicule.getCoord().x)  < 20  && Math.abs(coordEvent.y - vehicule.getCoord().y)  < 20 ) {
+								this.eventsController.updateEvent(event, ((Fire) event).attenuate(), "attenuer");
+								
+								if(event.getLocalisation().size() <= 1) {
+									System.err.println(event.getLocalisation());
+									this.eventsController.deleteEvent(event);
+									this.eventsController.updateVehiculeStatut(vehicule);
+									}
+								}
+								
+								
 							}
-							
-							
-						}
+					    
 				    }
-			    }
 			}
 
 		} catch (IOException e) {

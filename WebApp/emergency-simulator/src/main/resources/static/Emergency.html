@@ -13,20 +13,51 @@
 </head>
 <body>
 
-	<div class = "container">
-		<div class = "row">
-	 		<div class = col-md-6>
+	<div class="container-fluid" id="container">
+		<div class="row">
+			<div class="col-md-6">
 				<div id="emergencyMap"></div>
-	 		</div> 
-	 	</div>
-	</div>
-	 
-	 
-	 <button id = "addFireButton" style = "margin-top:10vh;">Add Fire</button>
-	 
-	 <button id = "clearFireButton" style = "margin-top:10vh;">Clear Fires</button>
+			</div>
+			
+		</div>
 
+		<div class = "row">
+			<div class="col-md-6">
+				<div class="container-fluid">
+					<div class="row">
+						<h4 class="mb-4">Add Headquarter</h4>
+					</div>
+					<form action="" id="HQForm">
+						<div class="row">
+							<div class="form-group mr-4">
+								<label for="X">Coord x</label>
+								<input type="text" class="form-control" id ="HQX">
+							</div>
+						
+						
+							<div class="form-group">
+								<label for="Y">Coord y</label>
+								<input type="text" class="form-control" id = "HQY">
+							</div>
+						</div>
+					
+						<div class = "row">
+								<div class="form-group mr-4">
+									<label for="Type">Vehicules available</label>
+										<input type = "number" class = "form-control" id = "HQNb">
+								</div>
+						</div>
+						
 
+						<div class="row">
+							<button type = "submit" class="btn btn-primary">Add</button>
+						</div>
+					</form>
+				</div>
+				</div>
+			</div>
+	
+	 
 <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
   integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
   crossorigin=""></script>

@@ -15,15 +15,15 @@ public class Launcher {
 		//TODO créer un petit scénario de base
 		VehiculePompier v = new VehiculePompier(40,40);
 		final EmergencySimulator simulateur = new EmergencySimulator();
-		simulateur.setHQ(new FireFighterHQ(new Coord(3,40)));
+		simulateur.setHQ(new FireFighterHQ(new Coord(128,128)));
 		v.setCoord_HQ(simulateur.getHQ().getEmplacement_headquarter());
 		v.setCoord(v.getCoord_HQ());
 		simulateur.getHQ().addVehicule(v);
-		/*
+		
 		VehiculePompier v2 = new VehiculePompier(40, 40);
 		v2.setCoord_HQ(simulateur.getHQ().getEmplacement_headquarter());
 		v2.setCoord(v.getCoord_HQ());
-		simulateur.getHQ().addVehicule(v2);*/
+		simulateur.getHQ().addVehicule(v2);
 		
 		
 		new Timer().scheduleAtFixedRate(new TimerTask(){
@@ -39,6 +39,6 @@ public class Launcher {
 					e.printStackTrace();
 				}
                  }
-        }    ,0,500);
+        }    ,0,1000);
 	}
 }

@@ -1,6 +1,7 @@
 package model;
 
 import java.util.Iterator;
+import java.util.Random;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -65,18 +66,33 @@ public class Fire extends Event implements FireInterface {
 	public Coord aggravate() {
 		Iterator <Coord> it = this.getLocalisation().iterator();
 		Coord coord = it.next();
+		Random r = new Random();
+		int randint = r.nextInt(3);
+		switch(randint) {
+			case 0:
+				return new Coord(coord.x+3, coord.y);
+			case 1:
+				return new Coord(coord.x, coord.y+3);
+			case 2:
+				return new Coord(coord.x-3, coord.y);
+			default:
+				return new Coord(coord.x, coord.y-3);
+				
+				
+		}
+		/*
 		switch (this.getIntensity()) {
 			case Low:
-				return new Coord(coord.x+1, coord.y);
+				return new Coord(coord.x+5, coord.y);
 			case Medium:
-				return new Coord(coord.x, coord.y+1);
+				return new Coord(coord.x, coord.y+5);
 			case High:
-				return new Coord(coord.x-1, coord.y);
+				return new Coord(coord.x-5, coord.y);
 			case VeryHigh:
 				//TODO new Fire
 			default : 
 				return null;
-		}
+		}*/
 	}
 	
 	public Coord attenuate() {

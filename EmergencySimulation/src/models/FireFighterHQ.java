@@ -22,7 +22,7 @@ public class FireFighterHQ extends AbstractHeadquarter {
 		super(coord,nb_vehicules);
 		this.vehicules = new ArrayList<VehiculePompier>();
 		for (int i=0;i<nb_vehicules;i++) {
-			this.addVehicule(new VehiculePompier());
+			this.addVehicule(new VehiculeLutteIncendie());
 		}
 		for (AbstractVehicule vehicule : this.getVehicules()) {
 			vehicule.setCoord(super.getCoord());
@@ -80,4 +80,9 @@ public class FireFighterHQ extends AbstractHeadquarter {
 		System.out.println("Pas assez de v�hicules disponibles.");
 		return vehicules;
 	}
+	
+	@Override
+    public String toString() {
+        return "HQ "+ this.getId() +"\nVehicules: " + this.getVehicules();
+    }
 }

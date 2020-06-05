@@ -1,0 +1,44 @@
+package io.sp.webservice.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import io.sp.webservice.models.GasStation;
+import io.sp.webservice.repository.GasStationRepository;
+
+public class GasStationService {
+
+	@Autowired
+	private GasStationRepository gasStationRepository;
+	
+	public GasStation getgasStationById(String id) {
+		return gasStationRepository.findById(Integer.parseInt(id));
+	}
+	
+	public List<GasStation> getAll() {
+		return gasStationRepository.findAll();
+	}
+	
+	public long getNumber() {
+		return gasStationRepository.count();
+	}
+	
+	public void addgasStation(GasStation headQuarter) {
+		gasStationRepository.save(headQuarter);
+	}
+	
+	public void updateGasStation(GasStation headQuarter) {
+		gasStationRepository.save(headQuarter);
+	}
+	
+	public void deleteGasStation(String gasStation) {
+		gasStationRepository.delete(gasStationRepository.findById(Integer.parseInt(gasStation)));
+	}
+
+	public void removeAll() {
+		gasStationRepository.deleteAll();
+		
+	}
+
+}

@@ -26,6 +26,10 @@ public class VehiculeController {
 	@Autowired
 	private VehiculeService vehiculeService;
 	
+	/**
+	 * Return all vehicules
+	 * @return String Json List<Vehicule>
+	 */
 	@GetMapping("VehiculeWebService/allVehicules")
 	public String getAllVehicules() {
 		List<Vehicule> liste = vehiculeService.getAll();
@@ -37,11 +41,19 @@ public class VehiculeController {
 		}
 	}
 	
+	/**
+	 * Get the vehicule by id
+	 * @param id
+	 * @return String Json Vehicule
+	 */
 	@GetMapping("VehiculeWebService/vehicule/{id}")
 	public String getVehicule(@PathVariable String id) {
 		return Tools.toJsonString(vehiculeService.getVehiculeById(id));
 	}
 	
+	/*
+	 * 
+	 */
 	@GetMapping("VehiculeWebService/vehiculesByStatut/{statut}")
 	public String getVehiculeByStatut(@PathVariable EnumStatut statut) {
 		List<Vehicule> liste = vehiculeService.getVehiculesByStatut(statut);

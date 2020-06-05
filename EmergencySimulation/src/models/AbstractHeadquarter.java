@@ -22,7 +22,7 @@ public abstract class AbstractHeadquarter extends AbstractIntervention implement
 	
 	public AbstractHeadquarter(Coord coord,int nb_vehicules) {
 		this(coord);
-		
+		this.setNb_vehicules(nb_vehicules);
 		for (int i=0;i<nb_vehicules;i++) {
 			for (int j=0;j<8;j++) {
 				this.addStaff(new Staff());
@@ -134,4 +134,6 @@ public abstract class AbstractHeadquarter extends AbstractIntervention implement
 	public void setId(int id) {
 		this.id = id;
 	}
+	
+
 }

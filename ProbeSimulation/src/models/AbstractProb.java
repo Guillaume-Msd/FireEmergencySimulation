@@ -1,8 +1,10 @@
 package models;
 
 import java.awt.Point;
+import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
@@ -15,6 +17,9 @@ import java.util.List;
 
 import org.json.simple.JSONObject;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import simulation.tools.GetAlertFromServ;
 import simulation.tools.GetFromFireServ;
 import simulation.tools.ProbMeasureInterface;
 import simulation.tools.ProbServerInterface;
@@ -35,6 +40,8 @@ public class AbstractProb implements ProbMeasureInterface,  ProbServerInterface 
 	private int id;
 	private int x;
 	private int y;
+	private int real_intensity;
+	private int previousIntensity = 0;
 
 	//CONSTRUCTORS
 	public AbstractProb() {
@@ -61,34 +68,42 @@ public class AbstractProb implements ProbMeasureInterface,  ProbServerInterface 
 	public void getInformation() throws IOException {
 		List<Fire> listFeux = new ArrayList<Fire>();
 	    listFeux = this.collectData();
-	    
-	     
-		int previousIntensity = this.alerte.getIntensity();	//on recupere l'intensite mesuree precedement
+	   
+	    if(this.previousIntensity > this.real_intensity) {
+	    	this.previousIntensity = this.real_intensity;
+	    }
 		
+		this.alerte.resetIntensity();	//on reset l'intensite
+		this.real_intensity = 0;
 		
 	    for (Fire feu: listFeux) {		//on recalcul l'intensite
 	    	for (CoordEntity coord: feu.getLocation()) {
 		    	if ( (Math.abs(coord.getX() - this.localisation.x) < this.range) &&
 		    			(Math.abs(coord.getY() - this.localisation.y) < this.range) ) {
+		    		int intensity = this.getIntensityFromFire(feu);
+		    		this.addRealIntensity(intensity);
 		    		if (this.isDetectable(feu) == true) {
-		    			this.alerte.resetIntensity();	//on reset l'intensite
-		    			System.err.println("Detectable");
+		    			System.out.println("Detectable");
 			    		if (this.applyErrors() == true) {
-						int intensity = this.getIntensityFromFire(feu);
-							System.err.println(intensity);
 			    			this.alerte.setIntensity(intensity);	
 			    		}
 		    		}
 	            }		
 	        }
 	    }
-	    System.err.println(previousIntensity);
-	    if (this.alerte.getIntensity() > previousIntensity) {
-	    	System.err.println("Alarme");
-	    	this.triggerAlarm();	//si il y a eu aggravation de l'etat du feu
-	    }
+	    System.err.println(previousIntensity + "/" + this.real_intensity + "/" + this.alerte.getIntensity() );
+		    if (this.alerte.getIntensity() > previousIntensity) {
+		    	this.previousIntensity = this.real_intensity;	//on recupere l'intensite mesuree precedement
+		    	System.err.println("Alarme");
+		    	this.triggerAlarm();	//si il y a eu aggravation de l'etat du feu
+		    }
 	}
-	
+
+
+	private void addRealIntensity(int intensity) {
+		this.real_intensity += intensity;
+		
+	}
 
 	//Determine une valeure d'intensité a partir du champ intensité du feu
     public int getIntensityFromFire(Fire feu){
@@ -195,7 +210,6 @@ public class AbstractProb implements ProbMeasureInterface,  ProbServerInterface 
 	
 	//Envoi l'information vers EmergencyService 
 	public void sendInformation() throws IOException {
-		System.out.println(Tools.toJsonString(this.alerte));
 		URL url = new URL("http://localhost:8082/EmergencyWebService/addAlert/" + this.localisation.x + "/" + this.localisation.y + "/" + this.range); 
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection(); 
 		connection.setRequestMethod("POST"); 
@@ -209,10 +223,20 @@ public class AbstractProb implements ProbMeasureInterface,  ProbServerInterface 
 		osw.close();
 		
 		connection.getInputStream();
+		
+		BufferedReader in = new BufferedReader( new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		StringBuffer response = new StringBuffer(); 
+		while ((inputLine = in.readLine()) != null) { 
+			response.append(inputLine); 
+		} 
+		in .close();
+		
 
 
 	}
 	
+
 	//Envoi l'information au CloudServer
 	public void sendMeasures() throws IOException {
 		JSONObject obj = new JSONObject();
@@ -241,6 +265,8 @@ public class AbstractProb implements ProbMeasureInterface,  ProbServerInterface 
 		osw.close();
 		connection.getInputStream();
 	}
+	
+
 	
 
 //SETTERS, GETTERS AND ToString   

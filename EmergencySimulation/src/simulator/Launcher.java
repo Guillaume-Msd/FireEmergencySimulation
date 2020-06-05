@@ -38,17 +38,22 @@ public class Launcher {
 		int capacityHQ = 3;
 		
 		FireFighterHQ hq1 = new FireFighterHQ(coordHQ1,capacityHQ);
+	
+		
+		simulateur.addHQToMap(hq1);
 		
 		simulateur.addFFHQ(hq1);
 		
-		simulateur.addHQToMap(hq1);
+		
 		
 		Coord coordHQ2 = new Coord(128, 128);
 		FireFighterHQ hq2 = new FireFighterHQ(coordHQ2,capacityHQ);
 		
+		simulateur.addHQToMap(hq2);
+		
 		simulateur.addFFHQ(hq2);
 		
-		simulateur.addHQToMap(hq2);
+
 		
 		return simulateur;
 	}

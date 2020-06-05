@@ -28,17 +28,34 @@ public class AlerteController {
 	@Autowired
 	private AlerteService emergencyService;
 	
+	/**
+	 * Get all alert in the server
+	 * @return String Json of all alerts
+	 */
 	@GetMapping("EmergencyWebService/allAlerts")
 	public String getAllAlerts() {
 		List<Alerte> liste = emergencyService.getAll();
 		return Tools.toJsonString(liste);
 	}
 	
+	/**
+	 * Get the alert by id
+	 * @param id
+	 * @return String Json of the alert
+	 */
 	@GetMapping("EmergencyWebService/alert/{id}")
 	public String getAlerte(@PathVariable String id) {
 		return Tools.toJsonString(emergencyService.getAlerteById(id));
 	}
 	
+	/**
+	 * Add alert to the server
+	 * @param alerte
+	 * @param x
+	 * @param y
+	 * @param range
+	 * @return int the id of the alert added
+	 */
 	@RequestMapping(value="EmergencyWebService/addAlert/{x}/{y}/{range}", consumes=MediaType.APPLICATION_JSON_VALUE)
 	public int addAlerte(@RequestBody Alerte alerte, @PathVariable String x, @PathVariable String y, @PathVariable String range) {
 		Coord coord = new Coord(Integer.parseInt(x), Integer.parseInt(y));
@@ -48,6 +65,11 @@ public class AlerteController {
 		return alerte.getId();
 	}
 	
+	/**
+	 * Update the alert state
+	 * @param id
+	 * @param etat
+	 */
 	@GetMapping("EmergencyWebService/updateAlertState/{id}/{etat}")
 	public void updateAlerteEtat(@PathVariable String id,@PathVariable String etat) {
 		Alerte alerte = emergencyService.getAlerteById(id);
@@ -55,12 +77,19 @@ public class AlerteController {
 		emergencyService.updateAlerte(alerte);
 	}
 	
+	/**
+	 * Delete the id
+	 * @param id
+	 */
 	@DeleteMapping("EmergencyWebService/deleteAlert/{id}")
 	public void DeleteAlerte(@PathVariable String id) {
 		emergencyService.deleteAlerte(id);
 	}
 	
-	
+	/**
+	 * Get the coord of all alert
+	 * @return String Json List<Coord>
+	 */
 	@GetMapping("EmergencyWebService/getAllCoords")
 	public String getAllFireCoords() {
 		List<Alerte> alertList = emergencyService.getAll();

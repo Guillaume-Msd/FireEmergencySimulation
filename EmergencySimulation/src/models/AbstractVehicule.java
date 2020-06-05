@@ -51,7 +51,6 @@ private Coord coord_HQ;
   
   private EnumStatut statut;
   
-
 	protected AbstractVehicule(Integer speed, Integer oilCapacity, Integer consumption, Integer tailleMaxStaff) {
   		this.NormalSpeed = speed;
   		this.NormalOilConsumption = consumption;
@@ -66,7 +65,7 @@ private Coord coord_HQ;
   	}
   	
   	protected AbstractVehicule() {
-  		this(45,600,10,8);
+  		this(45,50,35,8);
   	}
   	
 	

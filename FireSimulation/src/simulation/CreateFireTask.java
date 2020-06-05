@@ -3,24 +3,24 @@ package simulation;
 import java.io.IOException;
 import java.util.TimerTask;
 
-import controller.EventsController;
+import controller.SimulationController;
 import model.Fire;
 
 public class CreateFireTask extends TimerTask {
 	
-	private EventsController eventsController;
+	private SimulationController simulationController;
 	private int mapSize;
 	
-	public CreateFireTask(int mapSize, EventsController eventsController) {
+	public CreateFireTask(int mapSize, SimulationController simulationController) {
 		this.mapSize = mapSize;
-		this.eventsController = eventsController;
+		this.simulationController = simulationController;
 	}
 	
 	@Override
 	public void run() {
 		try {
 			Fire feu = Simulator.newFire(mapSize);
-			this.eventsController.createEvent(feu);
+			this.simulationController.createEvent(feu);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

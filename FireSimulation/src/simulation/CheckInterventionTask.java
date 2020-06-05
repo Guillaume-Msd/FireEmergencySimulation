@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TimerTask;
 
-import controller.EventsController;
+import controller.SimulationController;
 import model.Coord;
 import model.EnumStatut;
 import model.Event;
@@ -15,23 +15,23 @@ import model.InterventionVehicule;
 
 public class CheckInterventionTask extends TimerTask {
 	
-	private EventsController eventsController;
+	private SimulationController simulationController;
 	
-	public CheckInterventionTask(EventsController eventsController) {
-		this.eventsController = eventsController;
+	public CheckInterventionTask(SimulationController simulationController) {
+		this.simulationController = simulationController;
 	}
 	
 	@Override
 	public void run() {
 		try {
-			Event[] events = this.eventsController.getAllEvents();
+			Event[] events = this.simulationController.getAllEvents();
 			List<Event> listEvent = new ArrayList<Event>();
 			int i;
 			for(i = 0; i < events.length; i++) {
 				listEvent.add(events[i]);
 			}
 			
-			InterventionVehicule[] listVehicules = this.eventsController.getAllVehicules();
+			InterventionVehicule[] listVehicules = this.simulationController.getInterventionVehicules();
 			
 			for (InterventionVehicule vehicule: listVehicules) {
 				for (Event event: listEvent) {
@@ -39,13 +39,13 @@ public class CheckInterventionTask extends TimerTask {
 				    while(it.hasNext()) {
 					    Coord coordEvent = it.next();
 						if (coordEvent.isInRange(vehicule.getCoord(), vehicule.getRange())) {
-							this.eventsController.updateEvent(event, ((Fire) event).attenuate(), "attenuer");
+							this.simulationController.updateEvent(event, ((Fire) event).attenuate(), "attenuer");
 							
 							if(event.getLocalisation().size() <= 1) {
 								System.err.println(event.getLocalisation());
-								this.eventsController.deleteEvent(event);
+								this.simulationController.deleteEvent(event);
 								vehicule.setStatut(EnumStatut.FinDIntervention);
-								this.eventsController.updateVehiculeStatut(vehicule);
+								this.simulationController.updateVehiculeStatut(vehicule);
 							}
 						}
 							

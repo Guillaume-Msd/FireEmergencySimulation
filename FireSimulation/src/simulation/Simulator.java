@@ -5,8 +5,11 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Timer;
 
-import controller.EventsController;
+import javax.lang.model.element.TypeElement;
+
+import controller.SimulationController;
 import model.Coord;
+import model.EnvironmentElement;
 import model.Fire;
 import model.FireIntensity;
 import model.FireType;
@@ -27,11 +30,14 @@ public class Simulator {
 		int creationInterval = 10000;
 		int updateInterval = 20000;
 		
-		EventsController eventsController = new EventsController();
+		SimulationController simulationController = new SimulationController();
 		Timer timer = new Timer();
-	    //timer.schedule(new CreateFireTask(this.mapSize, eventsController), 3000, creationInterval);
-	    //timer.schedule(new AggravateFireTask(eventsController), 5000, updateInterval);
-	    timer.schedule(new CheckInterventionTask(eventsController), 1000, 1000);
+	    //timer.schedule(new CreateFireTask(this.mapSize, simulationController), 3000, creationInterval);
+	    //timer.schedule(new AggravateFireTask(simulationController), 5000, updateInterval);
+	    timer.schedule(new CheckInterventionTask(simulationController), 1000, 1000);
+	    
+	    EnvironmentElement element = new EnvironmentElement(new Coord(50,50), 100, TypeElement.BoucheIncendie);
+	    
 	}
 	
 	/**

@@ -5,15 +5,15 @@ import java.util.Map;
 
 public class VehiculeLutteIncendie extends VehiculePompier {
 
-	private Map<LiquidEnum,Map<String,Integer>> liquids;
+	private Map<LiquidEnum,Map<String,Double>> liquids;
 	
-	public VehiculeLutteIncendie(Map<LiquidEnum,Map<String,Integer>> liquid) {
+	public VehiculeLutteIncendie(Map<LiquidEnum,Map<String,Double>> liquid) {
 		
 		this.liquids = liquid;
 	}
 	
 	public VehiculeLutteIncendie() {
-		this(new HashMap<LiquidEnum,Map<String,Integer>>());
+		this(new HashMap<LiquidEnum,Map<String,Double>>());
 	}
 	
 	/**
@@ -22,7 +22,7 @@ public class VehiculeLutteIncendie extends VehiculePompier {
 	 * @param type2 le type du nouveau liquide
 	 * @param capacity la capacité en litre du nouveau liquide
 	 */
-	public void changeLiquid(LiquidEnum type1,LiquidEnum type2,Integer capacity) {
+	public void changeLiquid(LiquidEnum type1,LiquidEnum type2,Double capacity) {
 		this.liquids.remove(type1);
 		addLiquid(type2,capacity);
 	}
@@ -32,15 +32,20 @@ public class VehiculeLutteIncendie extends VehiculePompier {
 	 * @param type type du liquide ajouté
 	 * @param capacity quantité maximale du liquide ajouté
 	 */
-	public void addLiquid(LiquidEnum type, Integer capacity) {
-		Map<String, Integer> m = new HashMap<String,Integer>();
+	public void addLiquid(LiquidEnum type, Double capacity) {
+		Map<String, Double> m = new HashMap<String,Double>();
 		m.put("Quantity",capacity);
 		m.put("Capacity",capacity);
 		this.liquids.put(type,m);
 	}
 	
-	public int getQuantity(LiquidEnum type) {
-		Map<String,Integer> m =this.liquids.get(type);
+	public void deleteliquid(LiquidEnum type) {
+		this.liquids.remove(type);
+		
+	}
+	
+	public Double getQuantity(LiquidEnum type) {
+		Map<String,Double> m =this.liquids.get(type);
 		return m.get("Quantity");
 	}
 	
@@ -50,10 +55,10 @@ public class VehiculeLutteIncendie extends VehiculePompier {
 	 * @param quantity
 	 * @return Renvoie true si il y avait suffisement de liquide, false sinon
 	 */
-	public boolean consumeLiquid(LiquidEnum type,Integer quantity) {
-		Map<String,Integer> m =this.liquids.get(type);
+	public boolean consumeLiquid(LiquidEnum type,Double quantity) {
+		Map<String,Double> m =this.liquids.get(type);
 		if (m.get("Quantity") < quantity) {
-			m.put("Quantity",0);
+			m.put("Quantity",0.);
 			return false;
 		}
 		else {
@@ -68,7 +73,7 @@ public class VehiculeLutteIncendie extends VehiculePompier {
 	 * @param type
 	 */
 	public void fillLiquid(LiquidEnum type) {
-		Map<String,Integer> m =this.liquids.get(type);
+		Map<String,Double> m =this.liquids.get(type);
 		m.put("Quantity",m.get("Capacity"));
 	}
 	
@@ -76,7 +81,7 @@ public class VehiculeLutteIncendie extends VehiculePompier {
 	 * Remplis tous les liquides au maximum
 	 */
 	public void fillAllLiquids() {
-		for (Map.Entry<LiquidEnum, Map<String,Integer>> entry : this.liquids.entrySet()) {
+		for (Map.Entry<LiquidEnum, Map<String,Double>> entry : this.liquids.entrySet()) {
 			fillLiquid(entry.getKey());
 		}
 	

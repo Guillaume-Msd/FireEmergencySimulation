@@ -19,15 +19,15 @@ public abstract class AbstractVehicule extends Intervernors implements VehiculeI
   
   private Integer tailleMaxStaff;
 
-  private Integer OilQuantity;
+  private double OilQuantity;
 
   private EnumEtat etat;
   
   private Integer NormalSpeed;
 	
-  private Integer OilCapacity;
+  private final double OilCapacity;
   
-  private Integer NormalOilConsumption;  //En L/100km
+  private double NormalOilConsumption;  //En L/100km
   
   private List<Coord> path;
   
@@ -72,20 +72,16 @@ private Coord coord_HQ;
 		this.id = id;
 	}
 
-	public Integer getOilQuantity() {
+	public double getOilQuantity() {
 		return OilQuantity;
 	}
 
-	public void setOilQuantity(Integer oilQuantity) {
-		OilQuantity = oilQuantity;
+	public void setOilQuantity(double d) {
+		OilQuantity = d;
 	}
 
-	public Integer getOilCapacity() {
+	public double getOilCapacity() {
 		return OilCapacity;
-	}
-
-	public void setOilCapacity(Integer oilCapacity) {
-		OilCapacity = oilCapacity;
 	}
 
 	public List<Coord> getPath() {
@@ -170,7 +166,7 @@ private Coord coord_HQ;
 		}
 	}
 	
-	public int getQuantityToFill() {
+	public double getQuantityToFill() {
 		return this.OilCapacity - this.OilQuantity;
 	}
 	
@@ -195,7 +191,7 @@ private Coord coord_HQ;
 	/**
 	 * @return the normalOilConsumption
 	 */
-	public Integer getNormalOilConsumption() {
+	public double getNormalOilConsumption() {
 		return NormalOilConsumption;
 	}
 	

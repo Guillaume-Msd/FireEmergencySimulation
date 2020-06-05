@@ -1,8 +1,6 @@
 package models;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public abstract class AbstractHeadquarter extends AbstractIntervention implements HeadquarterInterface {
@@ -13,31 +11,22 @@ public abstract class AbstractHeadquarter extends AbstractIntervention implement
 	
 	private Coord emplacement_headquarter;
 	
-	private List<AbstractVehicule> vehicules;
-	
 	private int nb_vehicules;
 
 
 	
 	public AbstractHeadquarter(Coord coord) {
-		this.personnel = new LinkedList<Staff>();
+		this.personnel = new ArrayList<Staff>();
 		this.emplacement_headquarter = new Coord(coord.x,coord.y);
-		this.vehicules = new LinkedList<AbstractVehicule>();
 	}
 	
 	public AbstractHeadquarter(Coord coord,int nb_vehicules) {
 		this(coord);
 		
 		for (int i=0;i<nb_vehicules;i++) {
-			this.addVehicule(new VehiculePompier());
 			for (int j=0;j<8;j++) {
 				this.addStaff(new Staff());
 			}
-		}
-		
-		for (AbstractVehicule vehicule : this.getVehicules()) {
-			vehicule.setCoord(this.getEmplacement_headquarter());
-			vehicule.setCoord_HQ(this.getEmplacement_headquarter());
 		}
 	}
 	
@@ -62,17 +51,8 @@ public abstract class AbstractHeadquarter extends AbstractIntervention implement
 		this.emplacement_headquarter = emplacement_headquarter;
 	}
 
-	public List<AbstractVehicule> getVehicules() {
-		return vehicules;
-	}
-
-	public void setVehicules(List<AbstractVehicule> vehicules) {
-		this.vehicules = vehicules;
-	}
 	
-	public void addVehicule(AbstractVehicule v) {
-		this.vehicules.add(v);
-	}
+
 
 	private void addStaff(Staff staff) {
 		this.personnel.add(staff);
@@ -136,33 +116,6 @@ public abstract class AbstractHeadquarter extends AbstractIntervention implement
 	public void calculItinerary() {
 		// TODO Auto-generated method stub
 		
-	}
-
-	public List<AbstractVehicule> ChoisirVehicule(Alerte alerte) throws IOException {
-		int nb_vehicules;
-		List<AbstractVehicule> vehicules= new ArrayList<AbstractVehicule> ();
-		if (alerte.getIntensity() < 15) { //15 est une valeur arbitraire
-			nb_vehicules = 1;
-		}
-		else {
-			nb_vehicules = 2;
-		}
-		
-		
-		for (AbstractVehicule v: this.getVehicules()) {
-			if (nb_vehicules <= 0) {
-				return vehicules;
-			}
-			if (v.getStatut().equals(EnumStatut.Disponible)) {
-				vehicules.add(v);
-				nb_vehicules = nb_vehicules - 1;
-			}
-		}
-		if (nb_vehicules <= 0) {
-			return vehicules;
-		}
-		System.out.println("Pas assez de véhicules disponibles.");
-		return vehicules;
 	}
 
 	public int getNb_vehicules() {

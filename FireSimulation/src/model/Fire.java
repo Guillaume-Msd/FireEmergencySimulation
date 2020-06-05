@@ -123,9 +123,7 @@ public class Fire extends Event implements FireInterface {
 	}
 	
 	public String toJsonString() {
-		return "{ \"intensity\" : \"" + this.intensity +"\", \"type\": \"" + this.type +"\" }";
-		
-		
+		return "{ \"intensity\" : \"" + this.intensity +"\", \"type\": \"" + this.type +"\" }";	
 		
 	}
 }

@@ -10,6 +10,9 @@ import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.LegStep;
 import com.mapbox.api.directions.v5.models.RouteLeg;
 import com.mapbox.api.directions.v5.models.StepIntersection;
+import com.mapbox.api.geocoding.v5.MapboxGeocoding;
+import com.mapbox.api.geocoding.v5.models.CarmenFeature;
+import com.mapbox.geojson.BoundingBox;
 import com.mapbox.geojson.Point;
 
 import map.util.Tools;
@@ -28,11 +31,12 @@ public class Direction {
 	
 	//NE long
 	private double maxY = -3.6714076995849614;
-
+	
 	
 	private double height = Math.abs(this.maxX - this.minX);
 	
 	private double width = Math.abs(this.maxY - this.minY);
+	
 	
 	private int rows = 256;
 	
@@ -145,6 +149,54 @@ public class Direction {
 	    return Tools.toJsonString(coordList);
 	    
 
+	}
+
+	public String distance(int xInit, int yInit, int xFinal, int yFinal) throws IOException {
+
+	    MapboxDirections.Builder builder = MapboxDirections.builder();
+
+	    // 1. Pass in all the required information to get a simple directions route.
+	    builder.accessToken(this.MAPBOX_ACCESS_TOKEN);
+	    
+	    List<Double> coordInit = this.convertGridToCoord(xInit, yInit);
+	    List<Double> coordFinal = this.convertGridToCoord(xFinal, yFinal);
+	    
+	    
+	    builder.origin(Point.fromLngLat(coordInit.get(1), coordInit.get(0)));
+	    builder.destination(Point.fromLngLat(coordFinal.get(1), coordFinal.get(0)));
+	    builder.steps(true);
+
+	    // 2. That's it! Now execute the command and get the response.
+	    Response<DirectionsResponse> response = builder.build().executeCall();
+	    return response.body().routes().get(0).distance().toString();
+	    
+	}
+	
+	public List<Coord> gasStation() throws IOException{
+		
+		List<Double> northWest = this.convertGridToCoord(0, 0);
+		List<Double> southWest = this.convertGridToCoord(0, this.rows);
+		List<Double> northEast = this.convertGridToCoord(this.column, 0);
+		List<Double> southEats = this.convertGridToCoord(this.column, this.rows);
+		
+		
+		MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
+				.bbox(minY, maxX, maxY, minX)
+				.accessToken(MAPBOX_ACCESS_TOKEN)
+				.query("Gas station")
+				.build();
+		
+		List<Coord> coordList = new ArrayList<Coord>();
+		double latitude, longitude;
+		List<CarmenFeature> featureList = mapboxGeocoding.executeCall().body().features();
+		for(CarmenFeature feature : featureList) {
+			latitude = feature.center().latitude();
+    		longitude = feature.center().longitude();
+    		Coord coord = convertCoordToGrid(longitude, latitude);
+    		coordList.add(coord);
+		}
+		
+		return coordList;
 	}
 	
 

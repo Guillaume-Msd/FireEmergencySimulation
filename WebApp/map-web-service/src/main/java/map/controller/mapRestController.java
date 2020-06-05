@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import map.model.Direction;
+import map.util.Tools;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -24,6 +25,19 @@ public class mapRestController {
 		Direction direction = new Direction();
 		return direction.realItinerary(Integer.parseInt(xInit), Integer.parseInt(yInit), Integer.parseInt(xFinal), Integer.parseInt(yFinal));
 	}
+	
+	@GetMapping("MapWebService/getDistance/{xInit}/{yInit}/{xFinal}/{yFinal}")
+	public String distance(@PathVariable String xInit, @PathVariable String yInit, @PathVariable String xFinal, @PathVariable String yFinal) throws IOException {
+		Direction direction = new Direction();
+		return direction.distance(Integer.parseInt(xInit), Integer.parseInt(yInit), Integer.parseInt(xFinal), Integer.parseInt(yFinal));
+	}
+	
+	@GetMapping("MapWebService/getGasStation")
+	public String distance() throws IOException {
+		Direction direction = new Direction();
+		return Tools.toJsonString(direction.gasStation());
+	}
+
 
 
 }

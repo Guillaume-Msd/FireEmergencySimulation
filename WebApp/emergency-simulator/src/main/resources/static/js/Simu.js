@@ -31,6 +31,8 @@ var width = east - west;
 
 var height =  north - south;
 
+console.log(map.getBounds());
+
 
 
 var imagesFire = [];

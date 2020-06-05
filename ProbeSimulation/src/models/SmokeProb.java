@@ -12,7 +12,7 @@ public class SmokeProb extends AbstractProb {
 		super();
 	}
 
-	public SmokeProb (int rate, double error,Point localisation, int range) {
+	public SmokeProb (int rate, double error, Point localisation, int range) {
 		super(TypeSonde.Smoke, rate, error, localisation, range);
 	}
 

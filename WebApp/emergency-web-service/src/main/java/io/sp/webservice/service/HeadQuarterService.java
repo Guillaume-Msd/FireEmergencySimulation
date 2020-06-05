@@ -37,4 +37,9 @@ public class HeadQuarterService {
 	public void deleteHeadQuarter(String id) {
 		headQuarterRepository.delete(headQuarterRepository.findById(Integer.parseInt(id)));
 	}
+
+	public void removeAll() {
+		headQuarterRepository.deleteAll();
+		
+	}
 }

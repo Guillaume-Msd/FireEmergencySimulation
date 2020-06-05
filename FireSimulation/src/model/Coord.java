@@ -53,6 +53,10 @@ public class Coord implements Serializable {
 		result = prime * result + y;
 		return result;
 	}
+	
+	public boolean isInRange(Coord center, int r) {
+        return (Math.abs(center.x - this.x) < r && Math.abs(center.y - this.y) < r);
+    }
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)

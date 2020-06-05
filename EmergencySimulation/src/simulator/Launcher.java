@@ -7,23 +7,11 @@ import java.util.TimerTask;
 
 import models.Coord;
 import models.FireFighterHQ;
-import models.VehiculePompier;
 
 public class Launcher {
 
 	public static void main(String[] args) throws IOException, InterruptedException {
-		//TODO créer un petit scénario de base
-		VehiculePompier v = new VehiculePompier(40,40);
-		final EmergencySimulator simulateur = new EmergencySimulator();
-		simulateur.setHQ(new FireFighterHQ(new Coord(128,128)));
-		v.setCoord_HQ(simulateur.getHQ().getEmplacement_headquarter());
-		v.setCoord(v.getCoord_HQ());
-		simulateur.getHQ().addVehicule(v);
-		
-		VehiculePompier v2 = new VehiculePompier(40, 40);
-		v2.setCoord_HQ(simulateur.getHQ().getEmplacement_headquarter());
-		v2.setCoord(v.getCoord_HQ());
-		simulateur.getHQ().addVehicule(v2);
+		final EmergencySimulator simulateur = initSimulateur();
 		
 		
 		new Timer().scheduleAtFixedRate(new TimerTask(){
@@ -40,5 +28,29 @@ public class Launcher {
 				}
                  }
         }    ,0,1000);
+	}
+	
+	public static EmergencySimulator initSimulateur() throws IOException {
+		EmergencySimulator simulateur = new EmergencySimulator();
+		
+		simulateur.removeAllHQ();
+		
+		Coord coordHQ1 = new Coord(40, 40);
+		int capacityHQ = 3;
+		
+		FireFighterHQ hq1 = new FireFighterHQ(coordHQ1,capacityHQ);
+		
+		simulateur.addHQ(hq1);
+		
+		simulateur.addHQToMap(hq1);
+		
+		Coord coordHQ2 = new Coord(128, 128);
+		FireFighterHQ hq2 = new FireFighterHQ(coordHQ2,capacityHQ);
+		
+		simulateur.addHQ(hq2);
+		
+		simulateur.addHQToMap(hq2);
+		
+		return simulateur;
 	}
 }

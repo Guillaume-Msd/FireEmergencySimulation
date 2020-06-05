@@ -1,6 +1,7 @@
 #simuMap, #emergencyMap { 
 	height: 700px;
 	width: 1500px; 
+	z-index: 1;
 	}
 	
 .leaflet-grid-label .lng {
@@ -17,4 +18,9 @@
 #container {
 	margin-top: 5vh;
 	margin-left : 10vw;
+}
+
+#fireImg{
+	z-index: 2;
+	cursor: pointer;
 }

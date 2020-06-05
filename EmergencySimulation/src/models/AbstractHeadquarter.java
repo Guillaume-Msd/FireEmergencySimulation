@@ -7,18 +7,42 @@ import java.util.List;
 
 public abstract class AbstractHeadquarter extends AbstractIntervention implements HeadquarterInterface {
 	
+	private int id;
+	
 	private List<Staff> personnel;
 	
-	private Coord emplacement_headquarter;
+	private Coord coord;
 	
 	private List<AbstractVehicule> vehicules;
+	
+	private int nb_vehicules;
 
+
+	
 	public AbstractHeadquarter(Coord coord) {
 		this.personnel = new LinkedList<Staff>();
-		this.emplacement_headquarter = new Coord(coord.x,coord.y);
+		this.coord = new Coord(coord.x,coord.y);
 		this.vehicules = new LinkedList<AbstractVehicule>();
 	}
 	
+
+	
+	public void updateVehiculeList() {
+		for (int i=0;i<this.nb_vehicules;i++) {
+			this.addVehicule(new VehiculePompier());
+			for (int j=0;j<8;j++) {
+				this.addStaff(new Staff());
+			}
+			
+		}
+		
+		for (AbstractVehicule vehicule : this.getVehicules()) {
+			vehicule.setCoord(this.getCoord());
+			vehicule.setCoord_HQ(this.getCoord());
+		}
+	}
+	
+
 	public AbstractHeadquarter() {
 		this(new Coord(0,0));
 	}
@@ -31,12 +55,12 @@ public abstract class AbstractHeadquarter extends AbstractIntervention implement
 		this.personnel = personnel;
 	}
 
-	public Coord getEmplacement_headquarter() {
-		return emplacement_headquarter;
+	public Coord getCoord() {
+		return coord;
 	}
 
-	public void setEmplacement_headquarter(Coord emplacement_headquarter) {
-		this.emplacement_headquarter = emplacement_headquarter;
+	public void setCoord(Coord emplacement_headquarter) {
+		this.coord = emplacement_headquarter;
 	}
 
 	public List<AbstractVehicule> getVehicules() {
@@ -51,6 +75,10 @@ public abstract class AbstractHeadquarter extends AbstractIntervention implement
 		this.vehicules.add(v);
 	}
 
+	private void addStaff(Staff staff) {
+		this.personnel.add(staff);
+	}
+	
 	@Override
 	public void sendInformation() {
 		// TODO Auto-generated method stub
@@ -136,5 +164,21 @@ public abstract class AbstractHeadquarter extends AbstractIntervention implement
 		}
 		System.out.println("Pas assez de véhicules disponibles.");
 		return vehicules;
+	}
+
+	public int getNb_vehicules() {
+		return nb_vehicules;
+	}
+
+	public void setNb_vehicules(int nb_vehicules) {
+		this.nb_vehicules = nb_vehicules;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 }

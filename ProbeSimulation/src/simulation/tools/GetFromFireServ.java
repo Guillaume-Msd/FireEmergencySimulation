@@ -11,11 +11,13 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import models.Fire;
+
 
 public class GetFromFireServ {
 	//collecte tous les feux
-	public static List<Point> fireList() throws IOException {
-		URL obj = new URL("http://localhost:8081/FireWebService/getAllCoords");
+	public static List<Fire> fireList() throws IOException {
+		URL obj = new URL("http://localhost:8081/FireWebService/getAll");
 		HttpURLConnection httpURLConnection = (HttpURLConnection) obj.openConnection();
 		httpURLConnection.setRequestMethod("GET"); 
 		httpURLConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
@@ -27,11 +29,11 @@ public class GetFromFireServ {
 		} 
 		in .close();
 		
-		List<Point> pointList = new ArrayList<Point>();
+		List<Fire> pointList = new ArrayList<Fire>();
 		
 		ObjectMapper mapper = new ObjectMapper();
 
-        Point[] events= mapper.readValue(response.toString(), Point[].class);
+        Fire[] events= mapper.readValue(response.toString(), Fire[].class);
         int i;
         for (i = 0 ; i < events.length; i++) {
         	pointList.add(events[i]);

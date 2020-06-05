@@ -4,6 +4,8 @@ import java.awt.Point;
 import java.io.IOException;
 import java.util.List;
 
+import models.Fire;
+
 public interface ProbMeasureInterface {
 
   /** 
@@ -12,7 +14,7 @@ public interface ProbMeasureInterface {
    *  @return List<Measures>
  * @throws IOException 
    */
-  public List<Point> collectData() throws IOException;
+  public List<Fire> collectData() throws IOException;
 
   /** 
    *  Apply measures errors

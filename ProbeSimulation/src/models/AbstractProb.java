@@ -1,9 +1,11 @@
 package models;
 
 import java.awt.Point;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,10 +20,11 @@ import simulation.tools.ProbMeasureInterface;
 import simulation.tools.ProbServerInterface;
 import simulation.tools.Tools;
 import simulation.tools.TypeSonde;
+import models.Fire;
 
 
 
-public abstract class AbstractProb implements ProbMeasureInterface,  ProbServerInterface {
+public class AbstractProb implements ProbMeasureInterface,  ProbServerInterface {
 	protected TypeSonde type;
 	private int rate;
 	private int ratecount;
@@ -29,9 +32,11 @@ public abstract class AbstractProb implements ProbMeasureInterface,  ProbServerI
 	private Point localisation;
 	protected int range;
 	private AlerteSignal alerte;
-	
+	private int id;
+	private int x;
+	private int y;
 
-//CONSTRUCTORS
+	//CONSTRUCTORS
 	public AbstractProb() {
 		
 	}
@@ -47,33 +52,123 @@ public abstract class AbstractProb implements ProbMeasureInterface,  ProbServerI
 	
 
 //METHODS
-	//Recupere la liste des feux (coordonnées)
-	public List<Point> collectData() throws IOException {
+	//Recupere la liste des feux (coordonnï¿½es)
+	public List<Fire> collectData() throws IOException {
 		return GetFromFireServ.fireList();
 	}
 	
 	//Verifie si un feu est dans le rayon d'action d'une sonde, applique l'erreur, envoie l'information
 	public void getInformation() throws IOException {
-		 List<Point> listFeux = new ArrayList<Point>();
-	     listFeux = this.collectData();
+		List<Fire> listFeux = new ArrayList<Fire>();
+	    listFeux = this.collectData();
+	    
 	     
-		int previousIntensity = this.alerte.getIntensity();	//on recupere l'intensité mesurée précédement
-		this.alerte.resetIntensity();	//on reset l'intensité
+		int previousIntensity = this.alerte.getIntensity();	//on recupere l'intensite mesuree precedement
 		
-	    for (Point feu: listFeux) {
-	    	if ( (Math.abs(feu.x - this.localisation.x) < this.range) &&
-	    			(Math.abs(feu.y - this.localisation.y) < this.range) ) {
-
-	    		if (this.applyErrors() == true) {
-	    			this.alerte.setIntensity(1);		//on recalcul l'intensité
-	            }
+		
+	    for (Fire feu: listFeux) {		//on recalcul l'intensite
+	    	for (CoordEntity coord: feu.getLocation()) {
+		    	if ( (Math.abs(coord.getX() - this.localisation.x) < this.range) &&
+		    			(Math.abs(coord.getY() - this.localisation.y) < this.range) ) {
+		    		if (this.isDetectable(feu) == true) {
+		    			this.alerte.resetIntensity();	//on reset l'intensite
+		    			System.err.println("Detectable");
+			    		if (this.applyErrors() == true) {
+						int intensity = this.getIntensityFromFire(feu);
+							System.err.println(intensity);
+			    			this.alerte.setIntensity(intensity);	
+			    		}
+		    		}
+	            }		
 	        }
 	    }
+	    System.err.println(previousIntensity);
 	    if (this.alerte.getIntensity() > previousIntensity) {
+	    	System.err.println("Alarme");
 	    	this.triggerAlarm();	//si il y a eu aggravation de l'etat du feu
 	    }
 	}
 	
+
+	//Determine une valeure d'intensitÃ© a partir du champ intensitÃ© du feu
+    public int getIntensityFromFire(Fire feu){
+        if (feu.getIntensity().contentEquals("Low")){
+            return 1;
+        }
+        if (feu.getIntensity().contentEquals("Medium")){
+            return 2;
+        }
+        if (feu.getIntensity().contentEquals("High")){
+            return 3;
+        }
+        if (feu.getIntensity().contentEquals("VeryHigh")){
+            return 4;
+        }
+        else{
+            return 1;
+        }
+    }
+
+	//verifie si feu detectable selon type de sonde
+	public boolean isDetectable(Fire feu) {
+		double isDetected = Math.random();
+		/*
+		 * isDetected est compris entre 0 et 1
+		 * la notation isDetected>=0 signifie qu'un feu de Type X sera toujours detecte pour le type Sonde choisi (car condition tjrs vrai)
+		 * ainsi, la notation isDetected>0.5 signifie que cette sonde a une chance sur deux de detecter ce type de feu
+		 */
+		if (this.type == TypeSonde.Smoke) {
+			//classes toujours detectes
+			if ( (feu.getType().contentEquals("ClassA")||feu.getType().contentEquals("ClassB")) && isDetected>=0 ) {
+				return true;
+			}
+			//classes moins bien detectÃ©es
+			if (feu.getType().contentEquals("ClassC") && isDetected>=0.5) {
+				return true;
+			}
+			if (feu.getType().contentEquals("ClassD") && isDetected>=0.3) {
+				return true;
+			}
+		}
+		
+		if (this.type == TypeSonde.CO2) {
+			//classe toujours detecte
+			if (feu.getType().contentEquals("ClassC") && isDetected>=0) {
+				return true;
+			}
+			//classes moins bien detectÃ©es
+			if (feu.getType().contentEquals("ClassA") && isDetected>=0.2) {
+				return true;
+			}
+			if (feu.getType().contentEquals("ClassB") && isDetected>=0.4) {
+				return true;
+			}
+			if (feu.getType().contentEquals("ClassD") && isDetected>=0.8) {
+				return true;
+			}
+		}
+		
+		if (this.type == TypeSonde.Thermic) {
+			//classes toujours detectes
+			if (feu.getType().contentEquals("ClassD") && isDetected>=0) {
+				return true;
+			}
+			//classes moins bien detectÃ©es
+			if (feu.getType().contentEquals("ClassA") && isDetected>=0.2) {
+				return true;
+			}
+			if (feu.getType().contentEquals("ClassB") && isDetected>=0.2) {
+				return true;
+			}
+			if (feu.getType().contentEquals("ClassC") && isDetected>=0.8) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+
 
 	//Applique une erreur sur la detection du feu
 	public boolean applyErrors() {
@@ -167,6 +262,71 @@ public abstract class AbstractProb implements ProbMeasureInterface,  ProbServerI
 	
 	public void setRateCount(int nrate) {
 		this.ratecount = nrate;
+	}
+
+	public TypeSonde getType() {
+		return type;
+	}
+
+	public void setType(TypeSonde type) {
+		this.type = type;
+	}
+
+	public double getError() {
+		return error;
+	}
+
+	public void setError(double error) {
+		this.error = error;
+	}
+
+	public Point getLocalisation() {
+		return localisation;
+	}
+
+	public void setLocalisation(Point localisation) {
+		this.localisation = localisation;
+	}
+
+	public int getRange() {
+		return range;
+	}
+
+	public void setRange(int range) {
+		this.range = range;
+	}
+
+	public void setRate(int rate) {
+		this.rate = rate;
+	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	public int getX() {
+		return x;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
+
+	public void convertCoord() {
+		this.localisation = new Point(this.x, this.y);
+		
 	}
 
 }

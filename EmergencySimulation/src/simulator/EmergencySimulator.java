@@ -28,19 +28,23 @@ public class EmergencySimulator {
 
 	private List<FireFighterHQ> FFHQ;
 	
+	private List<Coord> stationsServices;
+	
+	public EmergencySimulator() {
+	}
+	
+	
 	public List<FireFighterHQ> getFFHQ() {
 		return FFHQ;
 	}
-
-
-
 	public void setFFHQ(List<FireFighterHQ> FFHQ) {
 		this.FFHQ = FFHQ;
 	}
-
-
-
-	public EmergencySimulator() {
+	public List<Coord> getStationsServices() {
+		return stationsServices;
+	}
+	public void setStationsServices(List<Coord> stationsServices) {
+		this.stationsServices = stationsServices;
 	}
 	
 
@@ -80,13 +84,13 @@ public class EmergencySimulator {
 				}
 			}
 			if (!trouve && HQ1 instanceof FireFighterHQ) {
-				this.addHQ((FireFighterHQ) HQ1);
+				this.addFFHQ((FireFighterHQ) HQ1);
 			}
 			trouve = false;
 		}
 	}
 
-	public void addHQ(FireFighterHQ HQ1) {
+	public void addFFHQ(FireFighterHQ HQ1) {
 		this.FFHQ.add(HQ1);
 	}
 
@@ -180,13 +184,16 @@ public class EmergencySimulator {
 					vehicule.setStatut(EnumStatut.EnCoursDIntervention);
 					vehicule.updateVehiculeStatut();
 				}
+				else if (vehicule.getStatut().equals(EnumStatut.EnRoutePourRavitaillementEssence)) {
+					vehicule.fillOil();
+					retourIntervention(vehicule);
+				}
 			}
 			//System.out.println(vehicule);
 		}
 	}
 	
 	public void gererNouvelleAlerte(Alerte alerte) throws IOException {
-		//TODO ChoisirHQ()
 		FireFighterHQ hq = ChoisirFFHQ(alerte);
 		List<VehiculeLutteIncendie> vehicules = hq.ChoisirVehiculeIncendie(alerte);
 		if (!(vehicules.isEmpty())) {
@@ -253,7 +260,7 @@ public class EmergencySimulator {
 	}
 	
 	/**
-	 * When alert is detected, set up an itinerarry to the vehicule specified 
+	 * When alert is detected, set up an itinerary to the vehicule specified 
 	 * @param i 
 	 * @param AbstractVehicule
 	 * @param int xInit
@@ -277,15 +284,52 @@ public class EmergencySimulator {
 	
 
 	
-	public void retourIntervention(AbstractVehicule vehicule, int xInit, int yInit, int xFinal, int yFinal) throws JsonParseException, JsonMappingException, IOException {
-		List<Coord> coordList = getPathFromServer(xInit,yInit,xFinal,yFinal);
-		double distance = calculconsommation(xInit,yInit,xFinal,yFinal);
+	public void retourIntervention(AbstractVehicule vehicule) throws JsonParseException, JsonMappingException, IOException {
+		List<Coord> coordList = getPathFromServer(vehicule.getCoord().x,vehicule.getCoord().y,vehicule.getCoord_HQ().x,vehicule.getCoord_HQ().y);
+		double distance = calculconsommation(vehicule.getCoord().x,vehicule.getCoord().y,vehicule.getCoord_HQ().x,vehicule.getCoord_HQ().y);
 		
 		vehicule.setPath(coordList);
 		vehicule.setStatut(EnumStatut.RetourVersLeHQ);
 		vehicule.setOilQuantity(vehicule.getOilQuantity() - distance*vehicule.getNormalOilConsumption());
 		vehicule.updateVehiculeStatut();
 		
+	}
+	
+	public void RavitaillementOil(AbstractVehicule vehicule) throws IOException {
+		Coord coord = trouveElementLePlusProche(vehicule.getCoord(),this.getStationsServices());
+		envoie_vehicule(vehicule,coord.x,coord.y);
+	}
+	
+	public Coord trouveElementLePlusProche(Coord coord_element,List<Coord> liste_coord_elements) {
+		double distancemin = -1;
+		Coord coord_finale = new Coord(0,0);
+		for (Coord c : liste_coord_elements) {
+			if ( distancemin < 0 ) {
+				distancemin = Math.sqrt(
+						Math.pow((coord_element.x-c.x),2) + 
+						Math.pow((coord_element.y-c.y),2));
+				coord_finale = c;
+			}
+			else {
+				double distance = Math.sqrt(
+						Math.pow((coord_element.x-c.x),2) + 
+						Math.pow((coord_element.y-c.y),2));
+				if (distance < distancemin) {
+					distancemin = distance;
+					coord_finale = c;
+				}
+			}
+		}
+		return coord_finale;
+	}
+	
+	public void envoie_vehicule(AbstractVehicule vehicule,int xFinal,int yFinal) throws IOException {
+		List<Coord> path = getPathFromServer(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
+		double distance = calculconsommation(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
+		vehicule.setPath(path);
+		vehicule.setStatut(EnumStatut.EnRoutePourRavitaillementEssence);
+		vehicule.updateVehiculeStatut();
+		vehicule.setOilQuantity(vehicule.getOilQuantity() - distance*vehicule.getNormalOilConsumption());
 	}
 	
 	public List<VehiculePompier> getVehiculesByStatut(EnumStatut statut) throws IOException {
@@ -317,7 +361,12 @@ public class EmergencySimulator {
 		for (VehiculePompier vehicule : vehicules) {
 			for(AbstractVehicule v: vehiculesList) { 
 				if(v.getId() == vehicule.getId()) {
-					retourIntervention(v,v.getCoord().x,v.getCoord().y,v.getCoord_HQ().x,v.getCoord_HQ().y);
+					if (v.getOilQuantity() < v.getOilCapacity()/4) {
+						RavitaillementOil(v);
+					}
+					else {
+						retourIntervention(v);
+					}
 				}
 			}
 			

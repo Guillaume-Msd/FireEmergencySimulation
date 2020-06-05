@@ -280,6 +280,7 @@ private Coord coord_HQ;
 		connection.setRequestMethod("DELETE");
 		connection.getInputStream();
 	}
+	
 
 	@Override
 	public String toString() {

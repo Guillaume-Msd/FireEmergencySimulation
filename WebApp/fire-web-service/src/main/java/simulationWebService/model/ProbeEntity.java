@@ -25,6 +25,10 @@ public class ProbeEntity {
 
 	@Column 
 	private int y;
+	
+	@Column
+	private int range;
+
 
 	public ProbeEntity() {
 
@@ -72,6 +76,14 @@ public class ProbeEntity {
 
 	public void setY(int y) {
 		this.y = y;
+	}
+	
+	public int getRange() {
+		return range;
+	}
+
+	public void setRange(int range) {
+		this.range = range;
 	}
 	
 

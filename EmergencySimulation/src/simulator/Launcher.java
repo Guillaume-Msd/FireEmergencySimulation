@@ -29,11 +29,26 @@ public class Launcher {
         }    ,0,1000);
 	}
 	
-	public static EmergencySimulator initSimulateur() {
+	public static EmergencySimulator initSimulateur() throws IOException {
 		EmergencySimulator simulateur = new EmergencySimulator();
-		simulateur.addHQ(new FireFighterHQ(new Coord(40,40),3));
 		
-		simulateur.addHQ(new FireFighterHQ(new Coord(100,180),3));
+		simulateur.removeAllHQ();
+		
+		Coord coordHQ1 = new Coord(40, 40);
+		int capacityHQ = 3;
+		
+		FireFighterHQ hq1 = new FireFighterHQ(coordHQ1,capacityHQ);
+		
+		simulateur.addHQ(hq1);
+		
+		simulateur.addHQToMap(hq1);
+		
+		Coord coordHQ2 = new Coord(128, 128);
+		FireFighterHQ hq2 = new FireFighterHQ(coordHQ2,capacityHQ);
+		
+		simulateur.addHQ(hq2);
+		
+		simulateur.addHQToMap(hq2);
 		
 		return simulateur;
 	}

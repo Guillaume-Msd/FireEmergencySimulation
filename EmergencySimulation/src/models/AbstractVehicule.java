@@ -10,6 +10,8 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.json.simple.JSONObject;
+
 import utilities.Tools;
 
 public abstract class AbstractVehicule extends Intervernors implements VehiculeInterface {
@@ -33,7 +35,11 @@ public abstract class AbstractVehicule extends Intervernors implements VehiculeI
   
   private Coord coord;
   
-  public Coord getCoord_HQ() {
+  private int range;
+  
+
+
+public Coord getCoord_HQ() {
 	return coord_HQ;
 }
 
@@ -67,6 +73,14 @@ private Coord coord_HQ;
 	public int getId() {
 		return id;
 	}
+	
+	  public int getRange() {
+			return range;
+		}
+
+		public void setRange(int range) {
+			this.range = range;
+		}
 
 	public void setId(int id) {
 		this.id = id;
@@ -227,7 +241,7 @@ private Coord coord_HQ;
         connection.getInputStream();
 	}
 	
-	public void addVehiculeView() throws IOException {
+	public void addVehiculeView(int range) throws IOException {
 		URL url = new URL("http://localhost:8082/VehiculeWebService/addVehicule/"+this.getCoord().x+"/"+this.getCoord().y);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("POST");
@@ -235,9 +249,12 @@ private Coord coord_HQ;
 		connection.setDoOutput(true);
 		OutputStream os = connection.getOutputStream();
 
+		JSONObject json = new JSONObject();
+		json.put("type", this.getClass().getSimpleName());
+		json.put("range", range);
 		
         OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
-        osw.write(Tools.toJsonString(this.getClass().getSimpleName()));
+        osw.write(json.toJSONString());
         osw.flush();
         osw.close();
         connection.getInputStream();

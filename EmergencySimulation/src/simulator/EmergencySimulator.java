@@ -15,11 +15,9 @@ import models.AbstractVehicule;
 import models.Alerte;
 import models.Coord;
 import models.EnumStatut;
-
 import models.FireFighterHQ;
 import models.VehiculeLutteIncendie;
 import models.VehiculePompier;
-
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -48,10 +46,10 @@ public class EmergencySimulator {
 
 	
 	public void cycle() throws MalformedURLException, IOException {
-		//On récupère les HQ depuis le serveur et on ajoute les nouveaux HQ si l'utilisateur en a ajouté
+		//On rï¿½cupï¿½re les HQ depuis le serveur et on ajoute les nouveaux HQ si l'utilisateur en a ajoutï¿½
 		majHeadquarters();
 		
-		//On récupère les alertes du serveur
+		//On rï¿½cupï¿½re les alertes du serveur
 		List<Alerte> alertes = getAlertes();
 		
 		List<AbstractVehicule> vehicules = getVehicules();
@@ -59,11 +57,27 @@ public class EmergencySimulator {
 		//On parcours ces alertes pour voir si il y en a des nouvelles
 		parcoursAlertes(alertes,vehicules);
 		
-		//On déplace les véhicules
+		//On dï¿½place les vï¿½hicules
 		mooveAllVehiculesAndCheckArrivals(vehicules);
 		
-		//On renvoie les véhicules qui ont finis leur intervention au HQ
+		//On renvoie les vï¿½hicules qui ont finis leur intervention au HQ
 		gestionFinDIntervention();
+		
+		System.err.println(this.getHQ().size());
+		System.err.println(this.getVehicules().size());
+
+	}
+	
+	public List<AbstractHeadquarter> getHQ() {
+		return HQ;
+	}
+
+
+
+	public void setHQ(List<AbstractHeadquarter> hQ) {
+		HQ = hQ;
+
+
 	}
 
 
@@ -91,7 +105,7 @@ public class EmergencySimulator {
 
 
 	public List<AbstractHeadquarter> getHeadquartersFromServer() throws IOException {
-		URL url = new URL("http://localhost:8082/EmergencyWebService/allHQs");
+		URL url = new URL("http://localhost:8082/HeadQuarterWebService/allHQs");
 		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
         httpURLConnection.setRequestMethod("GET");
         BufferedReader in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
@@ -104,7 +118,7 @@ public class EmergencySimulator {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 		
-		AbstractHeadquarter[] HQs = mapper.readValue(response1.toString(), AbstractHeadquarter[].class);
+		FireFighterHQ[] HQs = mapper.readValue(response1.toString(), FireFighterHQ[].class);
 		List<AbstractHeadquarter> HQ_list = new ArrayList<AbstractHeadquarter>();
 		int i;
 		for(i = 0; i < HQs.length; i++) {
@@ -145,7 +159,7 @@ public class EmergencySimulator {
 				vehicules.add(v);
 			}
 		}
-		//TODO ajouter les véhicules des autres types de HQ si besoin
+		//TODO ajouter les vï¿½hicules des autres types de HQ si besoin
 		return vehicules;
 	}
 	
@@ -179,7 +193,7 @@ public class EmergencySimulator {
 					vehicule.updateVehiculeStatut();
 				}
 			}
-			System.out.println(vehicule);
+			//System.out.println(vehicule);
 		}
 	}
 	
@@ -188,8 +202,8 @@ public class EmergencySimulator {
 		FireFighterHQ hq = ChoisirFFHQ(alerte);
 		List<VehiculeLutteIncendie> vehicules = hq.ChoisirVehiculeIncendie(alerte);
 		if (!(vehicules.isEmpty())) {
-			createIntervention(vehicules,hq.getEmplacement_headquarter().x,hq.getEmplacement_headquarter().y,
-				alerte.getCoord().x,alerte.getCoord().y);
+			createIntervention(vehicules,hq.getCoord().x,hq.getCoord().y,
+				alerte.getCoord().x,alerte.getCoord().y, alerte.getRange());
 			AlerteEnCours(alerte);
 		}
 	}
@@ -208,14 +222,14 @@ public class EmergencySimulator {
 		for (FireFighterHQ HQ : this.getFFHQ()) {
 			if (distancemin == -1) {
 				distancemin = Math.sqrt(
-						Math.pow((HQ.getEmplacement_headquarter().x-alerte.getCoord().x),2) + 
-						Math.pow((HQ.getEmplacement_headquarter().y-alerte.getCoord().y),2));
+						Math.pow((HQ.getCoord().x-alerte.getCoord().x),2) + 
+						Math.pow((HQ.getCoord().y-alerte.getCoord().y),2));
 				HQ_choisi = HQ;
 			}
 			else {
 				distance = Math.sqrt(
-						Math.pow((HQ.getEmplacement_headquarter().x-alerte.getCoord().x),2) + 
-						Math.pow((HQ.getEmplacement_headquarter().y-alerte.getCoord().y),2));
+						Math.pow((HQ.getCoord().x-alerte.getCoord().x),2) + 
+						Math.pow((HQ.getCoord().y-alerte.getCoord().y),2));
 				if (distance < distancemin) {
 					distancemin = distance;
 					HQ_choisi = HQ;
@@ -309,11 +323,10 @@ public class EmergencySimulator {
 	}
 	
 	public void gestionFinDIntervention() throws IOException {
-
 		List<AbstractVehicule> vehiculesList = this.getVehicules();
 		List<VehiculePompier> vehicules = getVehiculesByStatut(EnumStatut.FinDIntervention);
-		for (AbstractVehicule vehicule : vehicules) {
-			for(AbstractVehicule v: vehiculesList)
+		for (VehiculePompier vehicule : vehicules) {
+			for(AbstractVehicule v: vehiculesList) { 
 				if(v.getId() == vehicule.getId()) {
 					retourIntervention(v,v.getCoord().x,v.getCoord().y,v.getCoord_HQ().x,v.getCoord_HQ().y);
 				}
@@ -337,4 +350,37 @@ public class EmergencySimulator {
 		double consommation = 0;
 		return  consommation;
 	}
+
+
+	public void addHQToMap(AbstractHeadquarter hq) throws IOException {
+		URL url = new URL("http://localhost:8082/HeadQuarterWebService/add/" + hq.getCoord().x + "/" + hq.getCoord().y + "/" + hq.getNb_vehicules());
+		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection(); 
+        httpURLConnection.setRequestMethod("GET");
+        httpURLConnection.getInputStream();
+        
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(httpURLConnection.getInputStream()));
+                String inputLine;
+                StringBuffer response1 = new StringBuffer();
+                while ((inputLine = in.readLine()) != null) {
+                	response1.append(inputLine);
+                } in .close();
+                
+
+         int id = Integer.parseInt(response1.toString());
+         hq.setId(id);
+        
+        
+	}
+
+
+
+	public void removeAllHQ() throws IOException {
+		URL url = new URL("http://localhost:8082/HeadQuarterWebService/removeAll");
+		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection(); 
+        httpURLConnection.setRequestMethod("DELETE");
+        httpURLConnection.getInputStream();
+		
+	}
+
 }

@@ -21,8 +21,10 @@ public class Vehicule {
 	
 	@Column
 	private EnumStatut statut;
-
 	
+	@Column
+	private int range;
+
 	public Vehicule() {
 	}
 	
@@ -60,5 +62,13 @@ public class Vehicule {
 
 	public void setStatut(EnumStatut statut) {
 		this.statut = statut;
+	}
+	
+	public int getRange() {
+		return range;
+	}
+
+	public void setRange(int range) {
+		this.range = range;
 	}
 }

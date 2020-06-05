@@ -3,8 +3,12 @@ package models;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-public class FireFighterHQ extends AbstractHeadquarter {	
+	
+public class FireFighterHQ extends AbstractHeadquarter {
+	
+	public FireFighterHQ() {
+		
+	}
 	
 	private List<VehiculePompier> vehicules;
 	
@@ -73,7 +77,7 @@ public class FireFighterHQ extends AbstractHeadquarter {
 		if (nb_vehicules <= 0) {
 			return vehicules;
 		}
-		System.out.println("Pas assez de véhicules disponibles.");
+		System.out.println("Pas assez de vï¿½hicules disponibles.");
 		return vehicules;
 	}
 }

@@ -12,6 +12,8 @@ public class InterventionVehicule {
 
 	private int range;
 	
+	//TODO decrease liquid
+	
 	public InterventionVehicule() {
 	}
 	

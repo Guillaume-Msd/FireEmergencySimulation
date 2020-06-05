@@ -16,7 +16,11 @@ public class HeadQuarter {
 	@Column
 	private Coord coord;
 	
+	@Column
+	private int nb_vehicules;
 	
+
+
 	public HeadQuarter() {
 	}
 	
@@ -38,6 +42,16 @@ public class HeadQuarter {
 
 	public void setCoord(Coord coord) {
 		this.coord = coord;
+	}
+
+	public int getNb_vehicules() {
+		return nb_vehicules;
+	}
+
+	public void setNb_vehicules(int nb_vehicules) {
+		this.nb_vehicules = nb_vehicules;
 	}	
+	
+	
 
 }

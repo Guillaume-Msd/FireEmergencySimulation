@@ -115,16 +115,17 @@ $("#HQForm").submit(function(event){
 	if(x != null && y != null && nb != null){
 
 		$.ajax({
-			  url:"http://localhost:8082/HeadQuarterWebService/add/" + x + "/" + y,
+			  url:"http://localhost:8082/HeadQuarterWebService/add/" + x + "/" + y + "/" + nb,
 			  type: "GET"
 		  });	
 		
 		displayAllElements("Caserne");
 	}
+	
+	displayAllElements("Caserne");
 });
 
 
-displayElementEmergency(128, 128, imgCaserne);
 
 
 	

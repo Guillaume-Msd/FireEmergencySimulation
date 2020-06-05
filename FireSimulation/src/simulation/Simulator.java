@@ -30,7 +30,7 @@ public class Simulator {
 		EventsController eventsController = new EventsController();
 		Timer timer = new Timer();
 	    //timer.schedule(new CreateFireTask(this.mapSize, eventsController), 3000, creationInterval);
-	    timer.schedule(new AggravateFireTask(eventsController), 5000, updateInterval);
+	    //timer.schedule(new AggravateFireTask(eventsController), 5000, updateInterval);
 	    timer.schedule(new CheckInterventionTask(eventsController), 1000, 1000);
 	}
 	

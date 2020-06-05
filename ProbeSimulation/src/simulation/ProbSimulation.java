@@ -1,7 +1,9 @@
 package simulation;
 
 import java.awt.Point;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -13,6 +15,10 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import models.*;
 
@@ -37,10 +43,15 @@ public class ProbSimulation {
 		new Timer().scheduleAtFixedRate(new TimerTask(){
 		    @Override
 		    public void run(){
+		    	
+		    	try {
+					simulation.majProbs();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				for (AbstractProb prob: simulation.probList) {
 					if (prob.getRateCount() == 0) {
-						System.out.print(prob.toString());
-						System.out.print("MEASURING : \n");
 						try {
 							prob.getInformation();
 						} catch (IOException e) {
@@ -51,8 +62,6 @@ public class ProbSimulation {
 					}
 					else {
 						prob.setRateCount(prob.getRateCount()-1);
-						System.out.print(prob.toString());
-						System.out.print(prob.getRateCount() + "\n");
 					}
 				}
 		    }
@@ -70,58 +79,129 @@ public class ProbSimulation {
 		connection.setDoOutput(false); 
 		connection.getInputStream();
 		
-		/*int i;
-		Random r = new Random();
-		for(i= 0; i < 20; i++) {
-			
-			this.addProb("Smoke", 5, 0.1, new Point(r.nextInt(255), r.nextInt(255)), 1);
-		}
+		SmokeProb probe1 = new SmokeProb(1, 0.1, new Point(110,110), 10);
 		
-		for(i= 0; i < 20; i++) {
-			
-			this.addProb("Thermic", 5, 0.1, new Point(r.nextInt(255), r.nextInt(255)), 1);
-		}
+		this.addProbToMap(probe1);
+		this.probList.add(probe1);
 		
-		for(i= 0; i < 20; i++) {
-			
-			this.addProb("CO2", 5, 0.1, new Point(r.nextInt(255), r.nextInt(255)), 1);
-		}*/
+		ThermicProb probe2 = new ThermicProb( 1, 0.1, new Point(50,200), 20);
 		
-		this.addProb("Smoke", 1, 0.1, new Point(110,110), 10);
-		this.addProb("Thermic", 1, 0.1, new Point(50,200), 20);
-		this.addProb("Smoke", 1, 0.1, new Point(120,30), 30);
-		this.addProb("CO2", 1, 0.1, new Point(210,50), 30);
-		this.addProb("CO2", 1, 0.1, new Point(60,80), 30);
+		this.addProbToMap(probe2);
+		this.probList.add(probe2);
 		
-		connection.getInputStream();
+		ThermicProb probe3 = new ThermicProb( 1, 0.1, new Point(120,30), 20);
+		
+		this.addProbToMap(probe3);
+		this.probList.add(probe3);
+		
+		SmokeProb probe4 = new SmokeProb(1, 0.1, new Point(50,50), 10);
+		
+		this.addProbToMap(probe4);
+		this.probList.add(probe4);
+		
+		CO2Prob probe5 = new CO2Prob(1, 0.1, new Point(210,50), 30);
+		
+		this.addProbToMap(probe5);
+		this.probList.add(probe5);
+		
+		
+		CO2Prob probe6 = new CO2Prob(1, 0.1, new Point(60,80), 10);
+		
+		this.addProbToMap(probe6);
+		this.probList.add(probe6);
+		
+		
 	
-		
 		for (AbstractProb prob: this.probList) {
 			prob.setRateCount(prob.getRate());
 		}
 	}
 	
 	//ajoute une probe
-	public void addProb(String type, int rate, double error,Point localisation, int range) throws IOException {
+	public void addProb(int id, String type, int rate, double error,Point localisation, int range) throws IOException {
+		AbstractProb probe = null;
 		if (type == "Smoke") {
-			this.probList.add(new SmokeProb(rate, error, localisation, range));
+			probe = new SmokeProb(rate, error, localisation, range);
+			probe.setId(id);
+			
 		}
-		if (type == "CO2") {
-			this.probList.add(new CO2Prob(rate, error, localisation, range));
+		else if (type == "CO2") {
+			probe = new CO2Prob(rate, error, localisation, range);
+			probe.setId(id);
 		}
-		if (type == "Thermic") {
-			this.probList.add(new ThermicProb(rate, error, localisation, range));
+		else  {
+			probe = new ThermicProb(rate, error, localisation, range);
+			probe.setId(id);
+	
 		}
-		this.addProbToMap(type, localisation);
+
+		
+		this.probList.add(probe);
 	}	
 	
-	public void addProbToMap(String type, Point localisation) throws IOException {
+	public void addProbToMap(AbstractProb probe) throws IOException {
 		//envoie la position de la sonde a Simulation service
-		URL url = new URL("http://localhost:8081/ProbeWebService/add/" + type.toString() + "/" + localisation.x + "/" + localisation.y); 
+		URL url = new URL("http://localhost:8081/ProbeWebService/add/" + probe.getType().toString() + "/" + probe.getRange() + "/" + probe.getLocalisation().x + "/" + probe.getLocalisation().y); 
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection(); 
 		connection.setRequestMethod("GET"); 
 		connection.setDoOutput(false); 
 		connection.getInputStream();
+		BufferedReader in = new BufferedReader( new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		StringBuffer response = new StringBuffer(); 
+		while ((inputLine = in.readLine()) != null) { 
+			response.append(inputLine); 
+		} 
+		in .close();
+		probe.setId(Integer.parseInt(response.toString()));
+		
+		
+	}
+	
+
+	public void majProbs() throws IOException {
+		List<AbstractProb> servProbList = getProbsFromServ();
+		boolean trouve = false;
+		for (AbstractProb servProb: servProbList) {
+			for (AbstractProb prob: this.probList) {
+				if (prob.getId() == servProb.getId()) {
+					trouve = true;
+				}
+			}
+			if (trouve==false) {
+				this.addProb(servProb.getId(), servProb.getType().toString(), servProb.getRate(), servProb.getError(), servProb.getLocalisation(), servProb.getRange());
+			}
+			trouve = false;
+		}
+	}
+	
+	public List<AbstractProb> getProbsFromServ() throws JsonParseException, JsonMappingException, IOException {
+		URL obj = new URL("http://localhost:8081/ProbeWebService/getAll");
+		HttpURLConnection httpURLConnection = (HttpURLConnection) obj.openConnection();
+		httpURLConnection.setRequestMethod("GET"); 
+		httpURLConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+		BufferedReader in = new BufferedReader( new InputStreamReader(httpURLConnection.getInputStream()));
+		String inputLine;
+		StringBuffer response = new StringBuffer(); 
+		while ((inputLine = in.readLine()) != null) { 
+			response.append(inputLine); 
+		} 
+		in .close();
+		
+		List<AbstractProb> probsList = new ArrayList<AbstractProb>();
+		
+		ObjectMapper mapper = new ObjectMapper();
+
+        AbstractProb[] events= mapper.readValue(response.toString(), AbstractProb[].class);
+        int i;
+        for (i = 0 ; i < events.length; i++) {
+        	AbstractProb probe = events[i];
+        	probsList.add(probe);
+        	probe.convertCoord();
+        	
+        }
+		return probsList;
+		
 	}
 	
 	

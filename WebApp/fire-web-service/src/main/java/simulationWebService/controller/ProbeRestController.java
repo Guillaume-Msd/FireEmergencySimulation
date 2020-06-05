@@ -34,15 +34,17 @@ public class ProbeRestController {
 	 * 
 	 * @return 
 	 */
-	@GetMapping("ProbeWebService/add/{type}/{x}/{y}")
-	public int addProbe(@PathVariable String type, @PathVariable String x, @PathVariable String y) {
+	@GetMapping("ProbeWebService/add/{type}/{range}/{x}/{y}")
+	public int addProbe(@PathVariable String type, @PathVariable String range, @PathVariable String x, @PathVariable String y) {
 		ProbeEntity probe = new ProbeEntity(type, Integer.parseInt(x), Integer.parseInt(y));
+		probe.setRange(Integer.parseInt(range));
+		probe.setType(type);
 		probeService.save(probe);
 		return probe.getId();
 		
 	}
 	
-	/*
+	
 	@GetMapping("ProbeWebService/getAllCoords")
 	public String getAllFireCoords() {
 		List<ProbeEntity> probeList = probeService.getAllProbes();
@@ -52,8 +54,10 @@ public class ProbeRestController {
 		}
 		return Tools.toJsonString(coordList);
 	}
-	*/
-	@GetMapping("ProbeWebService/getAllCoords")
+	
+
+	
+	@GetMapping("ProbeWebService/getAll")
 	public String getAll() {
 		return Tools.toJsonString(probeService.getAllProbes());
 	}

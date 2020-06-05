@@ -8,6 +8,7 @@ import java.util.TimerTask;
 
 import controller.EventsController;
 import model.Coord;
+import model.EnumStatut;
 import model.Event;
 import model.Fire;
 import model.InterventionVehicule;
@@ -37,21 +38,21 @@ public class CheckInterventionTask extends TimerTask {
 				    Iterator <Coord> it = event.getLocalisation().iterator();
 				    while(it.hasNext()) {
 					    Coord coordEvent = it.next();
-					
-							if (Math.abs(coordEvent.x - vehicule.getCoord().x)  < 20  && Math.abs(coordEvent.y - vehicule.getCoord().y)  < 20 ) {
-								this.eventsController.updateEvent(event, ((Fire) event).attenuate(), "attenuer");
-								
-								if(event.getLocalisation().size() <= 1) {
-									System.err.println(event.getLocalisation());
-									this.eventsController.deleteEvent(event);
-									this.eventsController.updateVehiculeStatut(vehicule);
-									}
-								}
-								
-								
+						if (coordEvent.isInRange(vehicule.getCoord(), vehicule.getRange())) {
+							this.eventsController.updateEvent(event, ((Fire) event).attenuate(), "attenuer");
+							
+							if(event.getLocalisation().size() <= 1) {
+								System.err.println(event.getLocalisation());
+								this.eventsController.deleteEvent(event);
+								vehicule.setStatut(EnumStatut.FinDIntervention);
+								this.eventsController.updateVehiculeStatut(vehicule);
 							}
+						}
+							
+							
+					}
 					    
-				    }
+			    }
 			}
 
 		} catch (IOException e) {

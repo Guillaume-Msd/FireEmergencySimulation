@@ -7,6 +7,7 @@ public interface ElementInterface {
    *  ravitaillement sont des extensions possibles
    *  @param int Temps de ravitaillement
    */
-  public void supplyVehicule();
+
+	public void supplyVehicule(InterventionVehicule vehicule);
 
 }

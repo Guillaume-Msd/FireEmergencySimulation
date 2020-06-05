@@ -31,7 +31,6 @@ var width = east - west;
 
 var height =  north - south;
 
-console.log(map.getBounds());
 
 
 var imagesFire = [];
@@ -73,7 +72,7 @@ function displayAllElements(type){
 		imgSrc = imgFire;
 	}
 	else  {
-		url = "http://localhost:8081/ProbeWebService/getAllCoords";
+		url = "http://localhost:8081/ProbeWebService/getAll";
 	
 	}
 	
@@ -103,7 +102,6 @@ function displayAllElements(type){
 			  url:url,
 			  type: "GET",
 			  success: function( data ){
-				  console.log(data);
 				  json = JSON.parse(data);
 				  var x, y;
 				  for(var i = 0 ; i < json.length; i++){
@@ -115,7 +113,6 @@ function displayAllElements(type){
 					  } else {
 						  imgSrc = imgCO2;
 					  }
-					  console.log(json[i]["x"]);
 					  x = json[i]["x"];
 					  y = json[i]["y"];
 					  displayElementSimu(x, y, imgSrc);
@@ -163,16 +160,19 @@ $("#ProbeForm").submit(function(event){
 	var x = $("#ProbeX").val();
 	var y = $("#ProbeY").val();
 	var type = $('#ProbeType').val();
+	var range = $("#ProbeRange").val();
 	
-	if(x != null && y != null && type != null){
+	if(x != null && y != null && type != null && range != null){
 
 		$.ajax({
-			  url:"http://localhost:8081/ProbeWebService/add/" + type + "/" + x + "/" + y,
+			  url:"http://localhost:8081/ProbeWebService/add/" + type + "/" + range + "/" + x + "/" + y,
 			  type: "GET"
 		  });	
 	
 		displayAllElements("Probe");
 	}
+	
+	displayAllElements("Probe");
 });
 
 
@@ -181,8 +181,8 @@ $("#clearFireButton").on("click", function(){
 		  url:"http://localhost:8081/FireWebService/removeAll",
 		  type: "GET"
 	  });
-	for (var i = 0; i < images.length; i++){
-		map.removeLayer(images[i]);
+	for (var i = 0; i < imagesSimu.length; i++){
+		map.removeLayer(imagesSimu[i]);
 	}
 	
 })
@@ -205,7 +205,6 @@ function Realitinerary(xInit, yInit, xFinal, yFinal){
 				  x = json[i]["x"];
 				  y = json[i]["y"];
 				  imageBounds = [[x, y], [x + width/128, y + height/128]];
-				  console.log(imageBounds);
 					var image = L.imageOverlay(imgVehicule, imageBounds);
 					image.addTo(map);
 					images.push(image);

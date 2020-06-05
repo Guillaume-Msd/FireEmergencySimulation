@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,9 +23,10 @@ public class HeadQuarterController {
 	@Autowired
 	HeadQuarterService headQuarterService;
 	
-	@GetMapping("HeadQuarterWebService/add/{x}/{y}")
-	public int add(@PathVariable String x, @PathVariable String y) {
+	@GetMapping("HeadQuarterWebService/add/{x}/{y}/{capacity}")
+	public int add(@PathVariable String x, @PathVariable String y, @PathVariable String capacity) {
 		HeadQuarter headQuarter = new HeadQuarter(new Coord(Integer.parseInt(x), Integer.parseInt(y)));
+		headQuarter.setNb_vehicules(Integer.parseInt(capacity));
 		headQuarterService.addHeadQuarter(headQuarter);
 		return headQuarter.getId();
 		
@@ -43,6 +45,16 @@ public class HeadQuarterController {
 			coordList.add(hq.getCoord());
 		}
 		return Tools.toJsonString(coordList);
+	}
+	
+	@GetMapping("HeadQuarterWebService/allHQs")
+	public String getAll() {
+		return Tools.toJsonString(headQuarterService.getAll());
+	}
+	
+	@DeleteMapping("HeadQuarterWebService/removeAll")
+	public void removeAll() {
+		headQuarterService.removeAll();
 	}
 
 }

@@ -13,13 +13,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import model.Coord;
 import model.EnumStatut;
+import model.EnvironmentElement;
 import model.Event;
 import model.Fire;
 import model.InterventionVehicule;
 import utilities.Tools;
 
 
-public class EventsController implements EventsInterface {
+public class SimulationController implements SimulationControllerInterface {
 
 	
 	public void createEvent(Event event) throws IOException {
@@ -100,7 +101,7 @@ public class EventsController implements EventsInterface {
 	}
 	
 	
-	public InterventionVehicule[] getAllVehicules() throws IOException {
+	public InterventionVehicule[] getInterventionVehicules() throws IOException {
 		
 		URL url = new URL("http://localhost:8082/VehiculeWebService/vehiculesByStatut/" + "EnCoursDIntervention");
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
@@ -133,6 +134,21 @@ public class EventsController implements EventsInterface {
         osw.close();
         connection.getInputStream();
     }
-		
 	
+	public void createEnvironmentElement(EnvironmentElement element) throws IOException {
+		
+		URL url = new URL("http://localhost:8082/VehiculeWebservice/addElement/"+element.getX()+"/"+element.getY());
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+		connection.setDoOutput(true);
+		OutputStream os = connection.getOutputStream();
+
+        OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+        osw.write(element.toJsonString());
+        osw.flush();
+        osw.close();
+        connection.getInputStream();
+	}
+		
 }

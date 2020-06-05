@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Map;
+
 public class InterventionVehicule {
 	
 	private int id;
@@ -11,6 +13,8 @@ public class InterventionVehicule {
 	private EnumStatut statut;
 
 	private int range;
+
+	private Map<LiquidEnum,Map<String,Integer>> liquids;
 	
 	//TODO decrease liquid
 	
@@ -60,6 +64,25 @@ public class InterventionVehicule {
 	public void setStatut(EnumStatut statut) {
 		this.statut = statut;
 	}
+	
+	public int getQuantity(LiquidEnum liquidType) {
+		Map<String,Integer> m =this.liquids.get(liquidType);
+		return m.get("Quantity");
+	}
+	
+	public int getCapacity(LiquidEnum liquidType) {
+		Map<String,Integer> m =this.liquids.get(liquidType);
+		return m.get("Capacity");
+	}
 
-
+	public void restoreLiquid(LiquidEnum liquidType) {
+		Map<String,Integer> m =this.liquids.get(liquidType);
+		m.put("Quantity",m.get("Capacity"));
+	}
+	
+	//diminue la quantité de liquide de 10% de sa capacité totale
+	public void decreaseLiquid(LiquidEnum liquidType) {
+		Map<String,Integer> m =this.liquids.get(liquidType);
+		m.put("Quantity",m.get("Capacity")*(1-1/10));
+	}
 }

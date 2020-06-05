@@ -1,5 +1,5 @@
 package model;
 
-enum TypeElement {
+public enum TypeElement {
 	StationEssence, BoucheIncendie, Colonne, Extincteur, RobinetIncendie
 }

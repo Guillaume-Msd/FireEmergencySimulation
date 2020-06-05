@@ -7,7 +7,7 @@ import java.util.List;
 import model.Coord;
 import model.Event;
 
-public interface EventsInterface {
+public interface SimulationControllerInterface {
 	
 	  public void createEvent(Event event) throws IOException;
 	    	

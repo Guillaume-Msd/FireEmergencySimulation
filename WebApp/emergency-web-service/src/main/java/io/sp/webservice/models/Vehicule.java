@@ -1,5 +1,8 @@
 package io.sp.webservice.models;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,6 +27,9 @@ public class Vehicule {
 	
 	@Column
 	private int range;
+	
+	@Column
+	private Map<LiquidEnum,Map<String,Integer>> liquids = new HashMap<LiquidEnum,Map<String,Integer>>();
 
 	public Vehicule() {
 	}
@@ -71,4 +77,14 @@ public class Vehicule {
 	public void setRange(int range) {
 		this.range = range;
 	}
+
+	public Map<LiquidEnum, Map<String, Integer>> getLiquids() {
+		return liquids;
+	}
+
+	public void setLiquids(Map<LiquidEnum, Map<String, Integer>> liquids) {
+		this.liquids = liquids;
+	}
+	
+	
 }

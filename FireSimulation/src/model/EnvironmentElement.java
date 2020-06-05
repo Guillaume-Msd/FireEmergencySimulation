@@ -3,9 +3,9 @@ package model;
 
 public class EnvironmentElement implements ElementInterface {
 
-	private int maxCapacity;
+	private int capacity;
 	
-	private int actualCapacity;
+	private int quantity;
 	
 	private Coord location;
 	
@@ -13,45 +13,45 @@ public class EnvironmentElement implements ElementInterface {
 	
 	public EnvironmentElement(Coord location, int maxCapacity, TypeElement type) {
 		this.location = location;
-		this.maxCapacity = maxCapacity;
-		this.actualCapacity = this.maxCapacity;
-		this.setType(type);
+		this.capacity = capacity;
+		this.quantity = this.capacity;
+		this.type = type;
 	}
     
 	@Override
-	public void supplyVehicule(InterventionVehicule vehicule) {
-		//TODO Set le liquide du camion à la valeur de sa capactité max
-		
+	public void supplyVehicule(InterventionVehicule vehicule, LiquidEnum liquidType) {
+		vehicule.restoreLiquid(liquidType);
+		this.decreaseQuantity(vehicule.getCapacity(liquidType));
 	}
 	
-	public void decreaseActualCapacity(int liquid) {
-		this.actualCapacity -= liquid;
+	public void decreaseQuantity(int liquid) {
+		this.quantity -= liquid;
 	}
 
-	public int getMaxCapacity() {
-		return maxCapacity;
+	public int getCapacity() {
+		return capacity;
 	}
 
-	private void setMaxCapacity(int maxCapacity) {
-		this.maxCapacity = maxCapacity;
+	private void setCapacity(int capacity) {
+		this.capacity = capacity;
 	}
 
-	public int getActualCapacity() {
-		return actualCapacity;
+	public int getQuantity() {
+		return quantity;
 	}
 
-	public void setActualCapacity(int actualCapacity) {
-		this.actualCapacity = actualCapacity;
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
 	}
 
-	public Coord getLocation() {
-		return location;
+	public int getX() {
+		return this.location.x;
 	}
-
-	public void setLocation(Coord location) {
-		this.location = location;
+	
+	public int getY() {
+		return this.location.y;
 	}
-
+	
 	public TypeElement getType() {
 		return type;
 	}
@@ -60,4 +60,8 @@ public class EnvironmentElement implements ElementInterface {
 		this.type = type;
 	}
 	
+	public String toJsonString() {
+		return "{ \"capacity\" : \""  + this.capacity + "\", \"quantity\": \"" + this.quantity + "\", \"type\": \"" + this.type +"\" }";	
+		
+	}
 }

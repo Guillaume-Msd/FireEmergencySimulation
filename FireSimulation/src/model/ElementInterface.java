@@ -8,6 +8,7 @@ public interface ElementInterface {
    *  @param int Temps de ravitaillement
    */
 
-	public void supplyVehicule(InterventionVehicule vehicule);
+
+	public void supplyVehicule(InterventionVehicule vehicule, LiquidEnum liquidType);
 
 }

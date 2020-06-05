@@ -12,8 +12,7 @@ public class Launcher {
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		final EmergencySimulator simulateur = initSimulateur();
-		
-		
+
 		new Timer().scheduleAtFixedRate(new TimerTask(){
             @Override
             public void run(){

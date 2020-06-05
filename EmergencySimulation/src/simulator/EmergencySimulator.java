@@ -27,6 +27,7 @@ public class EmergencySimulator {
 
 	private List<AbstractHeadquarter> HQ = new ArrayList<AbstractHeadquarter>();
 	
+
 	public EmergencySimulator() {
 	}
 	
@@ -62,6 +63,7 @@ public class EmergencySimulator {
 
 	public void setHQ(List<AbstractHeadquarter> hQ) {
 		HQ = hQ;
+
 
 	}
 
@@ -365,4 +367,5 @@ public class EmergencySimulator {
         httpURLConnection.getInputStream();
 		
 	}
+
 }

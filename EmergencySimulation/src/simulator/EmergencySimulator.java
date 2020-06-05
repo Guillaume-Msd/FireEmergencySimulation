@@ -16,6 +16,7 @@ import models.Alerte;
 import models.Coord;
 import models.EnumStatut;
 import models.FireFighterHQ;
+import models.VehiculeLutteIncendie;
 import models.VehiculePompier;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -25,8 +26,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class EmergencySimulator {
 
-	private List<AbstractHeadquarter> HQ = new ArrayList<AbstractHeadquarter>();
+	private List<FireFighterHQ> FFHQ;
 	
+	public List<FireFighterHQ> getFFHQ() {
+		return FFHQ;
+	}
+
+
+
+	public void setFFHQ(List<FireFighterHQ> FFHQ) {
+		this.FFHQ = FFHQ;
+	}
+
+
 
 	public EmergencySimulator() {
 	}
@@ -34,6 +46,7 @@ public class EmergencySimulator {
 
 	
 	public void cycle() throws MalformedURLException, IOException {
+		//On r�cup�re les HQ depuis le serveur et on ajoute les nouveaux HQ si l'utilisateur en a ajout�
 		majHeadquarters();
 		
 		//On r�cup�re les alertes du serveur
@@ -50,20 +63,8 @@ public class EmergencySimulator {
 		//On renvoie les v�hicules qui ont finis leur intervention au HQ
 		gestionFinDIntervention();
 		
-		System.err.println(this.getHQ().size());
+		System.err.println(this.getFFHQ().size());
 		System.err.println(this.getVehicules().size());
-
-	}
-	
-	public List<AbstractHeadquarter> getHQ() {
-		return HQ;
-	}
-
-
-
-	public void setHQ(List<AbstractHeadquarter> hQ) {
-		HQ = hQ;
-
 
 	}
 
@@ -73,21 +74,20 @@ public class EmergencySimulator {
 		List<AbstractHeadquarter> new_HQs = getHeadquartersFromServer();
 		boolean trouve = false;
 		for (AbstractHeadquarter HQ1 : new_HQs) {
-			for (AbstractHeadquarter HQ2 : this.getHQ()) {
+			for (AbstractHeadquarter HQ2 : this.getFFHQ()) {
 				if (HQ1.getId() == HQ2.getId()) {
 					trouve = true;
 				}
 			}
-			if (!trouve) {
-				this.addHQ(HQ1);
+			if (!trouve && HQ1 instanceof FireFighterHQ) {
+				this.addHQ((FireFighterHQ) HQ1);
 			}
 			trouve = false;
 		}
 	}
 
-	public void addHQ(AbstractHeadquarter HQ1) {
-		HQ1.updateVehiculeList();
-		this.HQ.add(HQ1);
+	public void addHQ(FireFighterHQ HQ1) {
+		this.FFHQ.add(HQ1);
 	}
 
 
@@ -141,12 +141,13 @@ public class EmergencySimulator {
 	}
 	
 	public List<AbstractVehicule> getVehicules() {
-		List<AbstractVehicule> vehicules = new ArrayList<AbstractVehicule>();//A modifier lorsque l'on aura plusieurs HQ
-		for (AbstractHeadquarter HQ : this.getHQ()) {
-			for (AbstractVehicule v : HQ.getVehicules()) {
+		List<AbstractVehicule> vehicules = new ArrayList<AbstractVehicule>();
+		for (FireFighterHQ HQ : this.getFFHQ()) {
+			for (AbstractVehicule v : ((FireFighterHQ) HQ).getVehicules()) {
 				vehicules.add(v);
 			}
 		}
+		//TODO ajouter les v�hicules des autres types de HQ si besoin
 		return vehicules;
 	}
 	
@@ -186,8 +187,8 @@ public class EmergencySimulator {
 	
 	public void gererNouvelleAlerte(Alerte alerte) throws IOException {
 		//TODO ChoisirHQ()
-		AbstractHeadquarter hq = ChoisirHQ(alerte);
-		List<AbstractVehicule> vehicules = hq.ChoisirVehicule(alerte);
+		FireFighterHQ hq = ChoisirFFHQ(alerte);
+		List<VehiculeLutteIncendie> vehicules = hq.ChoisirVehiculeIncendie(alerte);
 		if (!(vehicules.isEmpty())) {
 			createIntervention(vehicules,hq.getCoord().x,hq.getCoord().y,
 				alerte.getCoord().x,alerte.getCoord().y, alerte.getRange());
@@ -202,11 +203,11 @@ public class EmergencySimulator {
         connection.getInputStream();
 	}
 	
-	public AbstractHeadquarter ChoisirHQ(Alerte alerte) {
+	public FireFighterHQ ChoisirFFHQ(Alerte alerte) {
 		double distancemin = -1;
 		double distance;
-		AbstractHeadquarter HQ_choisi = new FireFighterHQ(new Coord(-1,-1));
-		for (AbstractHeadquarter HQ : this.getHQ()) {
+		FireFighterHQ HQ_choisi = new FireFighterHQ(new Coord(-1,-1));
+		for (FireFighterHQ HQ : this.getFFHQ()) {
 			if (distancemin == -1) {
 				distancemin = Math.sqrt(
 						Math.pow((HQ.getCoord().x-alerte.getCoord().x),2) + 
@@ -226,8 +227,34 @@ public class EmergencySimulator {
 		return HQ_choisi;
 	}
 	
+	public List<Coord> getPathFromServer(int xInit,int yInit,int xFinal,int yFinal) throws IOException {
+		URL url = new URL("http://localhost:8083/MapWebService/getItinerary/"+ xInit + "/" + yInit + "/" + xFinal + "/" + yFinal );
+		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection(); 
+        httpURLConnection.setRequestMethod("GET");
+        BufferedReader in = new BufferedReader(
+        new InputStreamReader(httpURLConnection.getInputStream()));
+        String inputLine;
+        StringBuffer response1 = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+        	response1.append(inputLine);
+		} in .close();
+	
+		ObjectMapper mapper = new ObjectMapper();
+		
+		Coord[] coords = mapper.readValue(response1.toString(), Coord[].class);
+		List<Coord> coordList = new ArrayList<Coord>();
+		int i;
+		for(i = 0; i < coords.length; i++) {
+			coordList.add(coords[i]);
+		}
+		
+		coordList.add(new Coord(xFinal,yFinal));
+		return coordList;
+	}
+	
 	/**
 	 * When alert is detected, set up an itinerarry to the vehicule specified 
+	 * @param i 
 	 * @param AbstractVehicule
 	 * @param int xInit
 	 * @param int yInit
@@ -237,65 +264,26 @@ public class EmergencySimulator {
 	 * @throws JsonMappingException 
 	 * @throws JsonParseException 
 	 */
-	public void createIntervention(List<AbstractVehicule> vehicules, int xInit, int yInit, int xFinal, int yFinal, int range) throws JsonParseException, JsonMappingException, IOException {
-		URL url = new URL("http://localhost:8083/MapWebService/getItinerary/"+ xInit + "/" + yInit + "/" + xFinal + "/" + yFinal );
-		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection(); 
-        httpURLConnection.setRequestMethod("GET");
-        BufferedReader in = new BufferedReader(
-        new InputStreamReader(httpURLConnection.getInputStream()));
-        String inputLine;
-        StringBuffer response1 = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-        	response1.append(inputLine);
-		} in .close();
-	
-		ObjectMapper mapper = new ObjectMapper();
-		
-		Coord[] coords = mapper.readValue(response1.toString(), Coord[].class);
-		List<Coord> coordList = new ArrayList<Coord>();
-		int i;
-		for(i = 0; i < coords.length; i++) {
-			coordList.add(coords[i]);
-		}
-		
-		coordList.add(new Coord(xFinal,yFinal));
-		
-		for (AbstractVehicule vehicule : vehicules) {
-			vehicule.setCoord_HQ(new Coord(xInit, yInit));
+	public void createIntervention(List<VehiculeLutteIncendie> vehicules, int xInit, int yInit, int xFinal, int yFinal, int range) throws JsonParseException, JsonMappingException, IOException {
+		List<Coord> coordList = getPathFromServer(xInit,yInit,xFinal,yFinal);
+		double distance = calculconsommation(xInit,yInit,xFinal,yFinal);
+		for (VehiculePompier vehicule : vehicules) {
 			vehicule.setPath(coordList);
 			vehicule.setStatut(EnumStatut.EnRoutePourIntervention);
+			vehicule.setOilQuantity(vehicule.getOilQuantity() - distance*vehicule.getInterventionOilConsumption());
 			vehicule.addVehiculeView(range);
 		}
-		
 	}
 	
 
 	
 	public void retourIntervention(AbstractVehicule vehicule, int xInit, int yInit, int xFinal, int yFinal) throws JsonParseException, JsonMappingException, IOException {
-		URL url = new URL("http://localhost:8083/MapWebService/getItinerary/"+ xInit + "/" + yInit + "/" + xFinal + "/" + yFinal );
-		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection(); 
-        httpURLConnection.setRequestMethod("GET");
-        BufferedReader in = new BufferedReader(
-        new InputStreamReader(httpURLConnection.getInputStream()));
-        String inputLine;
-        StringBuffer response1 = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-        	response1.append(inputLine);
-		} in .close();
-	
-		ObjectMapper mapper = new ObjectMapper();
-		
-		Coord[] coords = mapper.readValue(response1.toString(), Coord[].class);
-		List<Coord> coordList = new ArrayList<Coord>();
-		int i;
-		for(i = 0; i < coords.length; i++) {
-			coordList.add(coords[i]);
-		}
-		
-		coordList.add(new Coord(xFinal,yFinal));
+		List<Coord> coordList = getPathFromServer(xInit,yInit,xFinal,yFinal);
+		double distance = calculconsommation(xInit,yInit,xFinal,yFinal);
 		
 		vehicule.setPath(coordList);
 		vehicule.setStatut(EnumStatut.RetourVersLeHQ);
+		vehicule.setOilQuantity(vehicule.getOilQuantity() - distance*vehicule.getNormalOilConsumption());
 		vehicule.updateVehiculeStatut();
 		
 	}
@@ -334,6 +322,23 @@ public class EmergencySimulator {
 			}
 			
 		}
+	}
+
+
+	public double calculconsommation(int xInit,int yInit,int xFinal,int yFinal) throws IOException {
+		//TODO Appel au web-service http://localhost:8083/MapWebService/getDistance/
+		URL url = new URL("http://localhost:8083/MapWebService/getDistance/"+ xInit + "/" + yInit + "/" + xFinal + "/" + yFinal );
+		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection(); 
+        httpURLConnection.setRequestMethod("GET");
+        BufferedReader in = new BufferedReader(
+        new InputStreamReader(httpURLConnection.getInputStream()));
+        String inputLine;
+        StringBuffer response1 = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+        	response1.append(inputLine);
+		} in .close();
+		double consommation = 0;
+		return  consommation;
 	}
 
 

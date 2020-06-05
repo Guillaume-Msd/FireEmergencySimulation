@@ -52,43 +52,6 @@ public class EventsController implements EventsInterface {
 
 	}	
 	
-	
-	/*
-	public Event[] getEvents (URL url) throws IOException {
-		
-        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-        httpURLConnection.setRequestMethod("GET");
-        BufferedReader in = new BufferedReader(
-        new InputStreamReader(httpURLConnection.getInputStream()));
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-        	response.append(inputLine);
-		} in .close();
-		
-		ObjectMapper mapper = new ObjectMapper();
-
-        Fire[] events= mapper.readValue(response.toString(), Fire[].class);
-		return events;
-		
-	}
-
-
-	public Event getOneEvent(Event event) throws IOException {
-		
-		int idEvent = event.getId();
-		URL url = new URL("http://localhost:8081/FireWebService/events/"+idEvent);
-		Event[] events = this.getEvents(url);
-		for (Event e : events) {
-			if (e.getId() == idEvent) {
-				return e;
-			}
-		}
-		return null;
-		
-	}*/
-
-	
 	public Event[] getAllEvents() throws IOException {
 		
 		URL url = new URL("http://localhost:8081/FireWebService/getAll");
@@ -164,18 +127,11 @@ public class EventsController implements EventsInterface {
         connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
         connection.setDoOutput(true);
         OutputStream os = connection.getOutputStream();
-        
-        vehicule.setStatut(EnumStatut.FinDIntervention);
-        
-        System.out.println(Tools.toJsonString(vehicule.getStatut()));
-
         OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
         osw.write(Tools.toJsonString(vehicule.getStatut()));
         osw.flush();
         osw.close();
         connection.getInputStream();
-	
-       
     }
 		
 	

@@ -1,8 +1,6 @@
 package models;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public abstract class AbstractHeadquarter extends AbstractIntervention implements HeadquarterInterface {
@@ -13,32 +11,23 @@ public abstract class AbstractHeadquarter extends AbstractIntervention implement
 	
 	private Coord coord;
 	
-	private List<AbstractVehicule> vehicules;
-	
 	private int nb_vehicules;
 
 
 	
 	public AbstractHeadquarter(Coord coord) {
-		this.personnel = new LinkedList<Staff>();
+		this.personnel = new ArrayList<Staff>();
 		this.coord = new Coord(coord.x,coord.y);
-		this.vehicules = new LinkedList<AbstractVehicule>();
 	}
 	
-
-	
-	public void updateVehiculeList() {
-		for (int i=0;i<this.nb_vehicules;i++) {
-			this.addVehicule(new VehiculePompier());
+	public AbstractHeadquarter(Coord coord,int nb_vehicules) {
+		this(coord);
+		
+		for (int i=0;i<nb_vehicules;i++) {
 			for (int j=0;j<8;j++) {
 				this.addStaff(new Staff());
 			}
 			
-		}
-		
-		for (AbstractVehicule vehicule : this.getVehicules()) {
-			vehicule.setCoord(this.getCoord());
-			vehicule.setCoord_HQ(this.getCoord());
 		}
 	}
 	
@@ -63,17 +52,8 @@ public abstract class AbstractHeadquarter extends AbstractIntervention implement
 		this.coord = emplacement_headquarter;
 	}
 
-	public List<AbstractVehicule> getVehicules() {
-		return vehicules;
-	}
-
-	public void setVehicules(List<AbstractVehicule> vehicules) {
-		this.vehicules = vehicules;
-	}
 	
-	public void addVehicule(AbstractVehicule v) {
-		this.vehicules.add(v);
-	}
+
 
 	private void addStaff(Staff staff) {
 		this.personnel.add(staff);
@@ -92,12 +72,12 @@ public abstract class AbstractHeadquarter extends AbstractIntervention implement
 	}
 
 	/**
-	 * Place le personnel disponible dans le vehicule spécifié
+	 * Place le personnel disponible dans le vehicule spï¿½cifiï¿½
 	 * @param v (AbstractVehicule)
-	 * @param nombre_intervenants précise le nombre de personnes à envoyer sur l'intervention
+	 * @param nombre_intervenants prï¿½cise le nombre de personnes ï¿½ envoyer sur l'intervention
 	 */
 	public void setStaffOnVehicule(AbstractVehicule v, Integer nombre_intervenants) {
-		int i = Math.min(v.getTailleMaxStaff(),nombre_intervenants); // On limite le nombre de personnes dans un véhicule
+		int i = Math.min(v.getTailleMaxStaff(),nombre_intervenants); // On limite le nombre de personnes dans un vï¿½hicule
 		for (Staff personne: this.personnel) {
 			if (i <= 0) {
 				return;
@@ -108,11 +88,11 @@ public abstract class AbstractHeadquarter extends AbstractIntervention implement
 				i = i - 1;
 			}
 		}
-		System.out.println("Pas assez de personnes disponibles et en capacité d'intervenir");
+		System.out.println("Pas assez de personnes disponibles et en capacitï¿½ d'intervenir");
 	}
 
 	/**
-	 * Gère le retour d'un véhicule à la caserne
+	 * Gï¿½re le retour d'un vï¿½hicule ï¿½ la caserne
 	 * @param v
 	 */
 	public void retourVehicule(AbstractVehicule v) {
@@ -137,33 +117,6 @@ public abstract class AbstractHeadquarter extends AbstractIntervention implement
 	public void calculItinerary() {
 		// TODO Auto-generated method stub
 		
-	}
-
-	public List<AbstractVehicule> ChoisirVehicule(Alerte alerte) throws IOException {
-		int nb_vehicules;
-		List<AbstractVehicule> vehicules= new ArrayList<AbstractVehicule> ();
-		if (alerte.getIntensity() < 15) { //15 est une valeur arbitraire
-			nb_vehicules = 1;
-		}
-		else {
-			nb_vehicules = 2;
-		}
-		
-		
-		for (AbstractVehicule v: this.getVehicules()) {
-			if (nb_vehicules <= 0) {
-				return vehicules;
-			}
-			if (v.getStatut().equals(EnumStatut.Disponible)) {
-				vehicules.add(v);
-				nb_vehicules = nb_vehicules - 1;
-			}
-		}
-		if (nb_vehicules <= 0) {
-			return vehicules;
-		}
-		System.out.println("Pas assez de véhicules disponibles.");
-		return vehicules;
 	}
 
 	public int getNb_vehicules() {

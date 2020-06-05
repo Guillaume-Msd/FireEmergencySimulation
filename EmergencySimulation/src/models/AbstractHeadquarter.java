@@ -17,7 +17,7 @@ public abstract class AbstractHeadquarter extends AbstractIntervention implement
 	
 	public AbstractHeadquarter(Coord coord) {
 		this.personnel = new ArrayList<Staff>();
-		this.emplacement_headquarter = new Coord(coord.x,coord.y);
+		this.coord = new Coord(coord.x,coord.y);
 	}
 	
 	public AbstractHeadquarter(Coord coord,int nb_vehicules) {

@@ -63,20 +63,8 @@ public class EmergencySimulator {
 		//On renvoie les v�hicules qui ont finis leur intervention au HQ
 		gestionFinDIntervention();
 		
-		System.err.println(this.getHQ().size());
+		System.err.println(this.getFFHQ().size());
 		System.err.println(this.getVehicules().size());
-
-	}
-	
-	public List<AbstractHeadquarter> getHQ() {
-		return HQ;
-	}
-
-
-
-	public void setHQ(List<AbstractHeadquarter> hQ) {
-		HQ = hQ;
-
 
 	}
 
@@ -266,6 +254,7 @@ public class EmergencySimulator {
 	
 	/**
 	 * When alert is detected, set up an itinerarry to the vehicule specified 
+	 * @param i 
 	 * @param AbstractVehicule
 	 * @param int xInit
 	 * @param int yInit
@@ -275,14 +264,14 @@ public class EmergencySimulator {
 	 * @throws JsonMappingException 
 	 * @throws JsonParseException 
 	 */
-	public void createIntervention(List<VehiculeLutteIncendie> vehicules, int xInit, int yInit, int xFinal, int yFinal) throws JsonParseException, JsonMappingException, IOException {
+	public void createIntervention(List<VehiculeLutteIncendie> vehicules, int xInit, int yInit, int xFinal, int yFinal, int range) throws JsonParseException, JsonMappingException, IOException {
 		List<Coord> coordList = getPathFromServer(xInit,yInit,xFinal,yFinal);
 		double distance = calculconsommation(xInit,yInit,xFinal,yFinal);
 		for (VehiculePompier vehicule : vehicules) {
 			vehicule.setPath(coordList);
 			vehicule.setStatut(EnumStatut.EnRoutePourIntervention);
 			vehicule.setOilQuantity(vehicule.getOilQuantity() - distance*vehicule.getInterventionOilConsumption());
-			vehicule.addVehiculeView();
+			vehicule.addVehiculeView(range);
 		}
 	}
 	
@@ -333,6 +322,7 @@ public class EmergencySimulator {
 			}
 			
 		}
+	}
 
 
 	public double calculconsommation(int xInit,int yInit,int xFinal,int yFinal) throws IOException {

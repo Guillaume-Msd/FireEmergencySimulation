@@ -25,8 +25,8 @@ public class FireFighterHQ extends AbstractHeadquarter {
 			this.addVehicule(new VehiculePompier());
 		}
 		for (AbstractVehicule vehicule : this.getVehicules()) {
-			vehicule.setCoord(this.getEmplacement_headquarter());
-			vehicule.setCoord_HQ(this.getEmplacement_headquarter());
+			vehicule.setCoord(super.getCoord());
+			vehicule.setCoord_HQ(super.getCoord());
 		}
 	}
 

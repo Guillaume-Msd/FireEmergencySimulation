@@ -15,7 +15,11 @@ import models.AbstractVehicule;
 import models.Alerte;
 import models.Coord;
 import models.EnumStatut;
+
 import models.FireFighterHQ;
+
+import models.VehiculePompier;
+
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -26,6 +30,18 @@ public class EmergencySimulator {
 
 	private List<AbstractHeadquarter> HQ;
 	
+	public List<AbstractHeadquarter> getHQ() {
+		return HQ;
+	}
+
+
+
+	public void setHQ(List<AbstractHeadquarter> hQ) {
+		HQ = hQ;
+	}
+
+
+
 	public EmergencySimulator() {
 	}
 	
@@ -47,16 +63,6 @@ public class EmergencySimulator {
 		
 		//On renvoie les véhicules qui ont finis leur intervention au HQ
 		gestionFinDIntervention();
-	}
-	
-	public List<AbstractHeadquarter> getHQ() {
-		return HQ;
-	}
-
-
-
-	public void setHQ(List<AbstractHeadquarter> hQ) {
-		HQ = hQ;
 	}
 
 
@@ -290,7 +296,7 @@ public class EmergencySimulator {
 		
 	}
 	
-	public List<AbstractVehicule> getVehiculesByStatut(EnumStatut statut) throws IOException {
+	public List<VehiculePompier> getVehiculesByStatut(EnumStatut statut) throws IOException {
 		URL url = new URL("http://localhost:8082/VehiculeWebService/vehiculesByStatut/"+statut);
 		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection(); 
         httpURLConnection.setRequestMethod("GET");
@@ -304,8 +310,8 @@ public class EmergencySimulator {
 	
 		ObjectMapper mapper = new ObjectMapper();
 		
-		AbstractVehicule[] vehicules = mapper.readValue(response1.toString(), AbstractVehicule[].class);
-		List<AbstractVehicule> vehiculeList = new ArrayList<AbstractVehicule>();
+		VehiculePompier[] vehicules = mapper.readValue(response1.toString(), VehiculePompier[].class);
+		List<VehiculePompier> vehiculeList = new ArrayList<VehiculePompier>();
 		int i;
 		for(i = 0; i < vehicules.length; i++) {
 			vehiculeList.add(vehicules[i]);
@@ -314,14 +320,15 @@ public class EmergencySimulator {
 	}
 	
 	public void gestionFinDIntervention() throws IOException {
+
 		List<AbstractVehicule> vehiculesList = this.getVehicules();
-		List<AbstractVehicule> vehicules = getVehiculesByStatut(EnumStatut.FinDIntervention);
+		List<VehiculePompier> vehicules = getVehiculesByStatut(EnumStatut.FinDIntervention);
 		for (AbstractVehicule vehicule : vehicules) {
 			for(AbstractVehicule v: vehiculesList)
 				if(v.getId() == vehicule.getId()) {
 					retourIntervention(v,v.getCoord().x,v.getCoord().y,v.getCoord_HQ().x,v.getCoord_HQ().y);
 				}
+			}
 			
 		}
-	}
 }

@@ -265,6 +265,7 @@ private Coord coord_HQ;
 		URL url = new URL("http://localhost:8082/VehiculeWebService/deleteVehicule/"+this.getId());
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("DELETE");
+		connection.getInputStream();
 	}
 
 	@Override

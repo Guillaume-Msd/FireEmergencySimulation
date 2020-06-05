@@ -24,14 +24,14 @@ public class Simulator {
 		double difficulty = 1; 	//float entre 0 et 1 rentré par l'utilisateur (requête pour récupérer)
 		
 		//générés à l'avenir par la méthode timelapse()
-		int creationInterval = 5000;
-		int updateInterval = 10000;
+		int creationInterval = 10000;
+		int updateInterval = 20000;
 		
 		EventsController eventsController = new EventsController();
 		Timer timer = new Timer();
 	    //timer.schedule(new CreateFireTask(this.mapSize, eventsController), 3000, creationInterval);
-	    //timer.schedule(new AggravateFireTask(eventsController), 5000, updateInterval);
-	    timer.schedule(new CheckInterventionTask(eventsController), 3000, 1000);
+	    timer.schedule(new AggravateFireTask(eventsController), 5000, updateInterval);
+	    timer.schedule(new CheckInterventionTask(eventsController), 1000, 1000);
 	}
 	
 	/**

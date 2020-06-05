@@ -1,6 +1,6 @@
 #simuMap, #emergencyMap { 
-	height: 500px;
-	width: 500px; 
+	height: 700px;
+	width: 1500px; 
 	}
 	
 .leaflet-grid-label .lng {
@@ -15,5 +15,6 @@
 }
 
 #container {
-	margin-top: 10vh;
+	margin-top: 5vh;
+	margin-left : 10vw;
 }

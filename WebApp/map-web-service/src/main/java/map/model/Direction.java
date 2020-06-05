@@ -17,14 +17,17 @@ import retrofit2.Response;
 
 public class Direction {
 	
+	//SW long
+	private double minY = -3.7357807159423833;
 	
-	private double minY = -3.725051879882813;
+	//NE lat
+	private double minX = 40.42813291388417;
 	
-	private double minX = 40.43303293799863;
+	//SW lat
+	private double maxX = 40.40526141415211;
 	
-	private double maxX = 40.40035936701489;
-	
-	private double maxY = -3.6821365356445317;
+	//NE long
+	private double maxY = -3.6714076995849614;
 
 	
 	private double height = Math.abs(this.maxX - this.minX);

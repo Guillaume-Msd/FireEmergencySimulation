@@ -1,8 +1,9 @@
 package model;
 
+import java.util.HashMap;
 import java.util.Map;
 
-public class InterventionVehicule {
+public class Vehicule {
 	
 	private int id;
 
@@ -14,15 +15,17 @@ public class InterventionVehicule {
 
 	private int range;
 
-	private Map<LiquidEnum,Map<String,Integer>> liquids;
+	private Map<LiquidEnum,Map<String,Double>> liquids;
 	
 	//TODO decrease liquid
 	
-	public InterventionVehicule() {
+	public Vehicule() {
 	}
 	
-	public InterventionVehicule(String type) {
+	public Vehicule(String type) {
 		this.setType(type);
+		this.liquids = new HashMap<LiquidEnum,Map<String,Double>>();
+
 	}
 	
 	public int getRange() {
@@ -48,6 +51,14 @@ public class InterventionVehicule {
 	public void setCoord(Coord coord) {
 		this.coord = coord;
 	}
+	
+	public int getX() {
+		return this.coord.x;
+	}
+
+	public int getY() {
+		return this.coord.y;
+	}
 
 	public String getType() {
 		return type;
@@ -65,24 +76,26 @@ public class InterventionVehicule {
 		this.statut = statut;
 	}
 	
-	public int getQuantity(LiquidEnum liquidType) {
-		Map<String,Integer> m =this.liquids.get(liquidType);
+	public Double getQuantity(LiquidEnum liquidType) {
+		Map<String, Double> m =this.liquids.get(liquidType);
 		return m.get("Quantity");
 	}
 	
-	public int getCapacity(LiquidEnum liquidType) {
-		Map<String,Integer> m =this.liquids.get(liquidType);
+	public Double getCapacity(LiquidEnum liquidType) {
+		Map<String, Double> m =this.liquids.get(liquidType);
 		return m.get("Capacity");
 	}
 
 	public void restoreLiquid(LiquidEnum liquidType) {
-		Map<String,Integer> m =this.liquids.get(liquidType);
+		Map<String, Double> m =this.liquids.get(liquidType);
 		m.put("Quantity",m.get("Capacity"));
 	}
 	
 	//diminue la quantité de liquide de 10% de sa capacité totale
 	public void decreaseLiquid(LiquidEnum liquidType) {
-		Map<String,Integer> m =this.liquids.get(liquidType);
-		m.put("Quantity",m.get("Capacity")*(1-1/10));
+		if (this.getQuantity(liquidType) > 0) {
+			Map<String, Double> m =this.liquids.get(liquidType);
+			m.put("Quantity",m.get("Capacity")*(1-1/10));
+		}
 	}
 }

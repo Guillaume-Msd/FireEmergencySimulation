@@ -9,6 +9,6 @@
 	<classpathentry kind="lib" path="src/jackson-annotations-2.8.10.jar"/>
 	<classpathentry kind="lib" path="src/jackson-core-2.8.1.jar"/>
 	<classpathentry kind="lib" path="src/jackson-databind-2.8.0.jar"/>
-	<classpathentry kind="lib" path="D:/ProjetMajeurIntegration/ProbeSimulation/json-simple-1.1.jar"/>
+	<classpathentry kind="lib" path="json-simple-1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

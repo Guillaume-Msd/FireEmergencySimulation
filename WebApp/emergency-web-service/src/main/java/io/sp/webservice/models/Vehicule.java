@@ -29,7 +29,7 @@ public class Vehicule {
 	private int range;
 	
 	@Column
-	private Map<LiquidEnum,Map<String,Integer>> liquids = new HashMap<LiquidEnum,Map<String,Integer>>();
+	private Map<LiquidEnum,Map<String,Double>> liquids = new HashMap<LiquidEnum,Map<String,Double>>();
 
 	public Vehicule() {
 	}
@@ -78,11 +78,11 @@ public class Vehicule {
 		this.range = range;
 	}
 
-	public Map<LiquidEnum, Map<String, Integer>> getLiquids() {
+	public Map<LiquidEnum, Map<String, Double>> getLiquids() {
 		return liquids;
 	}
 
-	public void setLiquids(Map<LiquidEnum, Map<String, Integer>> liquids) {
+	public void setLiquids(Map<LiquidEnum, Map<String, Double>> liquids) {
 		this.liquids = liquids;
 	}
 	

@@ -1,17 +1,19 @@
 package model;
 
 
-public class EnvironmentElement implements ElementInterface {
-
-	private int capacity;
+public class Element implements ElementInterface {
 	
-	private int quantity;
+	private int id;
+	
+	private double capacity;
+	
+	private double quantity;
 	
 	private Coord location;
 	
 	private TypeElement type;
 	
-	public EnvironmentElement(Coord location, int maxCapacity, TypeElement type) {
+	public Element(Coord location, int maxCapacity, TypeElement type) {
 		this.location = location;
 		this.capacity = capacity;
 		this.quantity = this.capacity;
@@ -19,24 +21,40 @@ public class EnvironmentElement implements ElementInterface {
 	}
     
 	@Override
-	public void supplyVehicule(InterventionVehicule vehicule, LiquidEnum liquidType) {
+	public void supplyVehicule(Vehicule vehicule, LiquidEnum liquidType) {
 		vehicule.restoreLiquid(liquidType);
 		this.decreaseQuantity(vehicule.getCapacity(liquidType));
 	}
 	
-	public void decreaseQuantity(int liquid) {
+	public void decreaseQuantity(double liquid) {
 		this.quantity -= liquid;
 	}
+	
+	public int getId() {
+		return id;
+	}
 
-	public int getCapacity() {
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public double getCapacity() {
 		return capacity;
+	}
+
+	public Coord getLocation() {
+		return location;
+	}
+
+	public void setLocation(Coord location) {
+		this.location = location;
 	}
 
 	private void setCapacity(int capacity) {
 		this.capacity = capacity;
 	}
 
-	public int getQuantity() {
+	public double getQuantity() {
 		return quantity;
 	}
 

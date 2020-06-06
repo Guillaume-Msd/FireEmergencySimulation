@@ -19,7 +19,7 @@ import org.json.simple.JSONObject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import simulation.tools.GetAlertFromServ;
+//import simulation.tools.GetAlertFromServ;
 import simulation.tools.GetFromFireServ;
 import simulation.tools.ProbMeasureInterface;
 import simulation.tools.ProbServerInterface;

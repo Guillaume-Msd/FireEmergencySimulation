@@ -5,6 +5,7 @@ public enum EnumStatut {
 		Disponible,
 		EnRoutePourIntervention,
 		EnCoursDIntervention,
+		AuRavitaillement,
 		FinDIntervention,
-		RetourVersLeHQ
+		RetourVersLeHQ, 
 }

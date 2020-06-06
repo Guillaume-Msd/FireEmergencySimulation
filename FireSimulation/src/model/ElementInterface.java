@@ -9,6 +9,6 @@ public interface ElementInterface {
    */
 
 
-	public void supplyVehicule(InterventionVehicule vehicule, LiquidEnum liquidType);
+	public void supplyVehicule(Vehicule vehicule, LiquidEnum liquidType);
 
 }

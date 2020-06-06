@@ -24,8 +24,8 @@ public class ElementController {
 	private ElementService elementService;
 	
 	
-	@GetMapping("VehiculeWebService/allElements")
-	public String getAllVehicules() {
+	@GetMapping("ElementWebService/allElements")
+	public String getAllElements() {
 		List<Element> list = elementService.getAll();
 		if (list != null) {
 			return Tools.toJsonString(list);
@@ -36,12 +36,12 @@ public class ElementController {
 	}
 	
 	@GetMapping("ElementWebService/element/{id}")
-	public String getVehicule(@PathVariable String id) {
+	public String getElement(@PathVariable String id) {
 		return Tools.toJsonString(elementService.getElementById(id));
 	}
 	
 	@PostMapping("ElementWebService/addElement/{x}/{y}")
-	public int addVehicule(@RequestBody Element element, @PathVariable String x, @PathVariable String y) {
+	public int addElement(@RequestBody Element element, @PathVariable String x, @PathVariable String y) {
 		Coord coord = new Coord(Integer.parseInt(x), Integer.parseInt(y));
 		element.setLocation(coord);
 		elementService.addElement(element);

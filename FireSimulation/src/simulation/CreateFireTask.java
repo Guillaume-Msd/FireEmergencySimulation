@@ -3,9 +3,6 @@ package simulation;
 import java.io.IOException;
 import java.util.TimerTask;
 
-import controller.EventController;
-import model.Fire;
-
 public class CreateFireTask extends TimerTask {
 	
 	private int mapSize;

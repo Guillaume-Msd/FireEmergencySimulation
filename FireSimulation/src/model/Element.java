@@ -1,13 +1,8 @@
 package model;
 
-
-public class Element implements ElementInterface {
+public class Element {
 	
 	private int id;
-	
-	private double capacity;
-	
-	private double quantity;
 	
 	private Coord location;
 	
@@ -15,19 +10,7 @@ public class Element implements ElementInterface {
 	
 	public Element(Coord location, int maxCapacity, TypeElement type) {
 		this.location = location;
-		this.capacity = capacity;
-		this.quantity = this.capacity;
 		this.type = type;
-	}
-    
-	@Override
-	public void supplyVehicule(Vehicule vehicule, LiquidEnum liquidType) {
-		vehicule.restoreLiquid(liquidType);
-		this.decreaseQuantity(vehicule.getCapacity(liquidType));
-	}
-	
-	public void decreaseQuantity(double liquid) {
-		this.quantity -= liquid;
 	}
 	
 	public int getId() {
@@ -38,28 +21,12 @@ public class Element implements ElementInterface {
 		this.id = id;
 	}
 
-	public double getCapacity() {
-		return capacity;
-	}
-
 	public Coord getLocation() {
 		return location;
 	}
 
 	public void setLocation(Coord location) {
 		this.location = location;
-	}
-
-	private void setCapacity(int capacity) {
-		this.capacity = capacity;
-	}
-
-	public double getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
 	}
 
 	public int getX() {
@@ -79,7 +46,7 @@ public class Element implements ElementInterface {
 	}
 	
 	public String toJsonString() {
-		return "{ \"capacity\" : \""  + this.capacity + "\", \"quantity\": \"" + this.quantity + "\", \"type\": \"" + this.type +"\" }";	
+		return "{ \"capacity\" : \"" + this.type +"\" }";	
 		
 	}
 }

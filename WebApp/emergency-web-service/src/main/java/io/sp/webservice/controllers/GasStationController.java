@@ -22,6 +22,7 @@ public class GasStationController {
 
 	GasStationService gasStationService = new GasStationService();
 	
+	
 	@GetMapping("GasStationWebService/add/{x}/{y}")
 	public int add(@PathVariable String x, @PathVariable String y) {
 		GasStation gasStation = new GasStation(new Coord(Integer.parseInt(x), Integer.parseInt(y)));

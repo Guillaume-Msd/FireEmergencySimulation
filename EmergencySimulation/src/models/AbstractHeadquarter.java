@@ -3,7 +3,7 @@ package models;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractHeadquarter extends AbstractIntervention implements HeadquarterInterface {
+public abstract class AbstractHeadquarter implements HeadquarterInterface {
 	
 	private int id;
 	
@@ -58,18 +58,6 @@ public abstract class AbstractHeadquarter extends AbstractIntervention implement
 	private void addStaff(Staff staff) {
 		this.personnel.add(staff);
 	}
-	
-	@Override
-	public void sendInformation() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void getInformation() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	/**
 	 * Place le personnel disponible dans le vehicule spï¿½cifiï¿½
@@ -102,21 +90,13 @@ public abstract class AbstractHeadquarter extends AbstractIntervention implement
 		}
 	}
 	
+	/**
+	 * Permet de faire le plein sur une liste de véhicules
+	 */
 	public void supplyVehicules(List<AbstractVehicule> v) {
-		// TODO Auto-generated method stub
 		for (AbstractVehicule vehicule : v) {
 			vehicule.fillOil();
 		}
-	}
-
-	public void setVehiculesInEvent() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void calculItinerary() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public int getNb_vehicules() {

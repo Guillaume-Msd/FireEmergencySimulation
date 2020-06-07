@@ -1,89 +1,48 @@
 package models;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import utilities.Tools;
 
 public class VehiculeLutteIncendie extends VehiculePompier {
 
-	private Map<LiquidEnum,Map<String,Double>> liquids;
+	private double quantiteEau;
+	private final double capaciteEau;
 	
-	public VehiculeLutteIncendie(Map<LiquidEnum,Map<String,Double>> liquid) {
-		
-		this.liquids = liquid;
+	public VehiculeLutteIncendie(double capacite) {
+		this.capaciteEau = capacite;
+		this.quantiteEau = capacite;
 	}
 	
 	public VehiculeLutteIncendie() {
-		this(new HashMap<LiquidEnum,Map<String,Double>>());
+		this(300.);
 	}
-	
-	/**
-	 * Remplace un liquide par un autre
-	 * @param type1 le liquide à remplacer
-	 * @param type2 le type du nouveau liquide
-	 * @param capacity la capacité en litre du nouveau liquide
-	 */
-	public void changeLiquid(LiquidEnum type1,LiquidEnum type2,Double capacity) {
-		this.liquids.remove(type1);
-		addLiquid(type2,capacity);
-	}
-	
-	/**
-	 * Ajoute un liquide disponible dans le véhicule
-	 * @param type type du liquide ajouté
-	 * @param capacity quantité maximale du liquide ajouté
-	 */
-	public void addLiquid(LiquidEnum type, Double capacity) {
-		Map<String, Double> m = new HashMap<String,Double>();
-		m.put("Quantity",capacity);
-		m.put("Capacity",capacity);
-		this.liquids.put(type,m);
-	}
-	
-	public void deleteliquid(LiquidEnum type) {
-		this.liquids.remove(type);
-		
-	}
-	
-	public Double getQuantity(LiquidEnum type) {
-		Map<String,Double> m =this.liquids.get(type);
-		return m.get("Quantity");
-	}
-	
-	/**
-	 * Utilise une certaine quantité de liquide d'un certain type. 
-	 * @param type
-	 * @param quantity
-	 * @return Renvoie true si il y avait suffisement de liquide, false sinon
-	 */
-	public boolean consumeLiquid(LiquidEnum type,Double quantity) {
-		Map<String,Double> m =this.liquids.get(type);
-		if (m.get("Quantity") < quantity) {
-			m.put("Quantity",0.);
-			return false;
-		}
-		else {
-			m.put("Quantity",m.get("Quantity") - quantity);
-			return true;
-		}
-	}
-	
 	
 	/**
 	 * Mets la quantité d'un liquide au maximum
 	 * @param type
 	 */
-	public void fillLiquid(LiquidEnum type) {
-		Map<String,Double> m =this.liquids.get(type);
-		m.put("Quantity",m.get("Capacity"));
+	public void fillWater() {
+		this.quantiteEau = this.capaciteEau;
 	}
 	
-	/**
-	 * Remplis tous les liquides au maximum
-	 */
-	public void fillAllLiquids() {
-		for (Map.Entry<LiquidEnum, Map<String,Double>> entry : this.liquids.entrySet()) {
-			fillLiquid(entry.getKey());
-		}
-	
+	public void updateVehiculeWater() throws IOException {
+		URL url = new URL("http://localhost:8082/VehiculeWebService/updateVehiculeWater/"+this.getId());
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+		connection.setDoOutput(true);
+		OutputStream os = connection.getOutputStream();
+
+        OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+        //System.err.println(Tools.toJsonString(this.quantiteEau));
+        osw.write(Tools.toJsonString(this.quantiteEau));
+        osw.flush();
+        osw.close();
+        connection.getInputStream();
 	}
 }

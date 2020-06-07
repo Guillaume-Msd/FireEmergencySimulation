@@ -71,10 +71,9 @@ public class EmergencySimulator implements InterventionServerInterface {
 		
 		//On renvoie les vï¿½hicules qui ont finis leur intervention au HQ
 		gestionFinDIntervention();
-		
+		gestionRavitaillement();
 
 	}
-
 
 	/**
 	 * Mets à jour les HQ en comparant ceux présents sur le serveur avec ceux déjà présent dans la simulation
@@ -208,6 +207,10 @@ public class EmergencySimulator implements InterventionServerInterface {
 			else {
 				if (vehicule.getStatut().equals(EnumStatut.RetourVersLeHQ)) {
 					vehicule.setStatut(EnumStatut.Disponible);
+					if (vehicule instanceof VehiculeLutteIncendie) {
+						((VehiculeLutteIncendie) vehicule).fillWater();
+						((VehiculeLutteIncendie) vehicule).updateVehiculeWater();
+					}
 					vehicule.deleteVehiculeView();
 				}
 				else if (vehicule.getStatut().equals(EnumStatut.EnRoutePourIntervention)) {
@@ -217,6 +220,12 @@ public class EmergencySimulator implements InterventionServerInterface {
 				else if (vehicule.getStatut().equals(EnumStatut.EnRoutePourRavitaillementEssence)) {
 					vehicule.fillOil();
 					retourIntervention(vehicule);
+				}
+				else if (vehicule.getStatut().equals(EnumStatut.EnRoutePourRavitaillementEau)) {
+					((VehiculeLutteIncendie) vehicule).fillWater();
+					((VehiculeLutteIncendie) vehicule).updateVehiculeWater();
+					vehicule.setStatut(EnumStatut.EnCoursDIntervention);
+					vehicule.updateVehiculeStatut();
 				}
 			}
 		}
@@ -362,7 +371,9 @@ public class EmergencySimulator implements InterventionServerInterface {
 	public void RavitaillementOil(AbstractVehicule vehicule) throws IOException {
 		List<Coord> coordlist = this.getStationCoord();
 		Coord coord = trouveElementLePlusProche(vehicule.getCoord(), coordlist);
-		envoie_vehicule(vehicule,coord.x,coord.y);
+		envoie_vehicule(vehicule,coord.x,coord.y,vehicule.getNormalOilConsumption());
+		vehicule.setStatut(EnumStatut.EnRoutePourRavitaillementEssence);
+		vehicule.updateVehiculeStatut();
 	}
 	
 	/**
@@ -401,13 +412,11 @@ public class EmergencySimulator implements InterventionServerInterface {
 	 * @param yFinal
 	 * @throws IOException
 	 */
-	public void envoie_vehicule(AbstractVehicule vehicule,int xFinal,int yFinal) throws IOException {
+	public void envoie_vehicule(AbstractVehicule vehicule,int xFinal,int yFinal,double consommation) throws IOException {
 		List<Coord> path = getPathFromServer(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
 		double distance = calculDistance(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
 		vehicule.setPath(path);
-		vehicule.setStatut(EnumStatut.EnRoutePourRavitaillementEssence);
-		vehicule.updateVehiculeStatut();
-		vehicule.setOilQuantity(vehicule.getOilQuantity() - (distance*vehicule.getNormalOilConsumption())/100);
+		vehicule.setOilQuantity(vehicule.getOilQuantity() - (distance*consommation)/100);
 	}
 	
 	/**
@@ -461,6 +470,42 @@ public class EmergencySimulator implements InterventionServerInterface {
 		}
 	}
 
+	
+	public void gestionRavitaillement() throws IOException {
+		List<AbstractVehicule> vehiculesSimu = this.getVehicules();
+		List<VehiculePompier> vehiculesServeur = getVehiculesByStatut(EnumStatut.BesoinRavitaillementEau);
+		for (AbstractVehicule vehiculeSimu : vehiculesSimu) {
+			for (VehiculePompier vehiculeServeur : vehiculesServeur) {
+				if (vehiculeSimu.getId() == vehiculeServeur.getId()) {
+					RavitaillementEau((VehiculeLutteIncendie) vehiculeSimu);
+				}
+			}
+		}
+	}
+	
+	public void RavitaillementEau(VehiculeLutteIncendie vehicule) throws IOException {
+		List<Coord> bouchesAIncendie = getBouchesAIncendie();
+		Coord boucheLaPlusProche = trouveElementLePlusProche(vehicule.getCoord(), bouchesAIncendie);
+		envoieVehiculeAllerRetour(vehicule,boucheLaPlusProche.x,boucheLaPlusProche.y,vehicule.getInterventionOilConsumption());
+		vehicule.setStatut(EnumStatut.EnRoutePourRavitaillementEau);
+		vehicule.updateVehiculeStatut();
+	}
+	
+	public void envoieVehiculeAllerRetour(AbstractVehicule vehicule,int xFinal,int yFinal,int consommation) throws IOException {
+		List<Coord> pathAller = getPathFromServer(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
+		double distanceAller = calculDistance(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
+		List<Coord> pathRetour = getPathFromServer(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
+		double distanceRetour = calculDistance(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
+		for (int i=0;i<5;i++) {
+			pathAller.add(new Coord(xFinal,yFinal));
+		}
+		for (Coord c : pathRetour) {
+			pathAller.add(c);
+		}
+		vehicule.setPath(pathAller);
+		vehicule.setOilQuantity(vehicule.getOilQuantity() - ((distanceAller+distanceRetour)*consommation)/100);
+	}
+	
 	/**
 	 * Calcul la distance en m pour aller du point (xInit,yInit) au point (xFinal,yFinal) en suivant les routes
 	 * @param xInit
@@ -518,6 +563,31 @@ public class EmergencySimulator implements InterventionServerInterface {
 	 */
 	private List<Coord> getStationCoord() throws IOException{
 		URL url = new URL("http://localhost:8083/MapWebService/getGasStation");
+		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection(); 
+        httpURLConnection.setRequestMethod("GET");
+        BufferedReader in = new BufferedReader(
+        new InputStreamReader(httpURLConnection.getInputStream()));
+        String inputLine;
+        StringBuffer response1 = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+        	response1.append(inputLine);
+		} in .close();
+	
+		ObjectMapper mapper = new ObjectMapper();
+		
+		Coord[] coords = mapper.readValue(response1.toString(), Coord[].class);
+		List<Coord> coordList = new ArrayList<Coord>();
+		int i;
+		for(i = 0; i < coords.length; i++) {
+			coordList.add(coords[i]);
+		}
+		
+		return coordList;
+		
+	}
+	
+	private List<Coord> getBouchesAIncendie() throws IOException{
+		URL url = new URL("http://localhost:8083/MapWebService/getBouchesAIncendie");
 		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection(); 
         httpURLConnection.setRequestMethod("GET");
         BufferedReader in = new BufferedReader(

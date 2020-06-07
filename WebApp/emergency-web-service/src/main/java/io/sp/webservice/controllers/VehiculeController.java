@@ -87,6 +87,13 @@ public class VehiculeController {
 		vehiculeService.updateVehicule(vehicule);
 	}
 	
+	@RequestMapping("VehiculeWebService/updateVehiculeWater/{id}")
+	public void updateVehiculeWater(@PathVariable String id,@RequestBody Double quantiteEau) {
+		Vehicule vehicule = vehiculeService.getVehiculeById(id);
+		vehicule.setLiquids(quantiteEau);
+		vehiculeService.updateVehicule(vehicule);
+	}
+	
 	@DeleteMapping("VehiculeWebService/deleteVehicule/{id}")
 	public void deleteVehicule(@PathVariable String id ) {
 		vehiculeService.deleteVehicule(id);

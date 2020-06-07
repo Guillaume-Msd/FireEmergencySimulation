@@ -51,8 +51,10 @@ public class VehiculeController {
 		return Tools.toJsonString(vehiculeService.getVehiculeById(id));
 	}
 	
-	/*
-	 * 
+	/**
+	 * Get all the vehicules which have the statut specified 
+	 * @param statut
+	 * @return String Json List<Vehicule>
 	 */
 	@GetMapping("VehiculeWebService/vehiculesByStatut/{statut}")
 	public String getVehiculeByStatut(@PathVariable EnumStatut statut) {
@@ -65,6 +67,13 @@ public class VehiculeController {
 		}
 	}
 	
+	/**
+	 * Add a vehicule to the server
+	 * @param vehicule
+	 * @param x
+	 * @param y
+	 * @return the id of the vehicule created
+	 */
 	@PostMapping("VehiculeWebService/addVehicule/{x}/{y}")
 	public int addVehicule(@RequestBody Vehicule vehicule, @PathVariable String x, @PathVariable String y) {
 		Coord coord = new Coord(Integer.parseInt(x), Integer.parseInt(y));
@@ -73,6 +82,11 @@ public class VehiculeController {
 		return vehicule.getId();
 	}
 	
+	/**
+	 * Update the coord of the vehicule which id is those specified
+	 * @param id
+	 * @param coord
+	 */
 	@RequestMapping("VehiculeWebService/updateVehiculeCoord/{id}")
 	public void updateVehiculeCoord(@PathVariable String id,@RequestBody Coord coord) {
 		Vehicule vehicule = vehiculeService.getVehiculeById(id);
@@ -80,6 +94,11 @@ public class VehiculeController {
 		vehiculeService.updateVehicule(vehicule);
 	}
 	
+	/**
+	 * Update the statut of th evehicule <hich id is those specified
+	 * @param id
+	 * @param statut
+	 */
 	@RequestMapping("VehiculeWebService/updateVehiculeStatut/{id}")
 	public void updateVehiculeStatut(@PathVariable String id, @RequestBody EnumStatut statut) {
 		Vehicule vehicule = vehiculeService.getVehiculeById(id);
@@ -87,11 +106,19 @@ public class VehiculeController {
 		vehiculeService.updateVehicule(vehicule);
 	}
 	
+	/**
+	 * Delete the vehicule
+	 * @param id
+	 */
 	@DeleteMapping("VehiculeWebService/deleteVehicule/{id}")
 	public void deleteVehicule(@PathVariable String id ) {
 		vehiculeService.deleteVehicule(id);
 	}
 	
+	/**
+	 * *Get the coord of all vehicules
+	 * @return String Json List<Coord>
+	 */
 	@GetMapping("VehiculeWebService/getAllCoords")
 	public String getAllFireCoords() {
 		List<Vehicule> vehiculeList = vehiculeService.getAll();

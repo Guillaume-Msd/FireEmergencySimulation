@@ -14,9 +14,13 @@ public class InterventionVehicule {
 
 	private int range;
 
-	private Map<LiquidEnum,Map<String,Integer>> liquids;
+	private LiquidEnum liquid;
 	
-	//TODO decrease liquid
+	private int liquidCapacity;
+	
+	private int liquidQuantity;
+	
+	
 	
 	public InterventionVehicule() {
 	}
@@ -65,24 +69,46 @@ public class InterventionVehicule {
 		this.statut = statut;
 	}
 	
-	public int getQuantity(LiquidEnum liquidType) {
-		Map<String,Integer> m =this.liquids.get(liquidType);
-		return m.get("Quantity");
-	}
 	
-	public int getCapacity(LiquidEnum liquidType) {
-		Map<String,Integer> m =this.liquids.get(liquidType);
-		return m.get("Capacity");
+	public LiquidEnum getLiquid() {
+		return liquid;
 	}
 
-	public void restoreLiquid(LiquidEnum liquidType) {
-		Map<String,Integer> m =this.liquids.get(liquidType);
-		m.put("Quantity",m.get("Capacity"));
+	public void setLiquid(LiquidEnum liquid) {
+		this.liquid = liquid;
+	}
+
+	public int getLiquidCapacity() {
+		return liquidCapacity;
+	}
+
+	public void setLiquidCapacity(int liquidCapacity) {
+		this.liquidCapacity = liquidCapacity;
+	}
+
+	//A MODIFIER
+	public int getQuantity() {
+		return this.getLiquidQuantity();
+	}
+	
+	public int getCapacity() {
+		return this.getCapacity();
+	}
+
+	public void restoreLiquid() {
+		this.liquidQuantity = this.liquidCapacity;
 	}
 	
 	//diminue la quantité de liquide de 10% de sa capacité totale
-	public void decreaseLiquid(LiquidEnum liquidType) {
-		Map<String,Integer> m =this.liquids.get(liquidType);
-		m.put("Quantity",m.get("Capacity")*(1-1/10));
+	public void decreaseLiquid() {
+		this.liquidQuantity = this.liquidQuantity - this.liquidQuantity/10;
+	}
+
+	public int getLiquidQuantity() {
+		return liquidQuantity;
+	}
+
+	public void setLiquidQuantity(int liquidQuantity) {
+		this.liquidQuantity = liquidQuantity;
 	}
 }

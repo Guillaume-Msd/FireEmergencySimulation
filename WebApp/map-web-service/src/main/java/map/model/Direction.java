@@ -174,16 +174,33 @@ public class Direction {
 	
 	public List<Coord> gasStation() throws IOException{
 		
-		List<Double> northWest = this.convertGridToCoord(0, 0);
-		List<Double> southWest = this.convertGridToCoord(0, this.rows);
-		List<Double> northEast = this.convertGridToCoord(this.column, 0);
-		List<Double> southEats = this.convertGridToCoord(this.column, this.rows);
-		
 		
 		MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
 				.bbox(minY, maxX, maxY, minX)
 				.accessToken(MAPBOX_ACCESS_TOKEN)
 				.query("Gas station")
+				.build();
+		
+		List<Coord> coordList = new ArrayList<Coord>();
+		double latitude, longitude;
+		List<CarmenFeature> featureList = mapboxGeocoding.executeCall().body().features();
+		for(CarmenFeature feature : featureList) {
+			latitude = feature.center().latitude();
+    		longitude = feature.center().longitude();
+    		Coord coord = convertCoordToGrid(longitude, latitude);
+    		coordList.add(coord);
+		}
+		
+		return coordList;
+	}
+	
+public List<Coord> getFireHydrant() throws IOException{
+		
+		
+		MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
+				.bbox(minY, maxX, maxY, minX)
+				.accessToken(MAPBOX_ACCESS_TOKEN)
+				.query("Fire hydrant")
 				.build();
 		
 		List<Coord> coordList = new ArrayList<Coord>();

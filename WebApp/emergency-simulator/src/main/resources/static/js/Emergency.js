@@ -14,7 +14,8 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 
 const imgVehicule = 'images/fireTruck.png';
 const imgAlert = 'images/alert.png';
-const imgCaserne = "images/caserne.jpg"
+const imgCaserne = "images/caserne.jpg";
+const imgGasStation = 'images/GasStation.jpg';
 
 var north = map2.getBounds().getNorth(); 
 
@@ -46,7 +47,7 @@ function displayElementEmergency(x, y, imgSrc) {
 	var image = L.imageOverlay(imageUrl, imageBounds)
 	image.addTo(map2);
 	
-	if(imgSrc != imgCaserne){
+	if(imgSrc != imgCaserne && imgSrc != imgGasStation){
 		imagesEmergency.push(image);
 	}
 	
@@ -75,6 +76,11 @@ function displayAllElements(type){
 		imgSrc = imgAlert;
 	}
 	
+	else if (type == "GasStation"){
+		url = "http://localhost:8082/GasStationWebService/getAllCoords";
+		imgSrc = imgGasStation;
+	}
+	
 	else{
 		url = "http://localhost:8082/VehiculeWebService/getAllCoords"
 		imgSrc = imgVehicule;
@@ -100,6 +106,7 @@ function displayAllElements(type){
 		
 	
 displayAllElements("Caserne");
+displayAllElements("GasStation");
 setInterval(displayAllElements, 1000, "Alerte");	
 setInterval(displayAllElements, 1000, "Vehicule");	
 

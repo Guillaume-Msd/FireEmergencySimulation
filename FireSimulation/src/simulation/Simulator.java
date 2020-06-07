@@ -36,7 +36,7 @@ public class Simulator {
 	    //timer.schedule(new AggravateFireTask(simulationController), 5000, updateInterval);
 	    timer.schedule(new CheckInterventionTask(simulationController), 1000, 1000);
 	    
-	    EnvironmentElement element = new EnvironmentElement(new Coord(50,50), 100, TypeElement.BoucheIncendie);
+	    //EnvironmentElement element = new EnvironmentElement(new Coord(50,50), 100, TypeElement.BoucheIncendie);
 	    
 	}
 	

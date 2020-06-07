@@ -34,8 +34,11 @@ public class FireRestController {
 	CoordService coordService;
 	
 	/**
-	 * 
-	 * @return 
+	 * Add a fire to the server
+	 * @param fire
+	 * @param x
+	 * @param y
+	 * @return int the id of the fire created
 	 */
 	@RequestMapping(value="FireWebService/add/{x}/{y}", consumes=MediaType.APPLICATION_JSON_VALUE)
 	public int addFire(@RequestBody FireEntity fire, @PathVariable String x, @PathVariable String y) {
@@ -44,7 +47,10 @@ public class FireRestController {
 		return fire.getId();
 	}
 	
-	
+	/**
+	 * Get the coord of all fire
+	 * @return String Json List<Coord>
+	 */
 	@GetMapping("FireWebService/getAllCoords")
 	public String getAllFireCoords() {
 		List<FireEntity> fireList = fireService.getAllFires();
@@ -60,6 +66,12 @@ public class FireRestController {
 		
 	}
 	
+	/**
+	 * Aggravate the fire specified
+	 * @param coord
+	 * @param id
+	 * @param intensity
+	 */
 	@PostMapping("FireWebService/aggravation/{id}/{intensity}")
 	public void aggrave(@RequestBody CoordEntity coord, @PathVariable String id, @PathVariable String intensity) {
 		
@@ -70,6 +82,12 @@ public class FireRestController {
 			
 	}
 	
+	/**
+	 * Attenuate the fire specified
+	 * @param coord
+	 * @param id
+	 * @param intensity
+	 */
 	@PostMapping("FireWebService/attenuation/{id}/{intensity}")
 	public void attenue(@RequestBody CoordEntity coord, @PathVariable String id, @PathVariable String intensity) {
 		System.out.println(id);
@@ -81,6 +99,9 @@ public class FireRestController {
 			
 	}
 	
+	/**
+	 * Add a random fire 
+	 */
 	@GetMapping("FireWebService/addRandom")
 	public void addRandomFire() {
 		FireEntity fire = new FireEntity("Random", "Random");
@@ -89,19 +110,28 @@ public class FireRestController {
 		fireService.save(fire);
 	}
 	
-	
+	/**
+	 * Remove the fire specified
+	 * @param id
+	 */
 	@GetMapping("FireWebService/remove/{id}")
 	public void removeFire(@PathVariable String id) {
 		FireEntity fire = fireService.getFireById(Integer.parseInt(id));
 		fireService.delete(fire);
 	}
 	
-	
+	/**
+	 * Remove all fires
+	 */
 	@GetMapping("FireWebService/removeAll")
 	public void removeAll() {
 		fireService.removeAllFire();
 	}
 	
+	/**
+	 * Get all fires
+	 * @return String Json List<Fire>
+	 */
 	@GetMapping("FireWebService/getAll")
 	public String getAllFires() {
 		return Tools.toJsonString(fireService.getAllFires());

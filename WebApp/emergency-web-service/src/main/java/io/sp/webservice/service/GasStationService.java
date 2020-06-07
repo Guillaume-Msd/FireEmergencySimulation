@@ -3,10 +3,12 @@ package io.sp.webservice.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import io.sp.webservice.models.GasStation;
 import io.sp.webservice.repository.GasStationRepository;
 
+@Service
 public class GasStationService {
 
 	@Autowired
@@ -24,12 +26,12 @@ public class GasStationService {
 		return gasStationRepository.count();
 	}
 	
-	public void addgasStation(GasStation headQuarter) {
-		gasStationRepository.save(headQuarter);
+	public void addgasStation(GasStation gasStation) {
+		gasStationRepository.save(gasStation);
 	}
 	
-	public void updateGasStation(GasStation headQuarter) {
-		gasStationRepository.save(headQuarter);
+	public void updateGasStation(GasStation gasStation) {
+		gasStationRepository.save(gasStation);
 	}
 	
 	public void deleteGasStation(String gasStation) {

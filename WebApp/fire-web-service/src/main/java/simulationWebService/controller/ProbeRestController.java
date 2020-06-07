@@ -31,8 +31,12 @@ public class ProbeRestController {
 	ProbeService probeService;
 	
 	/**
-	 * 
-	 * @return 
+	 * Add a probe to the server
+	 * @param type
+	 * @param range
+	 * @param x
+	 * @param y
+	 * @return int the id of the probe created
 	 */
 	@GetMapping("ProbeWebService/add/{type}/{range}/{x}/{y}")
 	public int addProbe(@PathVariable String type, @PathVariable String range, @PathVariable String x, @PathVariable String y) {
@@ -44,7 +48,10 @@ public class ProbeRestController {
 		
 	}
 	
-	
+	/**
+	 * Get the coord of all probes
+	 * @return String Json List<Coord>
+	 */
 	@GetMapping("ProbeWebService/getAllCoords")
 	public String getAllFireCoords() {
 		List<ProbeEntity> probeList = probeService.getAllProbes();
@@ -56,13 +63,18 @@ public class ProbeRestController {
 	}
 	
 
-	
+	/**
+	 * Get all probes
+	 * @return String Json List<Probe>
+	 */
 	@GetMapping("ProbeWebService/getAll")
 	public String getAll() {
 		return Tools.toJsonString(probeService.getAllProbes());
 	}
 	
-
+	/**
+	 * Delete all the probes
+	 */
 	@DeleteMapping("ProbeWebService/removeAll")
 	public void removeAll() {
 		probeService.removeAllProbes();

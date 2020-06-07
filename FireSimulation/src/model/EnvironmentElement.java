@@ -20,8 +20,8 @@ public class EnvironmentElement implements ElementInterface {
     
 	@Override
 	public void supplyVehicule(InterventionVehicule vehicule, LiquidEnum liquidType) {
-		vehicule.restoreLiquid(liquidType);
-		this.decreaseQuantity(vehicule.getCapacity(liquidType));
+		vehicule.restoreLiquid();
+		this.decreaseQuantity(vehicule.getCapacity());
 	}
 	
 	public void decreaseQuantity(int liquid) {

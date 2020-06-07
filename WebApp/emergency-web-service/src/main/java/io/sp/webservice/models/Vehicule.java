@@ -29,7 +29,13 @@ public class Vehicule {
 	private int range;
 	
 	@Column
-	private Map<LiquidEnum,Map<String,Integer>> liquids = new HashMap<LiquidEnum,Map<String,Integer>>();
+	private LiquidEnum liquid;
+	
+	@Column
+	private int liquidCapacity;
+	
+	@Column
+	private int liquidQuantity;
 
 	public Vehicule() {
 	}
@@ -78,13 +84,33 @@ public class Vehicule {
 		this.range = range;
 	}
 
-	public Map<LiquidEnum, Map<String, Integer>> getLiquids() {
-		return liquids;
+	public LiquidEnum getLiquid() {
+		return liquid;
 	}
 
-	public void setLiquids(Map<LiquidEnum, Map<String, Integer>> liquids) {
-		this.liquids = liquids;
+	public void setLiquid(LiquidEnum liquid) {
+		this.liquid = liquid;
 	}
+
+	public int getLiquidCapacity() {
+		return liquidCapacity;
+	}
+
+	public void setLiquidCapacity(int liquidCapacity) {
+		this.liquidCapacity = liquidCapacity;
+	}
+
+	public int getLiquidQuantity() {
+		return liquidQuantity;
+	}
+
+	public void setLiquidQuantity(int liquidQuantity) {
+		this.liquidQuantity = liquidQuantity;
+	}
+	
+	
+
+
 	
 	
 }

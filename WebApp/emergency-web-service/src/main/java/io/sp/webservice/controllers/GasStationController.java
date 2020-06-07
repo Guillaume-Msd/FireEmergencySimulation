@@ -19,10 +19,15 @@ import utilities.Tools;
 @RestController
 public class GasStationController {
 	
-
-	GasStationService gasStationService = new GasStationService();
+	@Autowired
+	GasStationService gasStationService;
 	
-	
+	/**
+	 * Add a Gas station
+	 * @param x
+	 * @param y
+	 * @return int the id of the gas station created
+	 */
 	@GetMapping("GasStationWebService/add/{x}/{y}")
 	public int add(@PathVariable String x, @PathVariable String y) {
 		GasStation gasStation = new GasStation(new Coord(Integer.parseInt(x), Integer.parseInt(y)));
@@ -31,11 +36,19 @@ public class GasStationController {
 		
 	}
 	
+	/**
+	 * Delete the gas station
+	 * @param id
+	 */
 	@GetMapping("GasStationWebService/remove/{id}")
 	public void remove(@PathVariable String id) {
 		gasStationService.deleteGasStation(id);
 	}
 	
+	/**
+	 * Return the coord of all the gas stations
+	 * @return String Json List<Coord>
+	 */
 	@GetMapping("GasStationWebService/getAllCoords")
 	public String getAllHQCoords() {
 		List<GasStation> hqList = gasStationService.getAll();
@@ -46,11 +59,18 @@ public class GasStationController {
 		return Tools.toJsonString(coordList);
 	}
 	
-	@GetMapping("GasStationWebService/allHQs")
+	/**
+	 * Get all Gas stations
+	 * @return String Json List<GasSation>
+	 */
+	@GetMapping("GasStationWebService/allGasSation")
 	public String getAll() {
 		return Tools.toJsonString(gasStationService.getAll());
 	}
 	
+	/**
+	 * Delete all the gas station
+	 */
 	@DeleteMapping("GasStationWebService/removeAll")
 	public void removeAll() {
 		gasStationService.removeAll();

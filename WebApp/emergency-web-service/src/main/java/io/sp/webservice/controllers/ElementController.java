@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,8 +24,11 @@ public class ElementController {
 	@Autowired
 	private ElementService elementService;
 	
-	
-	@GetMapping("VehiculeWebService/allElements")
+	/**
+	 * Return all elements 
+	 * @return String Json List<Element>
+	 */
+	@GetMapping("ElementWebService/allElements")
 	public String getAllVehicules() {
 		List<Element> list = elementService.getAll();
 		if (list != null) {
@@ -35,17 +39,38 @@ public class ElementController {
 		}
 	}
 	
+	/**
+	 * Return the element by id
+	 * @param id
+	 * @return Json Element
+	 */
 	@GetMapping("ElementWebService/element/{id}")
 	public String getVehicule(@PathVariable String id) {
 		return Tools.toJsonString(elementService.getElementById(id));
 	}
 	
+	/**
+	 * Add element to the server
+	 * @param element
+	 * @param x
+	 * @param y
+	 * @return int the id of the element created
+	 */
 	@PostMapping("ElementWebService/addElement/{x}/{y}")
 	public int addVehicule(@RequestBody Element element, @PathVariable String x, @PathVariable String y) {
 		Coord coord = new Coord(Integer.parseInt(x), Integer.parseInt(y));
 		element.setLocation(coord);
 		elementService.addElement(element);
 		return element.getId();
+	}
+	
+	
+	/**
+	 * Delete all the elements
+	 */
+	@DeleteMapping("ElementWebService/removeAll")
+	public void removeAll() {
+		elementService.removeAll();
 	}
 
 }

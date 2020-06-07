@@ -10,7 +10,6 @@ import java.net.URL;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import model.Coord;
 import model.Element;
 import model.Vehicule;
 import utilities.Tools;
@@ -87,23 +86,6 @@ public class InterventionController implements InterventionControllerInterface {
 
         Element[] elements= mapper.readValue(response.toString(), Element[].class);
 		return elements;	
-	}
-	
-	@Override
-	public void sendElementCoord(Coord coord) throws IOException {
-		
-		//TODO compléter l'URL
-		URL url = new URL("http://localhost:8082/");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-        connection.setDoOutput(true);
-        OutputStream os = connection.getOutputStream();
-        OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
-        osw.write(Tools.toJsonString(coord));
-        osw.flush();
-        osw.close();
-        connection.getInputStream();
 	}
 
 	

@@ -2,12 +2,6 @@ package launcher;
 
 import java.io.IOException;
 import java.util.Timer;
-
-import model.TypeElement;
-
-import controller.EventController;
-import model.Coord;
-import model.Element;
 import simulation.AggravateFireTask;
 import simulation.CheckInterventionTask;
 import simulation.CreateFireTask;

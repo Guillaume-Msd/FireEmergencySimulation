@@ -2,7 +2,6 @@ package controller;
 
 import java.io.IOException;
 
-import model.Coord;
 import model.Element;
 import model.Vehicule;
 
@@ -15,7 +14,5 @@ public interface InterventionControllerInterface {
 	public void addElement(Element element) throws IOException;
 
 	public Element[] getAllElements() throws IOException;
-
-	public void sendElementCoord(Coord coord) throws IOException;
 
 }

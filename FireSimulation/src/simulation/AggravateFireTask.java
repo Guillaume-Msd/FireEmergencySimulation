@@ -1,13 +1,7 @@
 package simulation;
 
 import java.io.IOException;
-import java.util.Random;
 import java.util.TimerTask;
-
-import controller.EventController;
-import model.Event;
-import model.Fire;
-import model.FireIntensity;
 
 
 public class AggravateFireTask extends TimerTask {

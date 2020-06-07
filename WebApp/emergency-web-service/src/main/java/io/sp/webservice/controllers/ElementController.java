@@ -23,7 +23,6 @@ public class ElementController {
 	@Autowired
 	private ElementService elementService;
 	
-	
 	@GetMapping("ElementWebService/allElements")
 	public String getAllElements() {
 		List<Element> list = elementService.getAll();

@@ -14,7 +14,7 @@ import org.json.simple.JSONObject;
 
 import utilities.Tools;
 
-public abstract class AbstractVehicule extends Intervernors implements VehiculeInterface {
+public abstract class AbstractVehicule extends Intervenors implements VehiculeInterface {
   private int id;
 	
   private List<Staff> staff;
@@ -208,6 +208,10 @@ private Coord coord_HQ;
 		return NormalOilConsumption;
 	}
 	
+	/**
+	 * Mets à jour les coordonnées du véhicule sur le serveur
+	 * @throws IOException
+	 */
 	public void updateVehiculeCoord() throws IOException {
 		URL url = new URL("http://localhost:8082/VehiculeWebService/updateVehiculeCoord/"+this.getId());
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -224,6 +228,9 @@ private Coord coord_HQ;
 
 	}
 	
+	/**
+	 * Met à jour le statut des véhicules sur le serveur
+	 */
 	public void updateVehiculeStatut() throws IOException {
 		URL url = new URL("http://localhost:8082/VehiculeWebService/updateVehiculeStatut/"+this.getId());
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -240,6 +247,11 @@ private Coord coord_HQ;
         connection.getInputStream();
 	}
 	
+	/**
+	 * Ajoute un véhicule à la BDD du serveur pour pouvoir l'afficher
+	 * @param range
+	 * @throws IOException
+	 */
 	public void addVehiculeView(int range) throws IOException {
 		URL url = new URL("http://localhost:8082/VehiculeWebService/addVehicule/"+this.getCoord().x+"/"+this.getCoord().y);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -272,7 +284,11 @@ private Coord coord_HQ;
         
         this.updateVehiculeStatut();
 	}
-
+	
+	/**
+	 * Supprime le véhicule du serveur
+	 * @throws IOException
+	 */
 	public void deleteVehiculeView() throws IOException {
 		URL url = new URL("http://localhost:8082/VehiculeWebService/deleteVehicule/"+this.getId());
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();

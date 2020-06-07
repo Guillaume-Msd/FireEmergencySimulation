@@ -75,7 +75,11 @@ public class Alerte {
 	public String toString() {
 		return "Alerte "+this.id+": "+this.coord+", Valeur: "+this.intensity+", Type: "+this.type+", Etat: "+this.etat;
 	}
-
+	
+	/**
+	 * Supprime l'alerte du serveur
+	 * @throws IOException
+	 */
 	public void delete() throws IOException {
 		URL url = new URL("http://localhost:8082/EmergencyWebService/deleteAlert/"+this.getId());
 	    HttpURLConnection connection = (HttpURLConnection) url.openConnection();

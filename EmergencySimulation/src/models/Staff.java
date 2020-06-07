@@ -1,6 +1,6 @@
 package models;
 
-public class Staff extends Intervernors {
+public class Staff extends Intervenors {
 
 	private TiredStateEnum TiredState;
 

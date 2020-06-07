@@ -470,7 +470,10 @@ public class EmergencySimulator implements InterventionServerInterface {
 		}
 	}
 
-	
+	/**
+	 * Récupère les véhicules à ravitailler depuis le serveur et gère leur ravitaillement
+	 * @throws IOException
+	 */
 	public void gestionRavitaillement() throws IOException {
 		List<AbstractVehicule> vehiculesSimu = this.getVehicules();
 		List<VehiculePompier> vehiculesServeur = getVehiculesByStatut(EnumStatut.BesoinRavitaillementEau);
@@ -483,6 +486,11 @@ public class EmergencySimulator implements InterventionServerInterface {
 		}
 	}
 	
+	/**
+	 * Envoie le véhicule se ravitailler à la bouche à incendie la plus proche
+	 * @param vehicule
+	 * @throws IOException
+	 */
 	public void RavitaillementEau(VehiculeLutteIncendie vehicule) throws IOException {
 		List<Coord> bouchesAIncendie = getBouchesAIncendie();
 		Coord boucheLaPlusProche = trouveElementLePlusProche(vehicule.getCoord(), bouchesAIncendie);
@@ -491,6 +499,14 @@ public class EmergencySimulator implements InterventionServerInterface {
 		vehicule.updateVehiculeStatut();
 	}
 	
+	/**
+	 * Pareil que la fonction envoieVehicule mais permet de faire un aller-retour
+	 * @param vehicule
+	 * @param xFinal
+	 * @param yFinal
+	 * @param consommation
+	 * @throws IOException
+	 */
 	public void envoieVehiculeAllerRetour(AbstractVehicule vehicule,int xFinal,int yFinal,int consommation) throws IOException {
 		List<Coord> pathAller = getPathFromServer(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
 		double distanceAller = calculDistance(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);

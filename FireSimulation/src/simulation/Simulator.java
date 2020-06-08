@@ -90,7 +90,6 @@ public class Simulator {
 					if (coordEvent.isInRange(vehicule.getCoord(), vehicule.getRange())) {
 						this.simulationController.updateEvent(event, ((Fire) event).attenuate(), "attenuer");
 						vehicule.decreaseLiquid(LiquidEnum.Eau);
-						vehicule.setQuantiteEau(0);
 						System.err.println(vehicule.getQuantiteEau());
 						if(this.checkLiquidQuantity(vehicule)) {
 							continue;

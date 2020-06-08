@@ -86,7 +86,7 @@ public class Vehicule {
 	//diminue la quantité de liquide de 10% de sa capacité totale
 	public void decreaseLiquid(LiquidEnum liquidType) {
 		if (this.getQuantiteEau() > 0) {
-			this.setQuantiteEau(this.getQuantiteEau() - this.getQuantiteEau()/10);
+			this.setQuantiteEau(this.getQuantiteEau() - this.getQuantiteEau()/3);
 		}
 	}
 }

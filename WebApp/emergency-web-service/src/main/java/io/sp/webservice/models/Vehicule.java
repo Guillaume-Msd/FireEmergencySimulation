@@ -26,7 +26,7 @@ public class Vehicule {
 	private int range;
 	
 	@Column
-	private double liquids;
+	private double quantiteEau;
 
 	public Vehicule() {
 	}
@@ -75,12 +75,12 @@ public class Vehicule {
 		this.range = range;
 	}
 
-	public double getLiquids() {
-		return liquids;
+	public double getQuantiteEau() {
+		return quantiteEau;
 	}
 
-	public void setLiquids(double liquids) {
-		this.liquids = liquids;
+	public void setQuantiteEau(double quantiteEau) {
+		this.quantiteEau = quantiteEau;
 	}
 
 	

@@ -12,6 +12,8 @@ import java.util.List;
 
 import org.json.simple.JSONObject;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import utilities.Tools;
 
 public abstract class AbstractVehicule extends Intervenors implements VehiculeInterface {
@@ -226,6 +228,25 @@ private Coord coord_HQ;
         osw.close();
         connection.getInputStream();
 
+	}
+	
+	public void majVehiculeInfo() throws IOException {
+		URL url = new URL("http://localhost:8082/VehiculeWebService/vehicule/"+this.getId() );
+		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection(); 
+        httpURLConnection.setRequestMethod("GET");
+        BufferedReader in = new BufferedReader(
+        new InputStreamReader(httpURLConnection.getInputStream()));
+        String inputLine;
+        StringBuffer response1 = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+        	response1.append(inputLine);
+		} in .close();
+	
+		ObjectMapper mapper = new ObjectMapper();
+		
+		AbstractVehicule v = mapper.readValue(response1.toString(), AbstractVehicule.class);
+		this.setCoord(v.getCoord());
+		this.setStatut(v.getStatut());
 	}
 	
 	/**

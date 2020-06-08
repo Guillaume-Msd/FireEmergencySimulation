@@ -1,5 +1,13 @@
 package models;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class VehiculePompier extends AbstractVehicule {
 	
 	private Integer InterventionSpeed;
@@ -41,4 +49,5 @@ public class VehiculePompier extends AbstractVehicule {
 	public void setType(String type) {
 		this.type = type;
 	}
+	
 }

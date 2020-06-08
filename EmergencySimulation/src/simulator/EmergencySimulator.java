@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import models.AbstractHeadquarter;
@@ -182,7 +183,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 	public void parcoursAlertes(List<Alerte> alertes,List<AbstractVehicule> vehicules) throws IOException {
 		for (Alerte alerte : alertes) {
 			if (alerte.getEtat().contentEquals("Nouvelle Alerte")) {
-				gererNouvelleAlerte(alerte);
+				gererNouvelleAlerte2(alerte);
 			}
 			for (AbstractVehicule v : vehicules) {
 				if (v.getCoord().equals(alerte.getCoord())) {
@@ -287,6 +288,54 @@ public class EmergencySimulator implements InterventionServerInterface {
 		return HQ_choisi;
 	}
 	
+	
+	public List<VehiculeLutteIncendie> VehiculesIncendieParProximite(Alerte alerte) throws IOException {
+		List<AbstractVehicule> vehiculesSimu = this.getVehicules();
+		List<VehiculeLutteIncendie> vehicules = new ArrayList<VehiculeLutteIncendie>();
+		for (AbstractVehicule v : vehiculesSimu) {
+			if (v instanceof VehiculeLutteIncendie) {
+				v.majVehiculeInfo();
+				if (v.getStatut().equals(EnumStatut.Disponible) || v.getStatut().equals(EnumStatut.RetourVersLeHQ))
+				vehicules.add((VehiculeLutteIncendie) v);
+			}
+		}
+		vehicules.sort(new Comparator<VehiculeLutteIncendie>() {
+		    @Override
+		    public int compare(VehiculeLutteIncendie v1, VehiculeLutteIncendie v2) {
+		    	double distance1 = 0;
+				try {
+					distance1 = calculDistance(v1.getCoord().x,v1.getCoord().y,alerte.getCoord().x,alerte.getCoord().y);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    	double distance2 = 0;
+				try {
+					distance2 = calculDistance(v2.getCoord().x,v2.getCoord().y,alerte.getCoord().x,alerte.getCoord().y);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    	if(distance1 < distance2){
+		            return -1;
+		        }
+		    	else if (distance1 > distance2) {
+		    		return 1;
+		    	}
+		        return 0;
+		     }
+		});
+		return vehicules;
+	}
+	
+	public void gererNouvelleAlerte2(Alerte alerte) throws IOException {
+		List<VehiculeLutteIncendie> vehicules = this.VehiculesIncendieParProximite(alerte);
+		for (int i=0;i<alerte.getIntensity();i++) {
+			VehiculeLutteIncendie v = vehicules.remove(0);
+			createIntervention(v,alerte.getCoord().x,alerte.getCoord().y,alerte.getRange());
+		}
+	}
+	
 	/**
 	 * Demande au serveur le chemin (liste de coordonnées que doit emprunter le camion pour se rendre aux coordonnées final
 	 * @param int xInit
@@ -343,6 +392,15 @@ public class EmergencySimulator implements InterventionServerInterface {
 		}
 	}
 	
+	public void createIntervention(VehiculeLutteIncendie vehicule, int xFinal, int yFinal, int range) throws JsonParseException, JsonMappingException, IOException {
+		List<Coord> coordList = getPathFromServer(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
+		double distance = calculDistance(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
+		vehicule.setPath(coordList);
+		vehicule.setStatut(EnumStatut.EnRoutePourIntervention);
+		vehicule.setOilQuantity(vehicule.getOilQuantity() - (distance*vehicule.getInterventionOilConsumption())/100);
+		vehicule.addVehiculeView(range);
+		System.err.println(vehicule.getOilQuantity());
+	}
 
 	/**
 	 * Renvoie le véhicule spécifié à son HQ
@@ -510,8 +568,8 @@ public class EmergencySimulator implements InterventionServerInterface {
 	public void envoieVehiculeAllerRetour(AbstractVehicule vehicule,int xFinal,int yFinal,int consommation) throws IOException {
 		List<Coord> pathAller = getPathFromServer(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
 		double distanceAller = calculDistance(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
-		List<Coord> pathRetour = getPathFromServer(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
-		double distanceRetour = calculDistance(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
+		List<Coord> pathRetour = getPathFromServer(xFinal,yFinal,vehicule.getCoord().x,vehicule.getCoord().y);
+		double distanceRetour = calculDistance(xFinal,yFinal,vehicule.getCoord().x,vehicule.getCoord().y);
 		for (int i=0;i<5;i++) {
 			pathAller.add(new Coord(xFinal,yFinal));
 		}

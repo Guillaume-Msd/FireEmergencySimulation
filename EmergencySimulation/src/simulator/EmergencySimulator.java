@@ -87,10 +87,12 @@ public class EmergencySimulator implements InterventionServerInterface {
 			for (AbstractHeadquarter HQ2 : this.getFFHQ()) {
 				if (HQ1.getId() == HQ2.getId()) {
 					trouve = true;
+					
 				}
 			}
 			if (!trouve && HQ1 instanceof FireFighterHQ) {
-				this.addFFHQ((FireFighterHQ) HQ1);
+				FireFighterHQ hq = new FireFighterHQ(HQ1.getId(), HQ1.getCoord(), HQ1.getNb_vehicules());
+				this.addFFHQ(hq);
 			}
 			trouve = false;
 		}
@@ -276,43 +278,32 @@ public class EmergencySimulator implements InterventionServerInterface {
 	
 	
 	public List<VehiculeLutteIncendie> VehiculesIncendieParProximite(Alerte alerte) throws IOException {
-		List<AbstractVehicule> vehiculesSimu = this.getVehicules();
-		List<VehiculeLutteIncendie> vehicules = new ArrayList<VehiculeLutteIncendie>();
-		for (AbstractVehicule v : vehiculesSimu) {
-			if (v instanceof VehiculeLutteIncendie) {
-				v.majVehiculeInfo();
-				if (v.getStatut().equals(EnumStatut.Disponible) || v.getStatut().equals(EnumStatut.RetourVersLeHQ))
-				vehicules.add((VehiculeLutteIncendie) v);
-			}
-		}
-		vehicules.sort(new Comparator<VehiculeLutteIncendie>() {
-		    @Override
-		    public int compare(VehiculeLutteIncendie v1, VehiculeLutteIncendie v2) {
-		    	double distance1 = 0;
-				try {
-					distance1 = calculDistance(v1.getCoord().x,v1.getCoord().y,alerte.getCoord().x,alerte.getCoord().y);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		    	double distance2 = 0;
-				try {
-					distance2 = calculDistance(v2.getCoord().x,v2.getCoord().y,alerte.getCoord().x,alerte.getCoord().y);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		    	if(distance1 < distance2){
-		            return -1;
-		        }
-		    	else if (distance1 > distance2) {
-		    		return 1;
-		    	}
-		        return 0;
-		     }
-		});
-		return vehicules;
-	}
+        List<AbstractVehicule> vehiculesSimu = this.getVehicules();
+        List<VehiculeLutteIncendie> vehicules = new ArrayList<VehiculeLutteIncendie>();
+        for (AbstractVehicule v : vehiculesSimu) {
+        	System.out.println(vehiculesSimu.size());
+            if (v instanceof VehiculeLutteIncendie) {
+                v.majVehiculeInfo();
+                if (v.getStatut().equals(EnumStatut.Disponible) || v.getStatut().equals(EnumStatut.RetourVersLeHQ))
+                vehicules.add((VehiculeLutteIncendie) v);
+                v.setDistance(calculDistance(v.getCoord().x,v.getCoord().y,alerte.getCoord().x,alerte.getCoord().y));
+            }
+        }
+        
+        vehicules.sort(new Comparator<VehiculeLutteIncendie>() {
+            @Override
+            public int compare(VehiculeLutteIncendie v1, VehiculeLutteIncendie v2) {
+                if(v1.getDistance() < v2.getDistance()){
+                    return -1;
+                }
+                else if (v1.getDistance() > v2.getDistance()) {
+                    return 1;
+                }
+                return 0;
+             }
+        });
+        return vehicules;
+    }
 	
 	public void gererNouvelleAlerte(Alerte alerte) throws IOException {
         List<VehiculeLutteIncendie> vehicules = this.VehiculesIncendieParProximite(alerte);

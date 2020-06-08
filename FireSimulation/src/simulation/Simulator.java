@@ -65,7 +65,7 @@ public class Simulator {
 	public void aggravateFire() throws IOException {
 		Event[] listEvent = this.simulationController.getAllEvents();
 		Random r = new Random();
-		int i = r.nextInt(listEvent.length);
+		int i = r.nextInt(listEvent.length-1);
 		Fire fire = (Fire) listEvent[i];
 	}
 	

@@ -40,6 +40,7 @@ public abstract class AbstractVehicule extends Intervenors implements VehiculeIn
   
   private int range;
   
+  private double distance;
 
 
 public Coord getCoord_HQ() {
@@ -324,6 +325,14 @@ private Coord coord_HQ;
 	public String toString() {
 		return "Etat: "+this.getEtat()+"\n\tPath: "+this.getPath()
 		+"\n\tCoord: "+this.getCoord()+"\n\tStatut: "+this.getStatut()+"\n\tHQ: "+this.getCoord_HQ();
+	}
+
+	public double getDistance() {
+		return distance;
+	}
+
+	public void setDistance(double distance) {
+		this.distance = distance;
 	}
 }
 

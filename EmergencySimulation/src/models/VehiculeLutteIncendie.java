@@ -17,6 +17,7 @@ public class VehiculeLutteIncendie extends VehiculePompier {
 	private double quantiteEau;
 	private final double capaciteEau;
 	
+	
 	public VehiculeLutteIncendie(double capacite) throws IOException {
 		this.capaciteEau = capacite;
 		this.quantiteEau = capacite;

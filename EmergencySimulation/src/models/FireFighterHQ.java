@@ -7,7 +7,6 @@ import java.util.List;
 public class FireFighterHQ extends AbstractHeadquarter {
 	
 	public FireFighterHQ() {
-		
 	}
 	
 	private List<VehiculePompier> vehicules;
@@ -19,7 +18,7 @@ public class FireFighterHQ extends AbstractHeadquarter {
 	}
 	
 	public FireFighterHQ(Coord coord,int nb_vehicules) throws IOException {
-		super(coord,nb_vehicules);
+		super(coord, nb_vehicules);
 		this.vehicules = new ArrayList<VehiculePompier>();
 		for (int i=0;i<nb_vehicules;i++) {
 			this.addVehicule(new VehiculeLutteIncendie());
@@ -28,6 +27,20 @@ public class FireFighterHQ extends AbstractHeadquarter {
 			vehicule.setCoord(super.getCoord());
 			vehicule.setCoord_HQ(super.getCoord());
 		}
+	}
+	
+	public FireFighterHQ(int id, Coord coord,int nb_vehicules) throws IOException {
+		super(coord, nb_vehicules);
+		this.setId(id);
+		this.vehicules = new ArrayList<VehiculePompier>();
+		for (int i=0;i<nb_vehicules;i++) {
+			this.addVehicule(new VehiculeLutteIncendie());
+		}
+		for (AbstractVehicule vehicule : this.getVehicules()) {
+			vehicule.setCoord(super.getCoord());
+			vehicule.setCoord_HQ(super.getCoord());
+		}
+
 	}
 
 	public List<VehiculePompier> getVehicules() {

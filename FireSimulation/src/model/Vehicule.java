@@ -1,38 +1,36 @@
-package io.sp.webservice.models;
+package model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import java.util.HashMap;
+import java.util.Map;
 
-@Entity
 public class Vehicule {
-
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	
 	private int id;
 
-	@Column
 	private Coord coord;
 	
-	@Column
 	private String type;
 	
-	@Column
 	private EnumStatut statut;
-	
-	@Column
-	private int range;
-	
-	@Column
-	private double quantiteEau;
 
+	private int range;
+
+	private double quantiteEau;
+	
+	
 	public Vehicule() {
 	}
 	
 	public Vehicule(String type) {
 		this.setType(type);
+	}
+	
+	public int getRange() {
+		return range;
+	}
+
+	public void setRange(int range) {
+		this.range = range;
 	}
 
 	public int getId() {
@@ -49,6 +47,14 @@ public class Vehicule {
 
 	public void setCoord(Coord coord) {
 		this.coord = coord;
+	}
+	
+	public int getX() {
+		return this.coord.x;
+	}
+
+	public int getY() {
+		return this.coord.y;
 	}
 
 	public String getType() {
@@ -67,13 +73,7 @@ public class Vehicule {
 		this.statut = statut;
 	}
 	
-	public int getRange() {
-		return range;
-	}
-
-	public void setRange(int range) {
-		this.range = range;
-	}
+	
 
 	public double getQuantiteEau() {
 		return quantiteEau;
@@ -83,7 +83,10 @@ public class Vehicule {
 		this.quantiteEau = quantiteEau;
 	}
 
-	
-
-	
+	//diminue la quantité de liquide de 10% de sa capacité totale
+	public void decreaseLiquid(LiquidEnum liquidType) {
+		if (this.getQuantiteEau() > 0) {
+			this.setQuantiteEau(this.getQuantiteEau() - this.getQuantiteEau()/10);
+		}
+	}
 }

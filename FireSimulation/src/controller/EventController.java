@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 
@@ -13,16 +14,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import model.Coord;
 import model.EnumStatut;
-import model.EnvironmentElement;
+import model.Element;
 import model.Event;
 import model.Fire;
-import model.InterventionVehicule;
+import model.Vehicule;
 import utilities.Tools;
 
 
-public class SimulationController implements SimulationControllerInterface {
+public class EventController implements EventControllerInterface {
 
-	
+	@Override
 	public void createEvent(Event event) throws IOException {
 
 		Iterator<Coord> it = event.getLocalisation().iterator();
@@ -43,7 +44,7 @@ public class SimulationController implements SimulationControllerInterface {
         
 	}
 	
-	
+	@Override
 	public void deleteEvent(Event event) throws IOException {
 	
 		URL url = new URL("http://localhost:8081/FireWebService/remove/" + event.getId());
@@ -53,6 +54,7 @@ public class SimulationController implements SimulationControllerInterface {
 
 	}	
 	
+	@Override
 	public Event[] getAllEvents() throws IOException {
 		
 		URL url = new URL("http://localhost:8081/FireWebService/getAll");
@@ -72,6 +74,7 @@ public class SimulationController implements SimulationControllerInterface {
 		return events;		
 	}
 	
+	@Override
 	public void updateEvent(Event event, Coord coord, String state) throws IOException {
 		
 		int idEvent = event.getId();
@@ -99,56 +102,4 @@ public class SimulationController implements SimulationControllerInterface {
         connection.getInputStream();
 		
 	}
-	
-	
-	public InterventionVehicule[] getInterventionVehicules() throws IOException {
-		
-		URL url = new URL("http://localhost:8082/VehiculeWebService/vehiculesByStatut/" + "EnCoursDIntervention");
-        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-        httpURLConnection.setRequestMethod("GET");
-        BufferedReader in = new BufferedReader(
-        new InputStreamReader(httpURLConnection.getInputStream()));
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-        	response.append(inputLine);
-		} in .close();
-		
-		ObjectMapper mapper = new ObjectMapper();
-        InterventionVehicule[] vehicles = mapper.readValue(response.toString(), InterventionVehicule[].class);		
-		return vehicles;
-	}
-	
-	
-	public void updateVehiculeStatut(InterventionVehicule vehicule) throws IOException {
-		
-		URL url = new URL("http://localhost:8082/VehiculeWebService/updateVehiculeStatut/"+vehicule.getId());
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-        connection.setDoOutput(true);
-        OutputStream os = connection.getOutputStream();
-        OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
-        osw.write(Tools.toJsonString(vehicule.getStatut()));
-        osw.flush();
-        osw.close();
-        connection.getInputStream();
-    }
-	
-	public void createEnvironmentElement(EnvironmentElement element) throws IOException {
-		
-		URL url = new URL("http://localhost:8082/VehiculeWebservice/addElement/"+element.getX()+"/"+element.getY());
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-		connection.setDoOutput(true);
-		OutputStream os = connection.getOutputStream();
-
-        OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
-        osw.write(element.toJsonString());
-        osw.flush();
-        osw.close();
-        connection.getInputStream();
-	}
-		
 }

@@ -26,10 +26,6 @@ public class ElementService {
 		elementRepository.save(element);
 	}
 	
-	public void updateElement(Element element) {
-		elementRepository.save(element);
-	}
-	
 	public void deleteElement(String id) {
 		elementRepository.delete(this.getElementById(id));
 	}

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -43,6 +44,28 @@ public class FireEntity {
 	public FireEntity(String type, String intensity) {
 		this.type = type;
 		this.intensity = intensity;
+	}
+	
+	public void initFire() {
+		int nb_aggravation = 0;
+	
+		if(this.intensity.contentEquals("Low")) {
+			nb_aggravation = 1;
+		}
+		else if (this.intensity.contentEquals("Medium")) {
+			nb_aggravation = 1;
+		}
+		else if (this.intensity.contentEquals("High")) {
+			nb_aggravation = 2;
+		}
+		else {
+			
+			nb_aggravation = 3;
+		}
+		int i;
+		for (i = 0; i < nb_aggravation; i++) {
+			this.aggravate();
+		}
 	}
 	
 	
@@ -86,6 +109,27 @@ public class FireEntity {
 		int index = this.location.indexOf(coord);
 		this.location.remove(index);
 		
+		
+	}
+	
+	private void aggravate() {
+		CoordEntity coord = this.getLocation().get(this.location.size() - 1);
+		Random r = new Random();
+		int randint = r.nextInt(3);
+		int x = coord.getX();
+		int y = coord.getY();
+		switch(randint) {
+			case 0:
+				this.addCoord(x + 3, y);
+			case 1:
+				this.addCoord(x - 3, y);
+			case 2:
+				this.addCoord(x, y + 3);
+			default: 
+				this.addCoord(x, y - 3);
+			
+		
+		}
 		
 	}
 

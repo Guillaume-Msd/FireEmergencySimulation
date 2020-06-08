@@ -75,11 +75,12 @@ public class mapRestController {
 	 * @return String Json List<Coord>
 	 * @throws IOException
 	 */
-	@GetMapping("MapWebService/getFireHydrant")
+	@GetMapping("MapWebService/getBouchesAIncendie")
 	public String getFireHydrant() throws IOException {
 		Direction direction = new Direction();
 		return Tools.toJsonString(direction.getFireHydrant());
 	}
+	
 
 
 

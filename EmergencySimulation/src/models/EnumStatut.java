@@ -6,5 +6,7 @@ public enum EnumStatut {
 	EnCoursDIntervention,
 	FinDIntervention,
 	RetourVersLeHQ,
-	EnRoutePourRavitaillementEssence
+	EnRoutePourRavitaillementEssence, 
+	BesoinRavitaillementEau,
+	EnRoutePourRavitaillementEau
 }

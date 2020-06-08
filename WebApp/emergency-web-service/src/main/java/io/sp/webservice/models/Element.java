@@ -14,12 +14,6 @@ public class Element {
 	private int id;
 	
 	@Column
-	private int capacity;
-	
-	@Column
-	private int quantity;
-	
-	@Column
 	private Coord location;
 	
 	@Column
@@ -31,22 +25,6 @@ public class Element {
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public int getCapacity() {
-		return capacity;
-	}
-
-	public void setCapacity(int capacity) {
-		this.capacity = capacity;
-	}
-
-	public int getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
 	}
 
 	public Coord getLocation() {

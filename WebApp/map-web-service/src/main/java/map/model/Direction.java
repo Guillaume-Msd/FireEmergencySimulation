@@ -193,28 +193,32 @@ public class Direction {
 		
 		return coordList;
 	}
-	
-public List<Coord> getFireHydrant() throws IOException{
 		
-		
-		MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
-				.bbox(minY, maxX, maxY, minX)
-				.accessToken(MAPBOX_ACCESS_TOKEN)
-				.query("Fire hydrant")
-				.build();
+	public List<Coord> getFireHydrant() throws IOException{
+			
+			/*
+			MapboxGeocoding mapboxGeocoding = MapboxGeocoding.builder()
+					.bbox(minY, maxX, maxY, minX)
+					.accessToken(MAPBOX_ACCESS_TOKEN)
+					.query("Fire hydrant")
+					.build();
+			
+			List<Coord> coordList = new ArrayList<Coord>();
+			double latitude, longitude;
+			List<CarmenFeature> featureList = mapboxGeocoding.executeCall().body().features();
+			for(CarmenFeature feature : featureList) {
+				latitude = feature.center().latitude();
+	    		longitude = feature.center().longitude();
+	    		Coord coord = convertCoordToGrid(longitude, latitude);
+	    		coordList.add(coord);
+			}
+			
+			return coordList;
+		}*/
 		
 		List<Coord> coordList = new ArrayList<Coord>();
-		double latitude, longitude;
-		List<CarmenFeature> featureList = mapboxGeocoding.executeCall().body().features();
-		for(CarmenFeature feature : featureList) {
-			latitude = feature.center().latitude();
-    		longitude = feature.center().longitude();
-    		Coord coord = convertCoordToGrid(longitude, latitude);
-    		coordList.add(coord);
-		}
-		
+		coordList.add(new Coord(128,128));
 		return coordList;
-	}
 	
-
+	}
 }

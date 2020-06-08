@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.sp.webservice.models.Coord;
 import io.sp.webservice.models.Element;
+import io.sp.webservice.models.GasStation;
 import io.sp.webservice.service.ElementService;
 import utilities.Tools;
 
@@ -24,12 +25,8 @@ public class ElementController {
 	@Autowired
 	private ElementService elementService;
 	
-	/**
-	 * Return all elements 
-	 * @return String Json List<Element>
-	 */
 	@GetMapping("ElementWebService/allElements")
-	public String getAllVehicules() {
+	public String getAllElements() {
 		List<Element> list = elementService.getAll();
 		if (list != null) {
 			return Tools.toJsonString(list);
@@ -45,7 +42,7 @@ public class ElementController {
 	 * @return Json Element
 	 */
 	@GetMapping("ElementWebService/element/{id}")
-	public String getVehicule(@PathVariable String id) {
+	public String getElement(@PathVariable String id) {
 		return Tools.toJsonString(elementService.getElementById(id));
 	}
 	
@@ -56,12 +53,27 @@ public class ElementController {
 	 * @param y
 	 * @return int the id of the element created
 	 */
-	@PostMapping("ElementWebService/addElement/{x}/{y}")
-	public int addVehicule(@RequestBody Element element, @PathVariable String x, @PathVariable String y) {
+	@GetMapping("ElementWebService/addElement/{x}/{y}")
+	public int addElement(@PathVariable String x, @PathVariable String y) {
 		Coord coord = new Coord(Integer.parseInt(x), Integer.parseInt(y));
+		Element element = new Element();
 		element.setLocation(coord);
 		elementService.addElement(element);
 		return element.getId();
+	}
+	
+	/**
+	 * Return the coord of all the elements
+	 * @return String Json List<Coord>
+	 */
+	@GetMapping("ElementWebService/getAllCoords")
+	public String getAllHQCoords() {
+		List<Element> elementList = elementService.getAll();
+		List<Coord> coordList = new ArrayList<Coord>();
+		for(Element element: elementList) {
+			coordList.add(element.getLocation());
+		}
+		return Tools.toJsonString(elementList);
 	}
 	
 	

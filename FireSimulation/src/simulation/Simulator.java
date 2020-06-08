@@ -1,67 +1,124 @@
 package simulation;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
-import java.util.Timer;
-
-import javax.lang.model.element.TypeElement;
-
-import controller.SimulationController;
+import controller.InterventionController;
+import controller.EventController;
 import model.Coord;
-import model.EnvironmentElement;
+import model.EnumStatut;
+import model.Event;
 import model.Fire;
 import model.FireIntensity;
 import model.FireType;
+import model.LiquidEnum;
+import model.Vehicule;
 
 public class Simulator {
 	
-	private int mapSize;
-	private int difficulty;
-	private int sensitivity;
+	private EventController simulationController;
+	private InterventionController interventionController;
+
 	
-	public Simulator(int mapSize, int sensitivity) {
-		
-		this.mapSize = mapSize;
-		this.sensitivity = sensitivity;
-		double difficulty = 1; 	//float entre 0 et 1 rentré par l'utilisateur (requête pour récupérer)
-		
-		//générés à l'avenir par la méthode timelapse()
-		int creationInterval = 10000;
-		int updateInterval = 20000;
-		
-		SimulationController simulationController = new SimulationController();
-		Timer timer = new Timer();
-	    //timer.schedule(new CreateFireTask(this.mapSize, simulationController), 3000, creationInterval);
-	    //timer.schedule(new AggravateFireTask(simulationController), 5000, updateInterval);
-	    timer.schedule(new CheckInterventionTask(simulationController), 1000, 1000);
-	    
-	    //EnvironmentElement element = new EnvironmentElement(new Coord(50,50), 100, TypeElement.BoucheIncendie);
-	    
+	/**
+	 * @throws IOException
+	 */
+	public Simulator() throws IOException {
+		this.simulationController = new EventController();
+		this.interventionController = new InterventionController();
 	}
-	
+
 	/**
 	 * Renvoie le temps entre la création de chaque feu en fonction d'un coefficient de sensibilité
 	 * fixe et de la difficulté choisie par l'utilisateur
-	 * @param sensisitivity x
-	 * @param difficulty y
+	 * @param sensisitivity s
+	 * @param difficulty d
 	 * @return time
 	 */
-	public static long timelapse(int s, int d) {
+	public long timelapse(int s, int d) {
 		Random r = new Random();
 		long time = (long) (1000*s/d + 0.5*(r.nextInt(1000*s*(int) ((2/d))) - 1000*s/d));
 		return time;
 	}
 	
 	
-	//création d'un Feu d'une intensité aléatoire et à des coords aléatoires
-	public static Fire newFire(int mapSize) {
+	/**crée un Feu d'une intensité aléatoire et à des coords aléatoires
+	 * @param mapSize
+	 * @throws IOException
+	 */
+	public void newFire(int mapSize) throws IOException {
 		Random r = new Random();
 		int x = r.nextInt(mapSize);
 		int y = r.nextInt(mapSize);
 		int i = r.nextInt(FireType.listTypes.size());
 		FireType type = FireType.listTypes.get(i);
-		return new Fire(new Coord(x, y), type, FireIntensity.Low);
+		Fire fire = new Fire(new Coord(x, y), type, FireIntensity.Low);
+		this.simulationController.createEvent(fire);
 	}
-
+	
+	/**
+	 * @throws IOException
+	 */
+	public void aggravateFire() throws IOException {
+		Event[] listEvent = this.simulationController.getAllEvents();
+		Random r = new Random();
+		int i = r.nextInt(listEvent.length);
+		Fire fire = (Fire) listEvent[i];
+		if (fire.getIntensity() != FireIntensity.VeryHigh) {
+			this.simulationController.updateEvent(fire, fire.aggravate(), "aggraver");
+		}
+	}
+	
+	/**
+	 * @throws IOException
+	 */
+	public void manageIntervention() throws IOException {
+		Event[] events = this.simulationController.getAllEvents();
+		List<Event> listEvent = new ArrayList<Event>();
+		int i;
+		for(i = 0; i < events.length; i++) {
+			listEvent.add(events[i]);
+		}
+		Vehicule[] listVehicules = this.interventionController.getVehicules();
+		for (Vehicule vehicule: listVehicules) {
+			for (Event event: listEvent) {
+			    Iterator <Coord> it = event.getLocalisation().iterator();
+			    while(it.hasNext()) {
+				    Coord coordEvent = it.next();
+					if (coordEvent.isInRange(vehicule.getCoord(), vehicule.getRange())) {
+						this.simulationController.updateEvent(event, ((Fire) event).attenuate(), "attenuer");
+						vehicule.decreaseLiquid(LiquidEnum.Eau);
+						vehicule.setQuantiteEau(0);
+						System.err.println(vehicule.getQuantiteEau());
+						if(this.checkLiquidQuantity(vehicule)) {
+							continue;
+						}
+						if(event.getLocalisation().size() <= 1) {
+							System.err.println(event.getLocalisation());
+							this.simulationController.deleteEvent(event);
+							vehicule.setStatut(EnumStatut.FinDIntervention);
+							this.interventionController.updateVehiculeStatut(vehicule);
+						}
+					}				
+				}
+		    }
+		}				
+	}
+	
+	/**
+	 * @param vehicule
+	 * @param liquidType
+	 * @throws IOException
+	 */
+	public boolean checkLiquidQuantity(Vehicule vehicule) throws IOException {
+		if (vehicule.getQuantiteEau() <= 0){
+			System.err.println("RAVITAILLEMENT");
+			vehicule.setStatut(EnumStatut.BesoinRavitaillementEau);
+			this.interventionController.updateVehiculeStatut(vehicule);
+			return true;
+		}
+		return false;
+	}
 }

@@ -18,7 +18,7 @@ public class FireFighterHQ extends AbstractHeadquarter {
 		this.vehicules = new ArrayList<VehiculePompier>();
 	}
 	
-	public FireFighterHQ(Coord coord,int nb_vehicules) {
+	public FireFighterHQ(Coord coord,int nb_vehicules) throws IOException {
 		super(coord,nb_vehicules);
 		this.vehicules = new ArrayList<VehiculePompier>();
 		for (int i=0;i<nb_vehicules;i++) {
@@ -42,6 +42,10 @@ public class FireFighterHQ extends AbstractHeadquarter {
 		this.vehicules.add(v);
 	}
 	
+	/**
+	 * 
+	 * @return tous les véhicules de Lutte contre les incendies du HQ
+	 */
 	public List<VehiculeLutteIncendie> getVehiculesIncendie() {
 		List<VehiculePompier> tousVehicules = this.getVehicules();
 		List<VehiculeLutteIncendie> vehiculesIncendie = new ArrayList<VehiculeLutteIncendie>();
@@ -54,10 +58,16 @@ public class FireFighterHQ extends AbstractHeadquarter {
 		return vehiculesIncendie;
 	}
 	
-	public List<VehiculeLutteIncendie> ChoisirVehiculeIncendie(Alerte alerte) throws IOException {
+	/**
+	 * Choisis la liste des véhicules à envoyer pour résoudre un problème en fonction de l'ampleur de ce problème
+	 * @param alerte
+	 * @return
+	 * @throws IOException
+	 */
+	public List<VehiculeLutteIncendie> ChoisirVehiculeIncendie(int dangerosite) throws IOException {
 		int nb_vehicules;
 		List<VehiculeLutteIncendie> vehicules= new ArrayList<VehiculeLutteIncendie> ();
-		if (alerte.getIntensity() < 15) { //15 est une valeur arbitraire
+		if (dangerosite < 15) { //15 est une valeur arbitraire
 			nb_vehicules = 1;
 		}
 		else {

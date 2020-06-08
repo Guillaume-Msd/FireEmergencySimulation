@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Emergency</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+  integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+  crossorigin=""/>
+  
+ <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  
+<link rel="stylesheet" href="css/index.css" />
+</head>
+<body>
+
+	<div class="container-fluid" id="container">
+		<div class="row">
+			<div class="col-md-6">
+				<div id="emergencyMap"></div>
+			</div>
+			
+		</div>
+
+		<div class = "row">
+			<div class="col-md-6">
+				<div class="container-fluid">
+					<div class="row">
+						<h4 class="mb-4">Add Headquarter</h4>
+					</div>
+					<form action="" id="HQForm">
+						<div class="row">
+							<div class="form-group mr-4">
+								<label for="X">Coord x</label>
+								<input type="text" class="form-control" id ="HQX">
+							</div>
+						
+						
+							<div class="form-group">
+								<label for="Y">Coord y</label>
+								<input type="text" class="form-control" id = "HQY">
+							</div>
+						</div>
+					
+						<div class = "row">
+								<div class="form-group mr-4">
+									<label for="Type">Vehicules available</label>
+										<input type = "number" class = "form-control" id = "HQNb">
+								</div>
+						</div>
+						
+
+						<div class="row">
+							<button type = "submit" class="btn btn-primary">Add</button>
+						</div>
+					</form>
+				</div>
+				</div>
+			</div>
+	
+	 
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+  integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+  crossorigin=""></script>
+  
+ <script src="js/jquery-3.3.1.min.js"></script>
+<script src = "js/Emergency.js"></script> 
+ 
+</body>
+</html>

@@ -41,4 +41,5 @@ public class VehiculePompier extends AbstractVehicule {
 	public void setType(String type) {
 		this.type = type;
 	}
+
 }

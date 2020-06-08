@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import models.AbstractHeadquarter;
@@ -50,7 +51,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 	
 
 	/**
-	 * Fonction qui implémente le cycle de la simulation, toutes les actions récurrentes de la simulation sont appelées dans ce cycle
+	 * Fonction qui implï¿½mente le cycle de la simulation, toutes les actions rï¿½currentes de la simulation sont appelï¿½es dans ce cycle
 	 * @throws MalformedURLException
 	 * @throws IOException
 	 */
@@ -76,7 +77,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 	}
 
 	/**
-	 * Mets à jour les HQ en comparant ceux présents sur le serveur avec ceux déjà présent dans la simulation
+	 * Mets ï¿½ jour les HQ en comparant ceux prï¿½sents sur le serveur avec ceux dï¿½jï¿½ prï¿½sent dans la simulation
 	 * @throws IOException
 	 */
 	private void majHeadquarters() throws IOException {
@@ -101,7 +102,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 
 
 	/**
-	 * Fais un appel au serveur Emergency pour récupérer la liste de HQ
+	 * Fais un appel au serveur Emergency pour rï¿½cupï¿½rer la liste de HQ
 	 * @return
 	 * @throws IOException
 	 */
@@ -130,7 +131,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 	}
 	
 	/**
-	 * Récupère toutes les alertes du serveur Emergency
+	 * Rï¿½cupï¿½re toutes les alertes du serveur Emergency
 	 * @return
 	 * @throws IOException
 	 */
@@ -160,7 +161,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 	
 	/**
 	 *
-	 * @return tous les véhicules de la simulation
+	 * @return tous les vï¿½hicules de la simulation
 	 */
 	public List<AbstractVehicule> getVehicules() {
 		List<AbstractVehicule> vehicules = new ArrayList<AbstractVehicule>();
@@ -174,7 +175,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 	}
 	
 	/**
-	 * On parcours les alertes pour gérer les nouvelles alertes et supprimer celles qui ont été gérées
+	 * On parcours les alertes pour gï¿½rer les nouvelles alertes et supprimer celles qui ont ï¿½tï¿½ gï¿½rï¿½es
 	 * @param alertes
 	 * @param vehicules
 	 * @throws IOException
@@ -193,7 +194,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 	}
 	
 	/**
-	 * Permet de déplacer tous les véhicules de la simulation tout en mettant à jour leur statut (si besoin) et met à jour les informations du serveur
+	 * Permet de dï¿½placer tous les vï¿½hicules de la simulation tout en mettant ï¿½ jour leur statut (si besoin) et met ï¿½ jour les informations du serveur
 	 * @param vehicules
 	 * @throws IOException
 	 */
@@ -231,23 +232,9 @@ public class EmergencySimulator implements InterventionServerInterface {
 		}
 	}
 	
-	/**
-	 * Fonction qui demande l'envoie de véhicules au niveau de l'alerte
-	 * @param alerte
-	 * @throws IOException
-	 */
-	public void gererNouvelleAlerte(Alerte alerte) throws IOException {
-		FireFighterHQ hq = ChoisirFFHQ(alerte);
-		List<VehiculeLutteIncendie> vehicules = hq.ChoisirVehiculeIncendie(alerte.getIntensity());
-		if (!(vehicules.isEmpty())) {
-			createIntervention(vehicules,hq.getCoord().x,hq.getCoord().y,
-				alerte.getCoord().x,alerte.getCoord().y, alerte.getRange());
-			AlerteEnCours(alerte);
-		}
-	}
 	
 	/**
-	 * Fonction qui met à jour le statut de l'alerte sur le serveur, cela permet de ne gérer qu'une fois chaque alerte distincte
+	 * Fonction qui met ï¿½ jour le statut de l'alerte sur le serveur, cela permet de ne gï¿½rer qu'une fois chaque alerte distincte
 	 * @param alerte
 	 * @throws IOException
 	 */
@@ -259,7 +246,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 	}
 	
 	/**
-	 * Permet de choisir la caserne la plus proche pour l'envoie dans véhicule pour éteindre l'incendie
+	 * Permet de choisir la caserne la plus proche pour l'envoie dans vï¿½hicule pour ï¿½teindre l'incendie
 	 * @param Alerte alerte
 	 * @return
 	 */
@@ -287,8 +274,69 @@ public class EmergencySimulator implements InterventionServerInterface {
 		return HQ_choisi;
 	}
 	
+	
+	public List<VehiculeLutteIncendie> VehiculesIncendieParProximite(Alerte alerte) throws IOException {
+		List<AbstractVehicule> vehiculesSimu = this.getVehicules();
+		List<VehiculeLutteIncendie> vehicules = new ArrayList<VehiculeLutteIncendie>();
+		for (AbstractVehicule v : vehiculesSimu) {
+			if (v instanceof VehiculeLutteIncendie) {
+				v.majVehiculeInfo();
+				if (v.getStatut().equals(EnumStatut.Disponible) || v.getStatut().equals(EnumStatut.RetourVersLeHQ))
+				vehicules.add((VehiculeLutteIncendie) v);
+			}
+		}
+		vehicules.sort(new Comparator<VehiculeLutteIncendie>() {
+		    @Override
+		    public int compare(VehiculeLutteIncendie v1, VehiculeLutteIncendie v2) {
+		    	double distance1 = 0;
+				try {
+					distance1 = calculDistance(v1.getCoord().x,v1.getCoord().y,alerte.getCoord().x,alerte.getCoord().y);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    	double distance2 = 0;
+				try {
+					distance2 = calculDistance(v2.getCoord().x,v2.getCoord().y,alerte.getCoord().x,alerte.getCoord().y);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    	if(distance1 < distance2){
+		            return -1;
+		        }
+		    	else if (distance1 > distance2) {
+		    		return 1;
+		    	}
+		        return 0;
+		     }
+		});
+		return vehicules;
+	}
+	
+	public void gererNouvelleAlerte(Alerte alerte) throws IOException {
+        List<VehiculeLutteIncendie> vehicules = this.VehiculesIncendieParProximite(alerte);
+        int nb_camions_envoyes =0;
+        for (int i=0;i<=alerte.getIntensity()/4;i++) {
+            if (!vehicules.isEmpty()) {
+                VehiculeLutteIncendie v = vehicules.remove(0);
+                if(v.getStatut().toString().contentEquals((EnumStatut.Disponible).toString())) {
+                	createIntervention(v,alerte.getCoord().x,alerte.getCoord().y,alerte.getRange());
+                } else {
+                	redirectIntervention(v,alerte.getCoord().x,alerte.getCoord().y,alerte.getRange());
+                }
+               
+                nb_camions_envoyes = nb_camions_envoyes +1;
+            }
+        }
+        if (nb_camions_envoyes != 0) {
+            System.err.println(nb_camions_envoyes);
+            AlerteEnCours(alerte);
+        }
+    }
+	
 	/**
-	 * Demande au serveur le chemin (liste de coordonnées que doit emprunter le camion pour se rendre aux coordonnées final
+	 * Demande au serveur le chemin (liste de coordonnï¿½es que doit emprunter le camion pour se rendre aux coordonnï¿½es final
 	 * @param int xInit
 	 * @param int yInit
 	 * @param int xFinal
@@ -320,7 +368,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 	}
 	
 	/**
-	 * Envoies les véhicules spécifiés sur le lieu indiqué par les coordonnées finales (xFinal,yFinal)
+	 * Envoies les vï¿½hicules spï¿½cifiï¿½s sur le lieu indiquï¿½ par les coordonnï¿½es finales (xFinal,yFinal)
 	 * @param List<AbstractVehicule> vehicules
 	 * @param int xInit
 	 * @param int yInit
@@ -330,25 +378,44 @@ public class EmergencySimulator implements InterventionServerInterface {
 	 * @throws IOException 
 	 * @throws JsonMappingException 
 	 * @throws JsonParseException 
-	 */
-	public void createIntervention(List<VehiculeLutteIncendie> vehicules, int xInit, int yInit, int xFinal, int yFinal, int range) throws JsonParseException, JsonMappingException, IOException {
-		List<Coord> coordList = getPathFromServer(xInit,yInit,xFinal,yFinal);
-		double distance = calculDistance(xInit,yInit,xFinal,yFinal);
-		for (VehiculePompier vehicule : vehicules) {
-			vehicule.setPath(coordList);
-			vehicule.setStatut(EnumStatut.EnRoutePourIntervention);		
-			vehicule.setOilQuantity(vehicule.getOilQuantity() - (distance*vehicule.getInterventionOilConsumption())/100);
-			vehicule.addVehiculeView(range);
-			
-			((VehiculeLutteIncendie) vehicule).updateVehiculeWater();
-			
-			System.err.println(vehicule.getOilQuantity());
-		}
+	 */	
+	public void createIntervention(VehiculeLutteIncendie vehicule, int xFinal, int yFinal, int range) throws JsonParseException, JsonMappingException, IOException {
+		List<Coord> coordList = getPathFromServer(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
+		double distance = calculDistance(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
+		vehicule.setPath(coordList);
+		vehicule.setStatut(EnumStatut.EnRoutePourIntervention);
+		vehicule.setOilQuantity(vehicule.getOilQuantity() - (distance*vehicule.getInterventionOilConsumption())/100);
+		vehicule.addVehiculeView(range);
+		System.err.println(vehicule.getOilQuantity());
+		
+		((VehiculeLutteIncendie) vehicule).updateVehiculeWater();
 	}
 	
+	
+	/**
+	 * Envoies les vï¿½hicules spï¿½cifiï¿½s sur le lieu indiquï¿½ par les coordonnï¿½es finales (xFinal,yFinal)
+	 * @param List<AbstractVehicule> vehicules
+	 * @param int xInit
+	 * @param int yInit
+	 * @param int xAlert
+	 * @param int yAlert
+	 * @param int range
+	 * @throws IOException 
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
+	 */	
+	public void redirectIntervention(VehiculeLutteIncendie vehicule, int xFinal, int yFinal, int range) throws JsonParseException, JsonMappingException, IOException {
+		List<Coord> coordList = getPathFromServer(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
+		double distance = calculDistance(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
+		vehicule.setPath(coordList);
+		vehicule.setStatut(EnumStatut.EnRoutePourIntervention);
+		vehicule.setOilQuantity(vehicule.getOilQuantity() - (distance*vehicule.getInterventionOilConsumption())/100);
+		System.err.println(vehicule.getOilQuantity());
+	
+	}
 
 	/**
-	 * Renvoie le véhicule spécifié à son HQ
+	 * Renvoie le vï¿½hicule spï¿½cifiï¿½ ï¿½ son HQ
 	 * @param AbstractVehicule vehicule
 	 * @throws JsonParseException
 	 * @throws JsonMappingException
@@ -367,7 +434,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 	}
 	
 	/**
-	 * Envoie le véhicule spécifié à la station service la plus proche pour faire le plein
+	 * Envoie le vï¿½hicule spï¿½cifiï¿½ ï¿½ la station service la plus proche pour faire le plein
 	 * @param vehicule
 	 * @throws IOException
 	 */
@@ -380,7 +447,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 	}
 	
 	/**
-	 * Trouve l'élément le plus proche en distance du 1er élément parmi une liste d'éléments
+	 * Trouve l'ï¿½lï¿½ment le plus proche en distance du 1er ï¿½lï¿½ment parmi une liste d'ï¿½lï¿½ments
 	 * @param coord_element
 	 * @param liste_coord_elements
 	 * @return
@@ -409,7 +476,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 	}
 	
 	/**
-	 * Envoie un véhicule à la coordonnée spécifiée
+	 * Envoie un vï¿½hicule ï¿½ la coordonnï¿½e spï¿½cifiï¿½e
 	 * @param vehicule
 	 * @param xFinal
 	 * @param yFinal
@@ -424,7 +491,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 	}
 	
 	/**
-	 * Récupère tous les véhicules d'un certain statut depuis le serveur
+	 * Rï¿½cupï¿½re tous les vï¿½hicules d'un certain statut depuis le serveur
 	 * @param statut
 	 * @return
 	 * @throws IOException
@@ -453,7 +520,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 	}
 	
 	/**
-	 * Récupère les véhicules en statut FinDIntervention puis vérifie si ils ont besoin de faire le plein avant de les renvoyer au HQ
+	 * Rï¿½cupï¿½re les vï¿½hicules en statut FinDIntervention puis vï¿½rifie si ils ont besoin de faire le plein avant de les renvoyer au HQ
 	 * @throws IOException
 	 */
 	public void gestionFinDIntervention() throws IOException {
@@ -475,7 +542,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 	}
 
 	/**
-	 * Récupère les véhicules à ravitailler depuis le serveur et gère leur ravitaillement
+	 * Rï¿½cupï¿½re les vï¿½hicules ï¿½ ravitailler depuis le serveur et gï¿½re leur ravitaillement
 	 * @throws IOException
 	 */
 	public void gestionRavitaillement() throws IOException {
@@ -491,7 +558,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 	}
 	
 	/**
-	 * Envoie le véhicule se ravitailler à la bouche à incendie la plus proche
+	 * Envoie le vï¿½hicule se ravitailler ï¿½ la bouche ï¿½ incendie la plus proche
 	 * @param vehicule
 	 * @throws IOException
 	 */
@@ -514,8 +581,8 @@ public class EmergencySimulator implements InterventionServerInterface {
 	public void envoieVehiculeAllerRetour(AbstractVehicule vehicule,int xFinal,int yFinal,int consommation) throws IOException {
 		List<Coord> pathAller = getPathFromServer(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
 		double distanceAller = calculDistance(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
-		List<Coord> pathRetour = getPathFromServer(xFinal,yFinal, vehicule.getCoord().x,vehicule.getCoord().y);
-		double distanceRetour = calculDistance(xFinal,yFinal, vehicule.getCoord().x,vehicule.getCoord().y);
+		List<Coord> pathRetour = getPathFromServer(xFinal,yFinal,vehicule.getCoord().x,vehicule.getCoord().y);
+		double distanceRetour = calculDistance(xFinal,yFinal,vehicule.getCoord().x,vehicule.getCoord().y);
 		for (int i=0;i<5;i++) {
 			pathAller.add(new Coord(xFinal,yFinal));
 		}
@@ -577,7 +644,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 	}
 	
 	/**
-	 * Récupère les coordonnées de toutes les stations services depuis le serveur
+	 * Rï¿½cupï¿½re les coordonnï¿½es de toutes les stations services depuis le serveur
 	 * @return
 	 * @throws IOException
 	 */
@@ -632,7 +699,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 	}
 	
 	/**
-	 * Enlève tous les HQ de la base de donnée du serveur
+	 * Enlï¿½ve tous les HQ de la base de donnï¿½e du serveur
 	 * @throws IOException
 	 */
 	public void removeAllHQ() throws IOException {
@@ -642,5 +709,6 @@ public class EmergencySimulator implements InterventionServerInterface {
         httpURLConnection.getInputStream();
 		
 	}
+
 
 }

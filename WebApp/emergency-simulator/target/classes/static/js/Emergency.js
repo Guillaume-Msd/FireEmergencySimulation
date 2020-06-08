@@ -112,6 +112,7 @@ function displayAllElements(type){
 		
 	
 displayAllElements("Caserne");
+//displayAllElements("FireHydrant");
 displayAllElements("GasStation");
 setInterval(displayAllElements, 1000, "Alerte");	
 setInterval(displayAllElements, 1000, "Vehicule");	

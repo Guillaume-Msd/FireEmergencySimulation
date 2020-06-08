@@ -83,26 +83,34 @@ public class Simulator {
 		}
 		Vehicule[] listVehicules = this.interventionController.getVehicules();
 		for (Vehicule vehicule: listVehicules) {
+			boolean vehiculeAEteint = false;
 			for (Event event: listEvent) {
 			    Iterator <Coord> it = event.getLocalisation().iterator();
 			    while(it.hasNext()) {
 				    Coord coordEvent = it.next();
 					if (coordEvent.isInRange(vehicule.getCoord(), vehicule.getRange())) {
+						vehiculeAEteint = true;
 						this.simulationController.updateEvent(event, ((Fire) event).attenuate(), "attenuer");
-						vehicule.decreaseLiquid(LiquidEnum.Eau);
 						System.err.println(vehicule.getQuantiteEau());
+						vehicule.decreaseLiquid(LiquidEnum.Eau);
 						if(this.checkLiquidQuantity(vehicule)) {
-							continue;
+							this.sendRavitaillement(vehicule);
 						}
-						if(event.getLocalisation().size() <= 1) {
-							System.err.println(event.getLocalisation());
-							this.simulationController.deleteEvent(event);
-							vehicule.setStatut(EnumStatut.FinDIntervention);
-							this.interventionController.updateVehiculeStatut(vehicule);
+						else{
+							if((event.getLocalisation().size() <= 1)) {
+								this.simulationController.deleteEvent(event);
+								vehicule.setStatut(EnumStatut.FinDIntervention);
+								this.interventionController.updateVehiculeStatut(vehicule);
+							}
+							
 						}
 					}				
 				}
 		    }
+			if(!vehiculeAEteint) {
+				vehicule.setStatut(EnumStatut.FinDIntervention);
+				this.interventionController.updateVehiculeStatut(vehicule);
+			}
 		}				
 	}
 	
@@ -112,12 +120,16 @@ public class Simulator {
 	 * @throws IOException
 	 */
 	public boolean checkLiquidQuantity(Vehicule vehicule) throws IOException {
-		if (vehicule.getQuantiteEau() <= 0){
-			System.err.println("RAVITAILLEMENT");
-			vehicule.setStatut(EnumStatut.BesoinRavitaillementEau);
-			this.interventionController.updateVehiculeStatut(vehicule);
+		if(vehicule.getQuantiteEau() < vehicule.getLiquidDecrease()) {
 			return true;
-		}
+		} 
 		return false;
+		
+	}
+	
+	public void sendRavitaillement(Vehicule vehicule) throws IOException {
+		System.err.println("RAVITAILLEMENT");
+		vehicule.setStatut(EnumStatut.BesoinRavitaillementEau);
+		this.interventionController.updateVehiculeStatut(vehicule);
 	}
 }

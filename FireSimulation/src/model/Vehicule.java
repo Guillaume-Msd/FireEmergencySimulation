@@ -1,7 +1,15 @@
 package model;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import utilities.Tools;
 
 public class Vehicule {
 	
@@ -16,6 +24,8 @@ public class Vehicule {
 	private int range;
 
 	private double quantiteEau;
+	
+	private int LiquidDecrease = 100;
 	
 	
 	public Vehicule() {
@@ -84,9 +94,39 @@ public class Vehicule {
 	}
 
 	//diminue la quantité de liquide de 10% de sa capacité totale
-	public void decreaseLiquid(LiquidEnum liquidType) {
+	public void decreaseLiquid(LiquidEnum liquidType) throws IOException {
+		System.err.println(this.getQuantiteEau());
 		if (this.getQuantiteEau() > 0) {
-			this.setQuantiteEau(this.getQuantiteEau() - this.getQuantiteEau()/3);
+			this.setQuantiteEau(this.getQuantiteEau() - this.LiquidDecrease);
+			this.updateVehiculeWater();
 		}
 	}
+
+	private void updateVehiculeWater() throws IOException {
+		URL url = new URL("http://localhost:8082/VehiculeWebService/updateVehiculeWater/"+this.getId());
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+		connection.setDoOutput(true);
+		OutputStream os = connection.getOutputStream();
+
+        OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+        System.out.println(Tools.toJsonString(this.getQuantiteEau()));
+        osw.write(Tools.toJsonString(this.getQuantiteEau()));
+        osw.flush();
+        osw.close();
+        connection.getInputStream();
+		
+	}
+
+	public int getLiquidDecrease() {
+		return LiquidDecrease;
+	}
+
+	public void setLiquidDecrease(int liquidDecrease) {
+		LiquidDecrease = liquidDecrease;
+	}
+	
+	
+
 }

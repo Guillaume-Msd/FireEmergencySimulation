@@ -50,7 +50,7 @@ public class FireEntity {
 		int nb_aggravation = 0;
 	
 		if(this.intensity.contentEquals("Low")) {
-			nb_aggravation = 1;
+			nb_aggravation = 0;
 		}
 		else if (this.intensity.contentEquals("Medium")) {
 			nb_aggravation = 1;
@@ -118,17 +118,17 @@ public class FireEntity {
 		int randint = r.nextInt(3);
 		int x = coord.getX();
 		int y = coord.getY();
-		switch(randint) {
-			case 0:
-				this.addCoord(x + 3, y);
-			case 1:
-				this.addCoord(x - 3, y);
-			case 2:
-				this.addCoord(x, y + 3);
-			default: 
-				this.addCoord(x, y - 3);
-			
-		
+		if(randint == 0) {
+			this.addCoord(x + 3, y);
+		}
+		else if(randint == 1) {
+			this.addCoord(x - 3, y);
+		}
+		else if(randint == 2) {
+			this.addCoord(x, y + 3);
+		}
+		else {
+			this.addCoord(x, y - 3);
 		}
 		
 	}

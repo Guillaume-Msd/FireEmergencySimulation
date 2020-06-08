@@ -94,7 +94,7 @@ public class Simulator {
 						vehiculeAEteint = true;
 						this.simulationController.updateEvent(event, ((Fire) event).attenuate(), "attenuer");
 						System.err.println(vehicule.getQuantiteEau());
-						vehicule.decreaseLiquid(LiquidEnum.Eau);
+						vehicule.decreaseLiquid();
 						if(this.checkLiquidQuantity(vehicule)) {
 							this.sendRavitaillement(vehicule);
 						}

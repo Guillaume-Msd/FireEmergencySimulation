@@ -46,27 +46,6 @@ public class FireEntity {
 		this.intensity = intensity;
 	}
 	
-	public void initFire() {
-		int nb_aggravation = 0;
-	
-		if(this.intensity.contentEquals("Low")) {
-			nb_aggravation = 0;
-		}
-		else if (this.intensity.contentEquals("Medium")) {
-			nb_aggravation = 1;
-		}
-		else if (this.intensity.contentEquals("High")) {
-			nb_aggravation = 2;
-		}
-		else {
-			
-			nb_aggravation = 3;
-		}
-		int i;
-		for (i = 0; i < nb_aggravation; i++) {
-			this.aggravate();
-		}
-	}
 	
 	
 	public Integer getId() {
@@ -111,28 +90,6 @@ public class FireEntity {
 		
 		
 	}
-	
-	private void aggravate() {
-		CoordEntity coord = this.getLocation().get(this.location.size() - 1);
-		Random r = new Random();
-		int randint = r.nextInt(3);
-		int x = coord.getX();
-		int y = coord.getY();
-		if(randint == 0) {
-			this.addCoord(x + 3, y);
-		}
-		else if(randint == 1) {
-			this.addCoord(x - 3, y);
-		}
-		else if(randint == 2) {
-			this.addCoord(x, y + 3);
-		}
-		else {
-			this.addCoord(x, y - 3);
-		}
-		
-	}
-
 	
 	@Override
 	public String toString() {

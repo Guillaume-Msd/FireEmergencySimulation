@@ -43,7 +43,6 @@ public class FireRestController {
 	@RequestMapping(value="FireWebService/add/{x}/{y}", consumes=MediaType.APPLICATION_JSON_VALUE)
 	public int addFire(@RequestBody FireEntity fire, @PathVariable String x, @PathVariable String y) {
 		fire.addCoord(Integer.parseInt(x), Integer.parseInt(y));
-		fire.initFire();
 		fireService.addFire(fire);
 		return fire.getId();
 	}

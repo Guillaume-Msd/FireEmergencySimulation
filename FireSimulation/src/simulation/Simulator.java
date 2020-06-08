@@ -63,7 +63,8 @@ public class Simulator {
 		
 		int i = r.nextInt(FireType.listTypes.size());
 		FireType type = FireType.listTypes.get(i);
-		Fire fire = new Fire(new Coord(x, y), type, FireIntensity.Low);
+		int pick = new Random().nextInt(FireIntensity.values().length);
+		Fire fire = new Fire(new Coord(x, y), type, FireIntensity.values()[pick]);
 		this.simulationController.createEvent(fire);
 	}
 	
@@ -85,7 +86,7 @@ public class Simulator {
 		Event[] listEvent = this.simulationController.getAllEvents();
 		Random r = new Random();
 		int i = r.nextInt(listEvent.length);
-		Fire fire = (Fire) listEvent[i];
+		
 	}
 	
 	/**

@@ -78,26 +78,4 @@ public class Coord implements Serializable {
 		return true;
 	}
 	
-	public Coord findClosestCoord(List<Coord> coords) {
-		double distanceMin = -1;
-		Coord closestCoord = new Coord(0,0);
-		for (Coord c : coords) {
-			if ( distanceMin < 0 ) {
-				distanceMin = Math.sqrt(
-						Math.pow((this.x-c.x),2) + 
-						Math.pow((this.y-c.y),2));
-				closestCoord = c;
-			}
-			else {
-				double distance = Math.sqrt(
-						Math.pow((this.x-c.x),2) + 
-						Math.pow((this.y-c.y),2));
-				if (distance < distanceMin) {
-					distanceMin = distance;
-					closestCoord = c;
-				}
-			}
-		}
-		return closestCoord;
-	}
 }

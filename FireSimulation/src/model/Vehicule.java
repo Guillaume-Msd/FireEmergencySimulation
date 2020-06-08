@@ -1,16 +1,5 @@
 package model;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
-import utilities.Tools;
-
 public class Vehicule {
 	
 	private int id;
@@ -24,9 +13,6 @@ public class Vehicule {
 	private int range;
 
 	private double quantiteEau;
-	
-	private int LiquidDecrease = 100;
-	
 	
 	public Vehicule() {
 	}
@@ -81,9 +67,7 @@ public class Vehicule {
 
 	public void setStatut(EnumStatut statut) {
 		this.statut = statut;
-	}
-	
-	
+	}	
 
 	public double getQuantiteEau() {
 		return quantiteEau;
@@ -93,9 +77,17 @@ public class Vehicule {
 		this.quantiteEau = quantiteEau;
 	}
 
+<<<<<<< HEAD
 	//diminue la quantité de liquide de 10% de sa capacité totale
 	public void decreaseLiquid(LiquidEnum liquidType) throws IOException {
 		System.err.println(this.getQuantiteEau());
+=======
+	/**
+	 * diminue la quantité de liquide du véhicule pour le type correspondant 
+	 * @param liquidType
+	 */
+	public void decreaseLiquid() {
+>>>>>>> 3bc34dfd7a98717c4a9f904152b56815eb44e9bc
 		if (this.getQuantiteEau() > 0) {
 			this.setQuantiteEau(this.getQuantiteEau() - this.LiquidDecrease);
 			this.updateVehiculeWater();

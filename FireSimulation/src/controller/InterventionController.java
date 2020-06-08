@@ -16,7 +16,6 @@ import utilities.Tools;
 
 public class InterventionController implements InterventionControllerInterface {
 	
-	@Override
 	public Vehicule[] getVehicules() throws IOException {
 		
 		URL url = new URL("http://localhost:8082/VehiculeWebService/vehiculesByStatut/" + "EnCoursDIntervention");
@@ -35,7 +34,6 @@ public class InterventionController implements InterventionControllerInterface {
 		return vehicles;
 	}
 	
-	@Override
 	public void updateVehiculeStatut(Vehicule vehicule) throws IOException {
 		
 		URL url = new URL("http://localhost:8082/VehiculeWebService/updateVehiculeStatut/"+vehicule.getId());
@@ -51,7 +49,6 @@ public class InterventionController implements InterventionControllerInterface {
         connection.getInputStream();
     }
 
-	@Override
 	public void addElement(Element element) throws IOException {
 		
 		URL url = new URL("http://localhost:8082/ElementWebservice/addElement/"+element.getX()+"/"+element.getY());
@@ -68,7 +65,6 @@ public class InterventionController implements InterventionControllerInterface {
         connection.getInputStream();
 	}
 	
-	@Override
 	public Element[] getAllElements() throws IOException {
 		
 		URL url = new URL("http://localhost:8082/ElementWebService/allElements");
@@ -87,14 +83,4 @@ public class InterventionController implements InterventionControllerInterface {
         Element[] elements= mapper.readValue(response.toString(), Element[].class);
 		return elements;	
 	}
-
-	
-	/*
-	public void disableEnvironmentElement(EnvironmentElement element) throws IOException {
-		
-		URL url = new URL("http://localhost:8082/ElementWebService/disable/" + element.getId());
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		connection.setRequestMethod("GET");
-        connection.getInputStream();
-	}*/
 }

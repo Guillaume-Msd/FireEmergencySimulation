@@ -16,13 +16,16 @@ public class LauncherSimulator {
 		double difficulty = 1;
 		//générés à l'avenir par la méthode timelapse()
 		int creationInterval = 10000;
-		int updateInterval = 20000;
+		int updateInterval = 10000;
 		
 		Simulator simulator = new Simulator();
 		Timer timer = new Timer();
+		
+		//cycle de création des feux
 	    //timer.schedule(new CreateFireTask(mapSize, simulator), 3000, creationInterval);
-	    //timer.schedule(new AggravateFireTask(simulator), 5000, updateInterval);
-	    timer.schedule(new CheckInterventionTask(simulator), 1000, 1000);
+	    timer.schedule(new AggravateFireTask(simulator), 5000, updateInterval);
+	    //cycle vérifiant la présence de véhicule toutes les secondes
+	    timer.schedule(new CheckInterventionTask(simulator), 0, 1000);
 		
 	}
 

@@ -22,7 +22,7 @@ public class Simulator {
 	private InterventionController interventionController;
 
 	
-	/**
+	/**initialise le simulateur avec les controleurs gerant les elements et les evenements
 	 * @throws IOException
 	 */
 	public Simulator() throws IOException {
@@ -31,8 +31,8 @@ public class Simulator {
 	}
 
 	/**
-	 * Renvoie le temps entre la création de chaque feu en fonction d'un coefficient de sensibilité
-	 * fixe et de la difficulté choisie par l'utilisateur
+	 * Renvoie le temps entre la creation de chaque feu en fonction d'un coefficient de sensibilite
+	 * fixe et de la difficulte choisie par l'utilisateur
 	 * @param sensisitivity s
 	 * @param difficulty d
 	 * @return time
@@ -59,6 +59,7 @@ public class Simulator {
 	}
 	
 	/**
+	 * aggrave et propage le feu
 	 * @throws IOException
 	 */
 	public void aggravateFire() throws IOException {
@@ -66,12 +67,13 @@ public class Simulator {
 		Random r = new Random();
 		int i = r.nextInt(listEvent.length);
 		Fire fire = (Fire) listEvent[i];
-		if (fire.getIntensity() != FireIntensity.VeryHigh) {
-			this.simulationController.updateEvent(fire, fire.aggravate(), "aggraver");
-		}
 	}
 	
 	/**
+	 * gere l'intervention des vehicules: 
+	 * - attenuation du feux detecte par la sonde
+	 * - diminution du liquide utilise par le vehicule au cours de l'intervention
+	 * - mise à jour du statut du vehicule apres intervention
 	 * @throws IOException
 	 */
 	public void manageIntervention() throws IOException {
@@ -94,6 +96,7 @@ public class Simulator {
 						if(this.checkLiquidQuantity(vehicule)) {
 							continue;
 						}
+						//suppression du feu
 						if(event.getLocalisation().size() <= 1) {
 							System.err.println(event.getLocalisation());
 							this.simulationController.deleteEvent(event);
@@ -107,6 +110,7 @@ public class Simulator {
 	}
 	
 	/**
+	 * verifie le reservoir de liquide du véhicule et met a jour son statut s'il est vide
 	 * @param vehicule
 	 * @param liquidType
 	 * @throws IOException

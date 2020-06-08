@@ -3,7 +3,9 @@ package model;
 import java.util.HashSet;
 import java.util.Set;
 
-
+/**
+ * classe abstraite pour pouvoir éventuellement créer des évènements autres que des incendies
+ */
 public abstract class Event {
 	
 	private Set <Coord> localisation;

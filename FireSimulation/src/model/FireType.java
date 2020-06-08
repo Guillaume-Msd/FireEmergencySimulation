@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 /*
+ * Types de feu
  * Classe A : feux "secs", braises, pouvant être activvés par le moindre coup de vent issus de la
  * 			  combustion lente de matériaux solides très inflammables
  * Classe B : feux "gras" issus de la combustion rapide de liquides et solides liquéfiables et

@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 /**
- * @author Fabien Puissant
+ * @author thibault
  *
  */
 public class Fire extends Event implements FireInterface {
@@ -40,10 +40,6 @@ public class Fire extends Event implements FireInterface {
 		return type;
 	}
 
-
-	/**
-	 * @param type
-	 */
 	public void setType(FireType type) {
 		this.type = type;
 	}
@@ -62,7 +58,11 @@ public class Fire extends Event implements FireInterface {
 	public String toString() {
 		return super.toString() + ", " + getType() + ", " + getIntensity();
 	}
-
+	
+	/**
+	 * aggrave un feu en le propageant
+	 *@return Coord
+	 */
 	public Coord aggravate() {
 		Iterator <Coord> it = this.getLocalisation().iterator();
 		Coord coord = null;
@@ -79,44 +79,26 @@ public class Fire extends Event implements FireInterface {
 			case 2:
 				return new Coord(coord.x-3, coord.y);
 			default:
-				return new Coord(coord.x, coord.y-3);
-				
-				
+				return new Coord(coord.x, coord.y-3);				
 		}
-		/*
-		switch (this.getIntensity()) {
-			case Low:
-				return new Coord(coord.x+5, coord.y);
-			case Medium:
-				return new Coord(coord.x, coord.y+5);
-			case High:
-				return new Coord(coord.x-5, coord.y);
-			case VeryHigh:
-				//TODO new Fire
-			default : 
-				return null;
-		}*/
 	}
 	
+	/**
+	 * renvoie la coord à supprimer
+	 *@return Coord
+	 */
 	public Coord attenuate() {
 		
 		Iterator <Coord> it = this.getLocalisation().iterator();
 		return it.next();
 	}
 	
-	public void increaseIntensity() {
-			
+	public void increaseIntensity() {		
 		FireIntensity fireIntensity = FireIntensity.aggravation(this.getIntensity());
 	    setIntensity(fireIntensity);
-						
 	}
 	
 	public void decreaseIntensity() {
-		
-		//TODO delete fire
-	    //if (getIntensity() == FireIntensity.Low) {    
-	    //}
-		
 		FireIntensity fireIntensity = FireIntensity.attenuation(this.getIntensity());
 	    setIntensity(fireIntensity);
 

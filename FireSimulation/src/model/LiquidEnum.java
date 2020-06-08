@@ -1,5 +1,8 @@
 package model;
 
+/**
+ * types de liquide d'un vehicule
+ */
 public enum LiquidEnum {
 	Eau,
 	Mousse,

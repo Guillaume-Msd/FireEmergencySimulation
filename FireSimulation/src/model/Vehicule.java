@@ -17,7 +17,6 @@ public class Vehicule {
 
 	private double quantiteEau;
 	
-	
 	public Vehicule() {
 	}
 	
@@ -73,6 +72,7 @@ public class Vehicule {
 		this.statut = statut;
 	}
 	
+<<<<<<< Updated upstream
 	
 
 	public double getQuantiteEau() {
@@ -84,6 +84,17 @@ public class Vehicule {
 	}
 
 	//diminue la quantité de liquide de 10% de sa capacité totale
+=======
+	public Double getQuantity(LiquidEnum liquidType) {
+		Map<String, Double> m =this.liquids.get(liquidType);
+		return m.get("Quantity");
+	}
+
+	/**
+	 * diminue la quantité de liquide du véhicule pour le type correspondant 
+	 * @param liquidType
+	 */
+>>>>>>> Stashed changes
 	public void decreaseLiquid(LiquidEnum liquidType) {
 		if (this.getQuantiteEau() > 0) {
 			this.setQuantiteEau(this.getQuantiteEau() - this.getQuantiteEau()/3);

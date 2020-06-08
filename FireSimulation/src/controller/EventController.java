@@ -22,8 +22,8 @@ import utilities.Tools;
 
 
 public class EventController implements EventControllerInterface {
-
-	@Override
+	
+	
 	public void createEvent(Event event) throws IOException {
 
 		Iterator<Coord> it = event.getLocalisation().iterator();
@@ -44,7 +44,6 @@ public class EventController implements EventControllerInterface {
         
 	}
 	
-	@Override
 	public void deleteEvent(Event event) throws IOException {
 	
 		URL url = new URL("http://localhost:8081/FireWebService/remove/" + event.getId());
@@ -54,7 +53,6 @@ public class EventController implements EventControllerInterface {
 
 	}	
 	
-	@Override
 	public Event[] getAllEvents() throws IOException {
 		
 		URL url = new URL("http://localhost:8081/FireWebService/getAll");
@@ -74,7 +72,6 @@ public class EventController implements EventControllerInterface {
 		return events;		
 	}
 	
-	@Override
 	public void updateEvent(Event event, Coord coord, String state) throws IOException {
 		
 		int idEvent = event.getId();

@@ -22,8 +22,8 @@ public class LauncherSimulator {
 		Timer timer = new Timer();
 		
 		//cycle de création des feux
-	    //timer.schedule(new CreateFireTask(mapSize, simulator), 3000, creationInterval);
-	    //timer.schedule(new AggravateFireTask(simulator), 5000, updateInterval);
+	    timer.schedule(new CreateFireTask(mapSize, simulator), 3000, creationInterval);
+	    timer.schedule(new AggravateFireTask(simulator), 5000, updateInterval);
 	    //cycle vérifiant la présence de véhicule toutes les secondes
 	    timer.schedule(new CheckInterventionTask(simulator), 0, 1000);
 		

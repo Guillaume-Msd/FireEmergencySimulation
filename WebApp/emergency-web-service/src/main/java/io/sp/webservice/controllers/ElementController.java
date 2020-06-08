@@ -73,7 +73,7 @@ public class ElementController {
 		for(Element element: elementList) {
 			coordList.add(element.getLocation());
 		}
-		return Tools.toJsonString(elementList);
+		return Tools.toJsonString(coordList);
 	}
 	
 	

@@ -69,7 +69,7 @@ private Coord coord_HQ;
   	}
   	
   	protected AbstractVehicule() {
-  		this(45,50,35,8);
+  		this(45,10,50,8);
   	}
   	
 	

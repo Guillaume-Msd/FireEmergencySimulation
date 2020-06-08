@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+
 import controller.InterventionController;
 import controller.EventController;
 import model.Coord;
@@ -50,14 +52,31 @@ public class Simulator {
 	 */
 	public void newFire(int mapSize) throws IOException {
 		Random r = new Random();
+		
 		int x = r.nextInt(mapSize);
 		int y = r.nextInt(mapSize);
+		
+		while(this.isFireLocation(x, y)) {
+			x = r.nextInt(mapSize);
+			y = r.nextInt(mapSize);
+		}
+		
 		int i = r.nextInt(FireType.listTypes.size());
 		FireType type = FireType.listTypes.get(i);
 		Fire fire = new Fire(new Coord(x, y), type, FireIntensity.Low);
 		this.simulationController.createEvent(fire);
 	}
 	
+	private boolean isFireLocation(int x, int y) throws IOException {
+		List<Coord> coordList = simulationController.getAllEventCoords();
+		for(Coord coord: coordList) {
+			if(Math.abs(coord.x - x) < 5 && Math.abs(coord.y - y) < 5) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * aggrave et propage le feu
 	 * @throws IOException
@@ -65,7 +84,7 @@ public class Simulator {
 	public void aggravateFire() throws IOException {
 		Event[] listEvent = this.simulationController.getAllEvents();
 		Random r = new Random();
-		int i = r.nextInt(listEvent.length-1);
+		int i = r.nextInt(listEvent.length);
 		Fire fire = (Fire) listEvent[i];
 	}
 	

@@ -16,7 +16,7 @@ const imgVehicule = 'images/fireTruck.png';
 const imgAlert = 'images/alert.png';
 const imgCaserne = "images/caserne.jpg";
 const imgGasStation = 'images/GasStation.jpg';
-const imgFireHydrant = 'images/FireHyfrant.jpg';
+const imgFireHydrant = 'images/FireHydrant.jpg';
 
 var north = map2.getBounds().getNorth(); 
 
@@ -112,7 +112,7 @@ function displayAllElements(type){
 		
 	
 displayAllElements("Caserne");
-//displayAllElements("FireHydrant");
+displayAllElements("FireHydrant");
 displayAllElements("GasStation");
 setInterval(displayAllElements, 1000, "Alerte");	
 setInterval(displayAllElements, 1000, "Vehicule");	

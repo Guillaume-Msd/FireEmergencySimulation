@@ -8,7 +8,10 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -98,5 +101,20 @@ public class EventController implements EventControllerInterface {
         osw.close();
         connection.getInputStream();
 		
+	}
+	
+	public List<Coord> getAllEventCoords() throws IOException{
+		Event[] eventArray = this.getAllEvents();
+		List<Coord> coordList = new ArrayList<Coord>();
+		int i;
+		for (i = 0; i < eventArray.length; i++) {
+			Set<Coord> setCoord = eventArray[i].getLocalisation();
+			Iterator<Coord> it = setCoord.iterator();
+			while(it.hasNext()) {
+				coordList.add(it.next());
+			}
+		}
+		
+		return coordList;
 	}
 }

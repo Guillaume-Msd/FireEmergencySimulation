@@ -211,8 +211,8 @@ public class EmergencySimulator implements InterventionServerInterface {
 				if (vehicule.getStatut().equals(EnumStatut.RetourVersLeHQ)) {
 					vehicule.setStatut(EnumStatut.Disponible);
 					if (vehicule instanceof VehiculeLutteIncendie) {
-						((VehiculeLutteIncendie) vehicule).fillWater();
-						((VehiculeLutteIncendie) vehicule).updateVehiculeWater();
+						//((VehiculeLutteIncendie) vehicule).fillWater();
+						//((VehiculeLutteIncendie) vehicule).updateVehiculeWater();
 					}
 					vehicule.deleteVehiculeView();
 				}
@@ -281,7 +281,6 @@ public class EmergencySimulator implements InterventionServerInterface {
         List<AbstractVehicule> vehiculesSimu = this.getVehicules();
         List<VehiculeLutteIncendie> vehicules = new ArrayList<VehiculeLutteIncendie>();
         for (AbstractVehicule v : vehiculesSimu) {
-        	System.out.println(vehiculesSimu.size());
             if (v instanceof VehiculeLutteIncendie) {
                 v.majVehiculeInfo();
                 if (v.getStatut().equals(EnumStatut.Disponible) || v.getStatut().equals(EnumStatut.RetourVersLeHQ))
@@ -321,7 +320,6 @@ public class EmergencySimulator implements InterventionServerInterface {
             }
         }
         if (nb_camions_envoyes != 0) {
-            System.err.println(nb_camions_envoyes);
             AlerteEnCours(alerte);
         }
     }
@@ -378,7 +376,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 		vehicule.setOilQuantity(vehicule.getOilQuantity() - (distance*vehicule.getInterventionOilConsumption())/100);
 		vehicule.addVehiculeView(range);
 		System.err.println(vehicule.getOilQuantity());
-		
+		System.err.println(vehicule.getQuantiteEau());
 		((VehiculeLutteIncendie) vehicule).updateVehiculeWater();
 	}
 	

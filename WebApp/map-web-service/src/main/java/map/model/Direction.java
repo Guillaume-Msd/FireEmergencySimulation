@@ -220,6 +220,8 @@ public class Direction {
 		coordList.add(new Coord(52 ,63));
 		coordList.add(new Coord(135 ,52));
 		coordList.add(new Coord(170, 170));
+		coordList.add(new Coord(25, 195));
+		coordList.add(new Coord(138, 138));
 		return coordList;
 	
 	}

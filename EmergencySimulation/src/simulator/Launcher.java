@@ -46,8 +46,13 @@ public class Launcher {
 	
 	
 	private static void initGasStations() throws IOException {
-		URL url = new URL("http://localhost:8083/MapWebService/getGasStation");
+		URL url = new URL("http://localhost:8082/GasStationWebService/removeAll");
 		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection(); 
+		httpURLConnection.setRequestMethod("DELETE");
+		httpURLConnection.getInputStream();
+		
+		url = new URL("http://localhost:8083/MapWebService/getGasStation");
+		httpURLConnection = (HttpURLConnection) url.openConnection(); 
         httpURLConnection.setRequestMethod("GET");
         BufferedReader in = new BufferedReader(
         new InputStreamReader(httpURLConnection.getInputStream()));
@@ -72,8 +77,13 @@ public class Launcher {
 	}
 	
 	private static void initFireHydrant() throws IOException {
-		URL url = new URL("http://localhost:8083/MapWebService/getBouchesAIncendie");
+		URL url = new URL("http://localhost:8082/ElementWebService/removeAll");
 		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection(); 
+		httpURLConnection.setRequestMethod("DELETE");
+		httpURLConnection.getInputStream();
+		
+		url = new URL("http://localhost:8083/MapWebService/getBouchesAIncendie");
+		httpURLConnection = (HttpURLConnection) url.openConnection(); 
         httpURLConnection.setRequestMethod("GET");
         BufferedReader in = new BufferedReader(
         new InputStreamReader(httpURLConnection.getInputStream()));

@@ -91,7 +91,7 @@ public class Simulator {
 				    Coord coordEvent = it.next();
 					if (coordEvent.isInRange(vehicule.getCoord(), vehicule.getRange())) {
 						this.simulationController.updateEvent(event, ((Fire) event).attenuate(), "attenuer");
-						vehicule.decreaseLiquid(LiquidEnum.Eau);
+						vehicule.decreaseLiquid();
 						System.err.println(vehicule.getQuantiteEau());
 						if(this.checkLiquidQuantity(vehicule)) {
 							continue;
@@ -110,7 +110,7 @@ public class Simulator {
 	}
 	
 	/**
-	 * verifie le reservoir de liquide du véhicule et met a jour son statut s'il est vide
+	 * verifie le reservoir du vehicule et met a jour son statut s'il est vide
 	 * @param vehicule
 	 * @param liquidType
 	 * @throws IOException

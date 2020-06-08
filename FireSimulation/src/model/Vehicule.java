@@ -1,8 +1,5 @@
 package model;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Vehicule {
 	
 	private int id;
@@ -70,10 +67,7 @@ public class Vehicule {
 
 	public void setStatut(EnumStatut statut) {
 		this.statut = statut;
-	}
-	
-<<<<<<< Updated upstream
-	
+	}	
 
 	public double getQuantiteEau() {
 		return quantiteEau;
@@ -83,19 +77,11 @@ public class Vehicule {
 		this.quantiteEau = quantiteEau;
 	}
 
-	//diminue la quantité de liquide de 10% de sa capacité totale
-=======
-	public Double getQuantity(LiquidEnum liquidType) {
-		Map<String, Double> m =this.liquids.get(liquidType);
-		return m.get("Quantity");
-	}
-
 	/**
 	 * diminue la quantité de liquide du véhicule pour le type correspondant 
 	 * @param liquidType
 	 */
->>>>>>> Stashed changes
-	public void decreaseLiquid(LiquidEnum liquidType) {
+	public void decreaseLiquid() {
 		if (this.getQuantiteEau() > 0) {
 			this.setQuantiteEau(this.getQuantiteEau() - this.getQuantiteEau()/3);
 		}

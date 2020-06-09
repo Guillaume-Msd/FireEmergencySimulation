@@ -19,5 +19,11 @@ public class CheckInterventionTask extends TimerTask {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		try {
+			this.simulator.renvoieVehiculeSiBesoin();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

@@ -7,6 +7,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -16,7 +18,7 @@ import utilities.Tools;
 
 public class InterventionController implements InterventionControllerInterface {
 	
-	public Vehicule[] getVehicules() throws IOException {
+	public Vehicule[] getVehiculesEnIntervention() throws IOException {
 		
 		URL url = new URL("http://localhost:8082/VehiculeWebService/vehiculesByStatut/" + "EnCoursDIntervention");
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
@@ -33,6 +35,46 @@ public class InterventionController implements InterventionControllerInterface {
         Vehicule[] vehicles = mapper.readValue(response.toString(), Vehicule[].class);		
 		return vehicles;
 	}
+	
+	public Vehicule[] getVehiculesEnRoutePourIntervention() throws IOException {
+		
+		URL url = new URL("http://localhost:8082/VehiculeWebService/vehiculesByStatut/" + "EnRoutePourIntervention");
+        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+        httpURLConnection.setRequestMethod("GET");
+        BufferedReader in = new BufferedReader(
+        new InputStreamReader(httpURLConnection.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+        	response.append(inputLine);
+		} in .close();
+		
+		ObjectMapper mapper = new ObjectMapper();
+        Vehicule[] vehicles = mapper.readValue(response.toString(), Vehicule[].class);        
+		URL url2 = new URL("http://localhost:8082/VehiculeWebService/vehiculesByStatut/" + "EnRoutePourRavitaillementEau");
+        HttpURLConnection httpURLConnection2 = (HttpURLConnection) url.openConnection();
+        httpURLConnection.setRequestMethod("GET");
+        BufferedReader in2 = new BufferedReader(
+        new InputStreamReader(httpURLConnection.getInputStream()));
+        String inputLine2;
+        StringBuffer response2 = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+        	response.append(inputLine);
+		} in .close();
+		
+		ObjectMapper mapper2 = new ObjectMapper();
+        Vehicule[] vehicles2 = mapper.readValue(response.toString(), Vehicule[].class);
+        
+        Vehicule[] Allvehicles = new Vehicule[vehicles.length+vehicles2.length];
+        for (int i=0;i<vehicles.length;i++) {
+        	Allvehicles[i] = vehicles[i];
+        }
+        for(int i=0;i<vehicles2.length;i++) {
+        	Allvehicles[i+vehicles.length] = vehicles2[i];
+        }
+		return Allvehicles;
+	}
+	
 	
 	public void updateVehiculeStatut(Vehicule vehicule) throws IOException {
 		

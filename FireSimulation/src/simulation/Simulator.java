@@ -114,7 +114,7 @@ public class Simulator {
 		for(i = 0; i < events.length; i++) {
 			listEvent.add(events[i]);
 		}
-		Vehicule[] listVehicules = this.interventionController.getVehicules();
+		Vehicule[] listVehicules = this.interventionController.getVehiculesEnIntervention();
 		for (Vehicule vehicule: listVehicules) {
 			boolean vehiculeAEteint = false;
 			for (Event event: listEvent) {
@@ -217,6 +217,33 @@ public class Simulator {
 		else {
 			return false;
 		}
+	}
+
+	public void renvoieVehiculeSiBesoin() throws IOException {
+		Event[] events = this.eventController.getAllEvents();
+		List<Event> listEvent = new ArrayList<Event>();
+		int i;
+		for(i = 0; i < events.length; i++) {
+			listEvent.add(events[i]);
+		}
+		Vehicule[] listVehicules = this.interventionController.getVehiculesEnIntervention();
+		for (Vehicule vehicule: listVehicules) {
+			boolean feuTrouve = false;
+			for (Event event: listEvent) {
+			    Iterator <Coord> it = event.getLocalisation().iterator();
+			    while(it.hasNext()) {
+				    Coord coordEvent = it.next();
+					if (coordEvent.isInRange(vehicule.getDestination(), vehicule.getRange())) {
+						feuTrouve = true;
+					}
+			    }
+			}
+			if (!feuTrouve) {
+				vehicule.setStatut(EnumStatut.FinDIntervention);
+				this.interventionController.updateVehiculeStatut(vehicule);
+			}
+		}
+		
 	}
 }
 

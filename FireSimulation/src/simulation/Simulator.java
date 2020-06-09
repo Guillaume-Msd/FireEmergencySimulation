@@ -232,7 +232,7 @@ public class Simulator {
 			    Iterator <Coord> it = event.getLocalisation().iterator();
 			    while(it.hasNext()) {
 				    Coord coordEvent = it.next();
-					if (coordEvent.isInRange(vehicule.getCoord(), vehicule.getRange())) {
+					if (coordEvent.isInRange(vehicule.getDestination(), vehicule.getRange())) {
 						feuTrouve = true;
 					}
 			    }

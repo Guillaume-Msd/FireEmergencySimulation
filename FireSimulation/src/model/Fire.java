@@ -7,10 +7,6 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
-/**
- * @author thibault
- *
- */
 public class Fire extends Event implements FireInterface {
 
 	private FireType type;

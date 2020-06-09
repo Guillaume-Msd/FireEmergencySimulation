@@ -1,4 +1,4 @@
-package simulator;
+	package simulator;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -186,7 +186,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 	public void parcoursAlertes(List<Alerte> alertes,List<AbstractVehicule> vehicules) throws IOException {
 		for (Alerte alerte : alertes) {
 			if (alerte.getEtat().contentEquals("Nouvelle Alerte")) {
-				gererNouvelleAlerte(alerte);
+				gererNouvelleAlerte(alerte,vehicules);
 			}
 			for (AbstractVehicule v : vehicules) {
 				if (v.getCoord().equals(alerte.getCoord())) {
@@ -278,8 +278,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 	}
 	
 	
-	public List<VehiculeLutteIncendie> VehiculesIncendieParProximite(Alerte alerte) throws IOException {
-        List<AbstractVehicule> vehiculesSimu = this.getVehicules();
+	public List<VehiculeLutteIncendie> VehiculesIncendieParProximite(Alerte alerte,List<AbstractVehicule> vehiculesSimu) throws IOException {
         List<VehiculeLutteIncendie> vehicules = new ArrayList<VehiculeLutteIncendie>();
         for (AbstractVehicule v : vehiculesSimu) {
             if (v instanceof VehiculeLutteIncendie) {
@@ -305,8 +304,8 @@ public class EmergencySimulator implements InterventionServerInterface {
         return vehicules;
     }
 	
-	public void gererNouvelleAlerte(Alerte alerte) throws IOException {
-        List<VehiculeLutteIncendie> vehicules = this.VehiculesIncendieParProximite(alerte);
+	public void gererNouvelleAlerte(Alerte alerte,List<AbstractVehicule> vehiculesSimu) throws IOException {
+        List<VehiculeLutteIncendie> vehicules = this.VehiculesIncendieParProximite(alerte,vehiculesSimu);
         int nb_camions_envoyes =0;
         for (int i=0;i<=alerte.getIntensity()/4;i++) {
             if (!vehicules.isEmpty()) {
@@ -316,6 +315,7 @@ public class EmergencySimulator implements InterventionServerInterface {
                 } else {
                 	redirectIntervention(v,alerte.getCoord().x,alerte.getCoord().y,alerte.getRange());
                 }
+<<<<<<< HEAD
                 List<Coord> coordList = v.getPath();
                 Collections.reverse(coordList);
                 int j;
@@ -325,6 +325,9 @@ public class EmergencySimulator implements InterventionServerInterface {
                 Collections.reverse(coordList);
                 v.setPath(coordList);
                 nb_camions_envoyes = nb_camions_envoyes +1;
+=======
+            nb_camions_envoyes = nb_camions_envoyes +1;
+>>>>>>> ca30b299540267aaadc3127402c1ae1ea4511b08
             }
         }
         if (nb_camions_envoyes != 0) {
@@ -560,7 +563,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 	 * @throws IOException
 	 */
 	public void RavitaillementEau(VehiculeLutteIncendie vehicule) throws IOException {
-		List<Coord> bouchesAIncendie = getBouchesAIncendie();
+		List<Coord> bouchesAIncendie = getBouchesAIncendieAndHQ();
 		Coord boucheLaPlusProche = trouveElementLePlusProche(vehicule.getCoord(), bouchesAIncendie);
 		envoieVehiculeAllerRetour(vehicule,boucheLaPlusProche.x,boucheLaPlusProche.y,vehicule.getInterventionOilConsumption());
 		vehicule.setStatut(EnumStatut.EnRoutePourRavitaillementEau);
@@ -670,7 +673,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 		
 	}
 	
-	private List<Coord> getBouchesAIncendie() throws IOException{
+	private List<Coord> getBouchesAIncendieAndHQ() throws IOException{
 		URL url = new URL("http://localhost:8083/MapWebService/getBouchesAIncendie");
 		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection(); 
         httpURLConnection.setRequestMethod("GET");
@@ -690,7 +693,9 @@ public class EmergencySimulator implements InterventionServerInterface {
 		for(i = 0; i < coords.length; i++) {
 			coordList.add(coords[i]);
 		}
-		
+		for (AbstractHeadquarter HQ : this.getFFHQ()) {
+			coordList.add(HQ.getCoord());
+		}
 		return coordList;
 		
 	}
@@ -704,8 +709,5 @@ public class EmergencySimulator implements InterventionServerInterface {
 		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection(); 
         httpURLConnection.setRequestMethod("DELETE");
         httpURLConnection.getInputStream();
-		
 	}
-
-
 }

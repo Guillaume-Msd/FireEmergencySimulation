@@ -12,13 +12,9 @@ public class LauncherSimulator {
 	public static void main(String[] args) throws IOException {
 		
 		int mapSize = 256;
-		int sensitivity = 100;;
-		double difficulty = 1;
-		//générés à l'avenir par la méthode timelapse()
-		int creationInterval = 10000;
-		int updateInterval = 10000;
-		
 		Simulator simulator = new Simulator();
+		int creationInterval = simulator.timelapse(75);
+		int updateInterval = simulator.timelapse(45);
 		Timer timer = new Timer();
 		
 		//cycle de création des feux

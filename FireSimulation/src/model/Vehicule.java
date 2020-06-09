@@ -20,9 +20,10 @@ public class Vehicule {
 
 	private int range;
 
-	private double quantiteEau;
+	private double waterQuantity;
 	
 	private int LiquidDecrease = 30;
+
 	
 	public Vehicule() {
 	}
@@ -79,51 +80,27 @@ public class Vehicule {
 		this.statut = statut;
 	}	
 
-	public double getQuantiteEau() {
-		return quantiteEau;
+	public double getWaterQuantity() {
+		return waterQuantity;
 	}
 
-	public void setQuantiteEau(double quantiteEau) {
-		this.quantiteEau = quantiteEau;
+	public void setWaterQuantity(double quantiteEau) {
+		this.waterQuantity = quantiteEau;
 	}
 
+	public void decreaseWater() throws IOException {
 
-	/**
-	 * diminue la quantité de liquide du véhicule pour le type correspondant 
-	 * @param liquidType
-	 * @throws IOException 
-	 */
-	public void decreaseLiquid() throws IOException {
-
-		if (this.getQuantiteEau() > 0) {
-			this.setQuantiteEau(this.getQuantiteEau() - this.LiquidDecrease);
-			this.updateVehiculeWater();
+		if (this.getWaterQuantity() > 0) {
+			this.setWaterQuantity(this.getWaterQuantity() - this.waterDecrease);
 		}
 	}
 
-	private void updateVehiculeWater() throws IOException {
-		URL url = new URL("http://localhost:8082/VehiculeWebService/updateVehiculeWater/"+this.getId());
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-		connection.setDoOutput(true);
-		OutputStream os = connection.getOutputStream();
-
-        OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
-        System.out.println(Tools.toJsonString(this.getQuantiteEau()));
-        osw.write(Tools.toJsonString(this.getQuantiteEau()));
-        osw.flush();
-        osw.close();
-        connection.getInputStream();
-		
+	public int getWaterDecrease() {
+		return waterDecrease;
 	}
 
-	public int getLiquidDecrease() {
-		return LiquidDecrease;
-	}
-
-	public void setLiquidDecrease(int liquidDecrease) {
-		LiquidDecrease = liquidDecrease;
+	public void setWaterDecrease(int liquidDecrease) {
+		waterDecrease = liquidDecrease;
 	}
 	
 	

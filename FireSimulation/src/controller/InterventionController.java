@@ -48,6 +48,23 @@ public class InterventionController implements InterventionControllerInterface {
         osw.close();
         connection.getInputStream();
     }
+	
+	public void updateVehiculeWater(Vehicule vehicule) throws IOException {
+		URL url = new URL("http://localhost:8082/VehiculeWebService/updateVehiculeWater/"+vehicule.getId());
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+		connection.setDoOutput(true);
+		OutputStream os = connection.getOutputStream();
+
+        OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+        System.out.println(Tools.toJsonString(vehicule.getWaterQuantity()));
+        osw.write(Tools.toJsonString(vehicule.getWaterQuantity()));
+        osw.flush();
+        osw.close();
+        connection.getInputStream();
+		
+	}
 
 	public void addElement(Element element) throws IOException {
 		

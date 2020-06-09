@@ -46,7 +46,7 @@ public class Simulator {
 	}
 	
 	
-	/**crÃ©e un Feu d'une intensitÃ© alÃ©atoire et Ã  des coords alÃ©atoires
+	/**crée un Feu d'une intensité aléatoire et à des coords aléatoires
 	 * @param mapSize
 	 * @throws IOException
 	 */
@@ -84,16 +84,23 @@ public class Simulator {
 	 */
 	public void aggravateFire() throws IOException {
 		Event[] listEvent = this.simulationController.getAllEvents();
-		Random r = new Random();
-		int i = r.nextInt(listEvent.length);
-		
+		for (Event f : listEvent) {
+			if (f instanceof Fire) {
+				if (SAggrave(((Fire) f).getIntensity())) {
+					if(f != null) {
+						simulationController.updateEvent(f, ((Fire) f).aggravate(), "aggraver");
+					}
+					
+				}
+			}
+		}
 	}
 	
 	/**
 	 * gere l'intervention des vehicules: 
 	 * - attenuation du feux detecte par la sonde
 	 * - diminution du liquide utilise par le vehicule au cours de l'intervention
-	 * - mise Ã  jour du statut du vehicule apres intervention
+	 * - mise à jour du statut du vehicule apres intervention
 	 * @throws IOException
 	 */
 	public void manageIntervention() throws IOException {
@@ -112,7 +119,9 @@ public class Simulator {
 				    Coord coordEvent = it.next();
 					if (coordEvent.isInRange(vehicule.getCoord(), vehicule.getRange())) {
 						vehiculeAEteint = true;
-						this.simulationController.updateEvent(event, ((Fire) event).attenuate(), "attenuer");
+						if (estEfficace(((Fire) event).getIntensity())) {
+							this.simulationController.updateEvent(event, ((Fire) event).attenuate(), "attenuer");
+						}
 						System.err.println(vehicule.getQuantiteEau());
 						vehicule.decreaseLiquid();
 						if(this.checkLiquidQuantity(vehicule)) {
@@ -156,4 +165,46 @@ public class Simulator {
 		vehicule.setStatut(EnumStatut.BesoinRavitaillementEau);
 		this.interventionController.updateVehiculeStatut(vehicule);
 	}
+	
+	public boolean estEfficace(FireIntensity intensite) {
+		Random r = new Random();
+		if (intensite.equals(FireIntensity.VeryHigh) && r.nextInt(100) < 10) {
+			return true;
+		}
+		else if (intensite.equals(FireIntensity.High) && r.nextInt(100) < 40) {
+			return true;
+		}
+		else if (intensite.equals(FireIntensity.Medium) && r.nextInt(100) < 70) {
+			return true;
+		}
+		else if (intensite.equals(FireIntensity.Low) && r.nextInt(100) < 90) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	public boolean SAggrave(FireIntensity intensite) {
+		Random r = new Random();
+		if (intensite.equals(FireIntensity.VeryHigh) && r.nextInt(100) < 20) {
+			return true;
+		}
+		else if (intensite.equals(FireIntensity.High) && r.nextInt(100) < 9) {
+			return true;
+		}
+		else if (intensite.equals(FireIntensity.Medium) && r.nextInt(100) < 4) {
+			return true;
+		}
+		else if (intensite.equals(FireIntensity.Low) && r.nextInt(100) < 2) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 }
+
+
+
+

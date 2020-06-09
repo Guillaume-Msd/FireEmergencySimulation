@@ -218,10 +218,11 @@ public class Direction {
 		
 		List<Coord> coordList = new ArrayList<Coord>();
 		coordList.add(new Coord(52 ,63));
-		coordList.add(new Coord(135 ,52));
+		coordList.add(new Coord(170 ,30));
 		coordList.add(new Coord(170, 170));
 		coordList.add(new Coord(25, 195));
 		coordList.add(new Coord(138, 138));
+		coordList.add(new Coord(170, 80));
 		return coordList;
 	
 	}

@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -315,7 +316,14 @@ public class EmergencySimulator implements InterventionServerInterface {
                 } else {
                 	redirectIntervention(v,alerte.getCoord().x,alerte.getCoord().y,alerte.getRange());
                 }
-               
+                List<Coord> coordList = v.getPath();
+                Collections.reverse(coordList);
+                int j;
+                for(j = 0; j < nb_camions_envoyes + 1; j++) {
+                	coordList.add(new Coord(v.getCoord_HQ().getX(), v.getCoord().getY()));
+                }
+                Collections.reverse(coordList);
+                v.setPath(coordList);
                 nb_camions_envoyes = nb_camions_envoyes +1;
             }
         }

@@ -22,7 +22,7 @@ public class Vehicule {
 
 	private double quantiteEau;
 	
-	private int LiquidDecrease = 100;
+	private int LiquidDecrease = 30;
 	
 	public Vehicule() {
 	}

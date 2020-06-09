@@ -68,7 +68,7 @@ public class Fire extends Event implements FireInterface {
 		Coord coord = null;
 		while(it.hasNext()) {
 			coord = it.next();
-		}	
+		}
 		Random r = new Random();
 		int randint = r.nextInt(3);
 		switch(randint) {

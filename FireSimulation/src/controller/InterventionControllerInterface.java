@@ -12,7 +12,14 @@ public interface InterventionControllerInterface {
 	 * @return Vehicule[]
 	 * @throws IOException
 	 */
-	public Vehicule[] getVehicules() throws IOException;
+	public Vehicule[] getVehiculesEnIntervention() throws IOException;
+	
+	/**
+	 * Récupère les véhicules en chemin vers une intervention
+	 * @return Vehicule[]
+	 * @throws IOException
+	 */
+	public Vehicule[] getVehiculesEnRoutePourIntervention() throws IOException;
 
 	/**
 	 * met a jour le statut du vÃ©hicule (fin d'intervention ou besoin de ravitailler en eau)

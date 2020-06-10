@@ -78,6 +78,7 @@ public class VehiculeController {
 	public int addVehicule(@RequestBody Vehicule vehicule, @PathVariable String x, @PathVariable String y) {
 		Coord coord = new Coord(Integer.parseInt(x), Integer.parseInt(y));
 		vehicule.setCoord(coord);
+		vehicule.convertDestinationToCoord();
 		vehiculeService.addVehicule(vehicule);
 		return vehicule.getId();
 	}

@@ -112,24 +112,46 @@ public class Launcher {
 		
 		simulateur.removeAllHQ();
 		
-		Coord coordHQ1 = new Coord(40, 40);
+		Coord coordHQ = new Coord(40, 40);
 		int capacityHQ = 3;
 		
-		FireFighterHQ hq1 = new FireFighterHQ(coordHQ1,capacityHQ);
+		FireFighterHQ hq = new FireFighterHQ(coordHQ,capacityHQ);
 	
 		
-		simulateur.addHQToMap(hq1);
+		simulateur.addHQToMap(hq);
 		
-		simulateur.addFFHQ(hq1);
+		simulateur.addFFHQ(hq);
+	
 		
+		coordHQ = new Coord(128, 128);
+		hq = new FireFighterHQ(coordHQ,capacityHQ);
 		
+		simulateur.addHQToMap(hq);
 		
-		Coord coordHQ2 = new Coord(128, 128);
-		FireFighterHQ hq2 = new FireFighterHQ(coordHQ2,capacityHQ);
+		simulateur.addFFHQ(hq);
 		
-		simulateur.addHQToMap(hq2);
+		coordHQ = new Coord(170, 40);
+		hq = new FireFighterHQ(coordHQ,capacityHQ);
 		
-		simulateur.addFFHQ(hq2);
+		simulateur.addHQToMap(hq);
+		
+		simulateur.addFFHQ(hq);
+		
+		coordHQ = new Coord(30, 170);
+		hq = new FireFighterHQ(coordHQ,capacityHQ);
+		
+		simulateur.addHQToMap(hq);
+		
+		simulateur.addFFHQ(hq);
+		
+		coordHQ = new Coord(170, 190);
+		hq = new FireFighterHQ(coordHQ,capacityHQ);
+		
+		simulateur.addHQToMap(hq);
+		
+		simulateur.addFFHQ(hq);
+		
+
 		
 
 		

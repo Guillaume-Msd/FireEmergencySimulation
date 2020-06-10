@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import model.Element;
 import model.Vehicule;
@@ -19,7 +20,7 @@ public interface InterventionControllerInterface {
 	 * @return Vehicule[]
 	 * @throws IOException
 	 */
-	public Vehicule[] getVehiculesEnRoutePourIntervention() throws IOException;
+	public List<Vehicule> getVehiculesEnRoutePourIntervention() throws IOException;
 
 	/**
 	 * met a jour le statut du véhicule (fin d'intervention ou besoin de ravitailler en eau)

@@ -49,6 +49,8 @@ public class Simulator {
 	 * @throws IOException
 	 */
 	public void newFire(int mapSize) throws IOException {
+		
+		System.err.println("CREATE FIRE");
 		Random r = new Random();
 		int x = r.nextInt(mapSize);
 		int y = r.nextInt(mapSize);
@@ -62,7 +64,7 @@ public class Simulator {
 		FireType type = FireType.listTypes.get(i);
 		int pick = new Random().nextInt(FireIntensity.values().length);
 		Fire fire = new Fire(new Coord(x, y), type, FireIntensity.values()[pick]);
-		this.simulationController.createEvent(fire);
+		this.eventController.createEvent(fire);
 
 	}
 	
@@ -88,12 +90,12 @@ public class Simulator {
 	 * @throws IOException
 	 */
 	public void aggravateFire() throws IOException {
-		Event[] listEvent = this.simulationController.getAllEvents();
+		Event[] listEvent = this.eventController.getAllEvents();
 		for (Event f : listEvent) {
 			if (f instanceof Fire) {
 				if (SAggrave(((Fire) f).getIntensity())) {
 					if(f != null) {
-						simulationController.updateEvent(f, ((Fire) f).aggravate(), "aggraver");
+						eventController.updateEvent(f, ((Fire) f).aggravate(), "aggraver");
 					}
 				}
 			}
@@ -114,6 +116,8 @@ public class Simulator {
 		for(i = 0; i < events.length; i++) {
 			listEvent.add(events[i]);
 		}
+		
+		this.renvoieVehiculeSiBesoin();
 		Vehicule[] listVehicules = this.interventionController.getVehiculesEnIntervention();
 		for (Vehicule vehicule: listVehicules) {
 			boolean vehiculeAEteint = false;
@@ -123,22 +127,27 @@ public class Simulator {
 				    Coord coordEvent = it.next();
 					if (coordEvent.isInRange(vehicule.getCoord(), vehicule.getRange())) {
 						vehiculeAEteint = true;
-						if (estEfficace(((Fire) event).getIntensity())) {
-							this.eventController.updateEvent(event, ((Fire) event).attenuate(), "attenuer");
-						}
-						System.err.println(vehicule.getWaterQuantity());
-						vehicule.decreaseWater();
-						this.interventionController.updateVehiculeWater(vehicule);
-						if(this.checkLiquidQuantity(vehicule)) {
+						if(this.checkNeedLiquid(vehicule)) {
 							this.sendRavitaillement(vehicule);
+							
 						}
-						else{
-							if((event.getLocalisation().size() <= 1)) {
-								this.eventController.deleteEvent(event);
-								vehicule.setStatut(EnumStatut.FinDIntervention);
-								this.interventionController.updateVehiculeStatut(vehicule);
+						else {
+							if (estEfficace(((Fire) event).getIntensity())) {
+								System.err.println("ATTENUATION");
+								this.eventController.updateEvent(event, ((Fire) event).attenuate(), "attenuer");
+								System.err.println(vehicule.getQuantiteEau());
+								vehicule.decreaseWater();
+								this.interventionController.updateVehiculeWater(vehicule);
+								if((event.getLocalisation().size() <= 1)) {
+									this.eventController.deleteEvent(event);
+									vehicule.setStatut(EnumStatut.FinDIntervention);
+									this.interventionController.updateVehiculeStatut(vehicule);
+								}
 							}
 						}
+					
+							
+						
 					}				
 				}
 		    }
@@ -146,6 +155,7 @@ public class Simulator {
 				vehicule.setStatut(EnumStatut.FinDIntervention);
 				this.interventionController.updateVehiculeStatut(vehicule);
 			}
+			
 		}				
 	}
 	
@@ -155,8 +165,8 @@ public class Simulator {
 	 * @param liquidType
 	 * @throws IOException
 	 */
-	public boolean checkLiquidQuantity(Vehicule vehicule) throws IOException {
-		if(vehicule.getWaterQuantity() < vehicule.getWaterDecrease()) {
+	public boolean checkNeedLiquid(Vehicule vehicule) throws IOException {
+		if(vehicule.getQuantiteEau() < vehicule.getLiquidDecrease()) {
 			return true;
 		} 
 		return false;
@@ -202,16 +212,16 @@ public class Simulator {
 	 */
 	public boolean SAggrave(FireIntensity intensite) {
 		Random r = new Random();
-		if (intensite.equals(FireIntensity.VeryHigh) && r.nextInt(100) < 20) {
+		if (intensite.equals(FireIntensity.VeryHigh) && r.nextInt(100) < 30) {
 			return true;
 		}
-		else if (intensite.equals(FireIntensity.High) && r.nextInt(100) < 9) {
+		else if (intensite.equals(FireIntensity.High) && r.nextInt(100) < 15) {
 			return true;
 		}
-		else if (intensite.equals(FireIntensity.Medium) && r.nextInt(100) < 4) {
+		else if (intensite.equals(FireIntensity.Medium) && r.nextInt(100) < 10) {
 			return true;
 		}
-		else if (intensite.equals(FireIntensity.Low) && r.nextInt(100) < 2) {
+		else if (intensite.equals(FireIntensity.Low) && r.nextInt(100) < 5) {
 			return true;
 		}
 		else {
@@ -226,7 +236,7 @@ public class Simulator {
 		for(i = 0; i < events.length; i++) {
 			listEvent.add(events[i]);
 		}
-		Vehicule[] listVehicules = this.interventionController.getVehiculesEnIntervention();
+		List<Vehicule> listVehicules = this.interventionController.getVehiculesEnRoutePourIntervention();
 		for (Vehicule vehicule: listVehicules) {
 			boolean feuTrouve = false;
 			for (Event event: listEvent) {

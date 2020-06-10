@@ -20,9 +20,15 @@ public class Vehicule {
 
 	private int range;
 
-	private double waterQuantity;
+	private double quantiteEau;
 	
 	private int LiquidDecrease = 30;
+	
+	private int destinationX;
+	
+	private int destinationY;
+	
+	private Coord destination;
 
 	
 	public Vehicule() {
@@ -80,28 +86,59 @@ public class Vehicule {
 		this.statut = statut;
 	}	
 
-	public double getWaterQuantity() {
-		return waterQuantity;
+	
+
+	public double getQuantiteEau() {
+		return quantiteEau;
 	}
 
-	public void setWaterQuantity(double quantiteEau) {
-		this.waterQuantity = quantiteEau;
+	public void setQuantiteEau(double quantiteEau) {
+		this.quantiteEau = quantiteEau;
 	}
 
 	public void decreaseWater() throws IOException {
 
-		if (this.getWaterQuantity() > 0) {
-			this.setWaterQuantity(this.getWaterQuantity() - this.waterDecrease);
+		if (this.getQuantiteEau() > 0) {
+			this.setQuantiteEau(this.getQuantiteEau() - this.LiquidDecrease);
 		}
 	}
+	
 
-	public int getWaterDecrease() {
-		return waterDecrease;
+	public int getLiquidDecrease() {
+		return LiquidDecrease;
 	}
 
-	public void setWaterDecrease(int liquidDecrease) {
-		waterDecrease = liquidDecrease;
+	public void setLiquidDecrease(int liquidDecrease) {
+		LiquidDecrease = liquidDecrease;
 	}
+
+	public Coord getDestination() {
+		return destination;
+	}
+
+	public void setDestination(Coord destination) {
+		this.destination = destination;
+	}
+
+	public int getDestinationX() {
+		return destinationX;
+	}
+
+	public void setDestinationX(int destinationX) {
+		this.destinationX = destinationX;
+	}
+
+	public int getDestinationY() {
+		return destinationY;
+	}
+
+	public void setDestinationY(int destinationY) {
+		this.destinationY = destinationY;
+	}
+	
+	
+	
+	
 	
 	
 

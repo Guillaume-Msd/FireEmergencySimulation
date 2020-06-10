@@ -9,20 +9,21 @@ import simulation.Simulator;
 
 public class LauncherSimulator {
 
-	public static void main(String[] args) throws IOException {
+public static void main(String[] args) throws IOException {
 		
 		int mapSize = 256;
 		Simulator simulator = new Simulator();
-		int creationInterval = simulator.timelapse(75);
-		int updateInterval = simulator.timelapse(45);
+		int creationInterval = simulator.timelapse(10);
+		int updateInterval = simulator.timelapse(10);
 		Timer timer = new Timer();
 		
-		//cycle de cr√©ation des feux
-	    //timer.schedule(new CreateFireTask(mapSize, simulator), 3000, creationInterval);
-	    timer.schedule(new AggravateFireTask(simulator), 5000, updateInterval);
-	    //cycle v√©rifiant la pr√©sence de v√©hicule toutes les secondes
+	    //timer.schedule(new CreateFireTask(mapSize, simulator), 0, 20000);
+	    timer.schedule(new AggravateFireTask(simulator), 0, 5000);
+	    //cycle vÈrifiant la prÈsence de vÈhicule toutes les secondes
 	    timer.schedule(new CheckInterventionTask(simulator), 0, 1000);
 		
 	}
+
+
 
 }

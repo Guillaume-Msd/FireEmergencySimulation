@@ -79,6 +79,7 @@ public class ProbSimulation {
 		connection.setDoOutput(false); 
 		connection.getInputStream();
 		
+		/*
 		SmokeProb probe1 = new SmokeProb(1, 0.1, new Point(110,110), 10);
 		
 		this.addProbToMap(probe1);
@@ -110,7 +111,33 @@ public class ProbSimulation {
 		this.addProbToMap(probe6);
 		this.probList.add(probe6);
 		
+		*/
 		
+		int i, j;
+		Random r = new Random();
+		for(i= 0 ; i < 256; i++) {
+			for(j = 0; j < 256; j++) {
+				if(i%30 == 0 && j%30 == 0) {
+					int randint = r.nextInt(3);
+					if(randint == 0) {
+						SmokeProb probe1 = new SmokeProb(1, 0.1, new Point(i, j), 10);
+						this.addProbToMap(probe1);
+						this.probList.add(probe1);
+					}
+					else if(randint == 1) {
+						CO2Prob probe5 = new CO2Prob(1, 0.1, new Point(i, j), 10);
+						this.addProbToMap(probe5);
+						this.probList.add(probe5);
+					}
+					else {
+						ThermicProb probe3 = new ThermicProb( 1, 0.1, new Point(i, j), 10);
+						this.addProbToMap(probe3);
+						this.probList.add(probe3);
+						
+					}
+				}
+			}
+		}
 	
 		for (AbstractProb prob: this.probList) {
 			prob.setRateCount(prob.getRate());

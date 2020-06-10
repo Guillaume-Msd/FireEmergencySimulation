@@ -19,7 +19,6 @@ import utilities.Tools;
 public class InterventionController implements InterventionControllerInterface {
 	
 	public Vehicule[] getVehiculesEnIntervention() throws IOException {
-		
 		URL url = new URL("http://localhost:8082/VehiculeWebService/vehiculesByStatut/" + "EnCoursDIntervention");
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
         httpURLConnection.setRequestMethod("GET");
@@ -36,11 +35,12 @@ public class InterventionController implements InterventionControllerInterface {
 		return vehicles;
 	}
 	
-	public Vehicule[] getVehiculesEnRoutePourIntervention() throws IOException {
+	public List<Vehicule> getVehiculesEnRoutePourIntervention() throws IOException {
 		
 		URL url = new URL("http://localhost:8082/VehiculeWebService/vehiculesByStatut/" + "EnRoutePourIntervention");
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
         httpURLConnection.setRequestMethod("GET");
+        httpURLConnection.getInputStream();
         BufferedReader in = new BufferedReader(
         new InputStreamReader(httpURLConnection.getInputStream()));
         String inputLine;
@@ -50,27 +50,29 @@ public class InterventionController implements InterventionControllerInterface {
 		} in .close();
 		
 		ObjectMapper mapper = new ObjectMapper();
-        Vehicule[] vehicles = mapper.readValue(response.toString(), Vehicule[].class);        
+        Vehicule[] vehicules = mapper.readValue(response.toString(), Vehicule[].class);        
 		URL url2 = new URL("http://localhost:8082/VehiculeWebService/vehiculesByStatut/" + "EnRoutePourRavitaillementEau");
-        HttpURLConnection httpURLConnection2 = (HttpURLConnection) url.openConnection();
-        httpURLConnection.setRequestMethod("GET");
+        HttpURLConnection httpURLConnection2 = (HttpURLConnection) url2.openConnection();
+        httpURLConnection2.setRequestMethod("GET");
+        httpURLConnection2.getInputStream();
         BufferedReader in2 = new BufferedReader(
-        new InputStreamReader(httpURLConnection.getInputStream()));
+        new InputStreamReader(httpURLConnection2.getInputStream()));
         String inputLine2;
         StringBuffer response2 = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-        	response.append(inputLine);
-		} in .close();
+        while ((inputLine2 = in2.readLine()) != null) {
+        	response2.append(inputLine2);
+		} in2.close();
 		
 		ObjectMapper mapper2 = new ObjectMapper();
-        Vehicule[] vehicles2 = mapper.readValue(response.toString(), Vehicule[].class);
+        Vehicule[] vehicules2 = mapper2.readValue(response2.toString(), Vehicule[].class);
+       
         
-        Vehicule[] Allvehicles = new Vehicule[vehicles.length+vehicles2.length];
-        for (int i=0;i<vehicles.length;i++) {
-        	Allvehicles[i] = vehicles[i];
+        List<Vehicule> Allvehicles = new ArrayList<Vehicule>();
+        for (int i=0;i<vehicules.length;i++) {
+        	Allvehicles.add(vehicules[i]);
         }
-        for(int i=0;i<vehicles2.length;i++) {
-        	Allvehicles[i+vehicles.length] = vehicles2[i];
+        for(int i=0;i<vehicules2.length;i++) {
+        	Allvehicles.add(vehicules2[i]);
         }
 		return Allvehicles;
 	}
@@ -100,8 +102,8 @@ public class InterventionController implements InterventionControllerInterface {
 		OutputStream os = connection.getOutputStream();
 
         OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
-        System.out.println(Tools.toJsonString(vehicule.getWaterQuantity()));
-        osw.write(Tools.toJsonString(vehicule.getWaterQuantity()));
+        System.out.println(Tools.toJsonString(vehicule.getQuantiteEau()));
+        osw.write(Tools.toJsonString(vehicule.getQuantiteEau()));
         osw.flush();
         osw.close();
         connection.getInputStream();

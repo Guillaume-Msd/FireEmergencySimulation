@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import io.sp.webservice.models.Coord;
+
 @Entity
 public class Vehicule {
 
@@ -27,6 +29,15 @@ public class Vehicule {
 	
 	@Column
 	private double quantiteEau;
+	
+	@Column 
+	private Coord destination;
+	
+	@Column
+	private int destinationX;
+	
+	@Column
+	private int destinationY;
 
 	public Vehicule() {
 	}
@@ -82,6 +93,38 @@ public class Vehicule {
 	public void setQuantiteEau(double quantiteEau) {
 		this.quantiteEau = quantiteEau;
 	}
+	
+
+	public Coord getDestination() {
+		return destination;
+	}
+
+	public void setDestination(Coord destination) {
+		this.destination = destination;
+	}
+
+	public int getDestinationX() {
+		return destinationX;
+	}
+
+	public void setDestinationX(int destinationX) {
+		this.destinationX = destinationX;
+	}
+
+	public int getDestinationY() {
+		return destinationY;
+	}
+
+	public void setDestinationY(int destinationY) {
+		this.destinationY = destinationY;
+	}
+
+	public void convertDestinationToCoord() {
+		this.destination = new Coord(this.destinationX, this.destinationY);
+		
+	}
+	
+	
 
 
 	

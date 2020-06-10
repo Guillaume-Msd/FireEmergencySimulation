@@ -307,7 +307,7 @@ public class EmergencySimulator implements InterventionServerInterface {
 	public void gererNouvelleAlerte(Alerte alerte,List<AbstractVehicule> vehiculesSimu) throws IOException {
         List<VehiculeLutteIncendie> vehicules = this.VehiculesIncendieParProximite(alerte,vehiculesSimu);
         int nb_camions_envoyes =0;
-        for (int i=0;i<=alerte.getIntensity()/4;i++) {
+       // for (int i=0;i<=alerte.getIntensity()/4;i++) {
             if (!vehicules.isEmpty()) {
                 VehiculeLutteIncendie v = vehicules.remove(0);
                 if(v.getStatut().toString().contentEquals((EnumStatut.Disponible).toString())) {
@@ -315,7 +315,6 @@ public class EmergencySimulator implements InterventionServerInterface {
                 } else {
                 	redirectIntervention(v,alerte.getCoord().x,alerte.getCoord().y,alerte.getRange());
                 }
-<<<<<<< HEAD
                 List<Coord> coordList = v.getPath();
                 Collections.reverse(coordList);
                 int j;
@@ -325,11 +324,8 @@ public class EmergencySimulator implements InterventionServerInterface {
                 Collections.reverse(coordList);
                 v.setPath(coordList);
                 nb_camions_envoyes = nb_camions_envoyes +1;
-=======
-            nb_camions_envoyes = nb_camions_envoyes +1;
->>>>>>> ca30b299540267aaadc3127402c1ae1ea4511b08
             }
-        }
+        //}
         if (nb_camions_envoyes != 0) {
             AlerteEnCours(alerte);
         }
@@ -382,10 +378,13 @@ public class EmergencySimulator implements InterventionServerInterface {
 	public void createIntervention(VehiculeLutteIncendie vehicule, int xFinal, int yFinal, int range) throws JsonParseException, JsonMappingException, IOException {
 		List<Coord> coordList = getPathFromServer(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
 		double distance = calculDistance(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
+		vehicule.setDestinationX(xFinal);
+		vehicule.setDestinationY(yFinal);
 		vehicule.setPath(coordList);
 		vehicule.setStatut(EnumStatut.EnRoutePourIntervention);
 		vehicule.setOilQuantity(vehicule.getOilQuantity() - (distance*vehicule.getInterventionOilConsumption())/100);
 		vehicule.addVehiculeView(range);
+		vehicule.fillWater();
 		System.err.println(vehicule.getOilQuantity());
 		System.err.println(vehicule.getQuantiteEau());
 		((VehiculeLutteIncendie) vehicule).updateVehiculeWater();
@@ -407,6 +406,8 @@ public class EmergencySimulator implements InterventionServerInterface {
 	public void redirectIntervention(VehiculeLutteIncendie vehicule, int xFinal, int yFinal, int range) throws JsonParseException, JsonMappingException, IOException {
 		List<Coord> coordList = getPathFromServer(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
 		double distance = calculDistance(vehicule.getCoord().x,vehicule.getCoord().y,xFinal,yFinal);
+		vehicule.setDestinationX(xFinal);
+		vehicule.setDestinationY(yFinal);
 		vehicule.setPath(coordList);
 		vehicule.setStatut(EnumStatut.EnRoutePourIntervention);
 		vehicule.setOilQuantity(vehicule.getOilQuantity() - (distance*vehicule.getInterventionOilConsumption())/100);

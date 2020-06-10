@@ -15,6 +15,7 @@ import org.json.simple.JSONObject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import models.Coord;
 import utilities.Tools;
 
 public abstract class AbstractVehicule extends Intervenors implements VehiculeInterface {
@@ -41,6 +42,12 @@ public abstract class AbstractVehicule extends Intervenors implements VehiculeIn
   private int range;
   
   private double distance;
+  
+  private int destinationX;
+  
+  private int destinationY;
+  
+  private Coord destination;
 
 
 public Coord getCoord_HQ() {
@@ -72,7 +79,32 @@ private Coord coord_HQ;
   		this(45,10,50,8);
   	}
   	
+  	
 	
+	public Coord getDestination() {
+		return destination;
+	}
+
+	public void setDestination(Coord destination) {
+		this.destination = destination;
+	}
+
+	public int getDestinationX() {
+		return destinationX;
+	}
+
+	public void setDestinationX(int destinationX) {
+		this.destinationX = destinationX;
+	}
+
+	public int getDestinationY() {
+		return destinationY;
+	}
+
+	public void setDestinationY(int destinationY) {
+		this.destinationY = destinationY;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -287,6 +319,8 @@ private Coord coord_HQ;
 		JSONObject json = new JSONObject();
 		json.put("type", this.getClass().getSimpleName());
 		json.put("range", range);
+		json.put("destinationX", this.getDestinationX());
+		json.put("destinationY", this.getDestinationY());
 		
         OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
         osw.write(json.toJSONString());
@@ -334,5 +368,10 @@ private Coord coord_HQ;
 	public void setDistance(double distance) {
 		this.distance = distance;
 	}
+
+	
+
+	
+	
 }
 
